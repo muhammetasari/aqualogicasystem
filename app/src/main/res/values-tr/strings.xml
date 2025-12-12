@@ -1,0 +1,186 @@
+<resources>
+    <string name="app_name">İzsu</string>
+
+    <!-- Common -->
+    <string name="or">veya</string>
+    <string name="close">Kapat</string>
+
+    <!-- Login Screen -->
+    <string name="login">Giriş Yap</string>
+    <string name="login_subtitle">E-posta ve şifrenizi girin.</string>
+    <string name="email_or_username">Mail Adresi veya Kullanıcı Adı</string>
+    <string name="password">Şifre</string>
+    <string name="forgot_password">Şifremi Unuttum</string>
+    <string name="no_account">Hesabınız yok mu?</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="continue_as_guest">Misafir Olarak Devam Et</string>
+    <string name="guest_user">Misafir Kullanıcı</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgot_password_title">Şifremi Unuttum</string>
+    <string name="send_reset_link">Şifre Sıfırlama Bağlantısı Gönder</string>
+
+    <!-- Register Screen -->
+    <string name="register">Kayıt Ol</string>
+    <string name="register_subtitle">Hesabınızı oluşturun.</string>
+    <string name="full_name">İsim Soyisim</string>
+    <string name="email">Mail</string>
+    <string name="already_have_account">Zaten hesabınız var mı?</string>
+    <string name="sign_in">Giriş Yap</string>
+    <string name="language_change">Dil Değiştir</string>
+    <string name="language">Dil</string>
+    <string name="select_language">Dil Seçin</string>
+
+    <!-- Terms and Privacy -->
+    <string name="terms_privacy_text">Giriş yaparak, Kullanım Koşulları ve Gizlilik Politikası\'nı kabul ediyorum.</string>
+    <string name="terms_of_use">Kullanım Koşulları</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+
+    <!-- Terms of Use Dialog -->
+    <string name="terms_of_use_title">Kullanım Koşulları</string>
+    <string name="terms_of_use_content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.\n\nNemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</string>
+
+    <!-- Privacy Policy Dialog -->
+    <string name="privacy_policy_title">Gizlilik Politikası</string>
+    <string name="privacy_policy_content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.\n\nSimilique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</string>
+
+    <!-- About Application- -->
+    <string name="about_application_title">Uygulama Hakkında</string>
+    <string name="about_application_content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+
+    <!-- Permissions Control Dialog -->
+    <string name="permissions_control_title">İzinler</string>
+    <string name="permissions_control_subtitle">Aşağıdaki izinleri kontrol edin</string>
+    <string name="permission_camera">Kamera</string>
+    <string name="permission_camera_desc">Fotoğraf çekmek ve video kaydetmek için</string>
+    <string name="permission_location">Konum</string>
+    <string name="permission_location_desc">Konumunuzu belirlemek için</string>
+    <string name="permission_storage">Depolama</string>
+    <string name="permission_storage_desc">Dosyaları kaydetmek ve okumak için</string>
+    <string name="permission_notifications">Bildirimler</string>
+    <string name="permission_notifications_desc">Sizinle iletişim kurmak için</string>
+    <string name="permission_granted">İzin verildi</string>
+    <string name="notification_permission">Bildirimler</string>
+    <string name="notification_permission_desc">Önemli güncellemeler ve bildirimler göndermek için</string>
+    <string name="location_permission">Konum</string>
+    <string name="location_permission_desc">Mevcut konumunuzu belirlemek için</string>
+    <string name="camera_permission">Kamera</string>
+    <string name="camera_permission_desc">Fotoğraf çekmek ve video kaydetmek için</string>
+    <string name="microphone_permission">Mikrofon</string>
+    <string name="microphone_permission_desc">Ses kaydetmek için</string>
+    <string name="storage_permission">Depolama</string>
+    <string name="storage_permission_desc">Cihazınızdan dosya kaydetmek ve okumak için</string>
+    <string name="permission_denied">İzin reddedildi</string>
+    <string name="grant_permission">İzin Ver</string>
+    <string name="permission_settings_required_title">İzin Gerekli</string>
+    <string name="permission_settings_required_message">Bu izin kalıcı olarak reddedildi. Lütfen uygulama ayarlarından etkinleştirin.</string>
+    <string name="open_settings">Ayarları Aç</string>
+    <string name="save">Kaydet</string>
+
+    <!-- Home Screen -->
+    <string name="welcome">Hoş Geldiniz</string>
+    <string name="logout">Çıkış Yap</string>
+    <string name="profile">Profil</string>
+    <string name="home_content">Ana Sayfa İçeriği</string>
+
+    <!-- Profile Screen -->
+    <string name="account">Hesap</string>
+    <string name="settings">Ayarlar</string>
+    <string name="profile_details">Profil Detayları</string>
+    <string name="password_settings">Şifre</string>
+    <string name="saved">Kaydedilenler</string>
+    <string name="journey">Seyahatlerim</string>
+    <string name="theme_demo">Tema Demosu</string>
+    <string name="content_description_settings">Ayarlar</string>
+    <string name="content_description_edit">Düzenle</string>
+    <string name="content_description_navigate">Git</string>
+    <string name="user_id">Kullanıcı ID</string>
+    <string name="no_user_info">Kullanıcı bilgisi bulunamadı</string>
+
+    <!-- Settings Screen -->
+    <string name="dark_mode">Karanlık Mod</string>
+    <string name="language_settings">Dil</string>
+    <string name="notification_settings">Bildirim</string>
+    <string name="privacy_settings">Gizlilik</string>
+    <string name="account_settings">Hesap</string>
+    <string name="about_application">Uygulama Hakkında</string>
+    <string name="feedback">Geri Bildirim</string>
+    <string name="support">Destek</string>
+
+    <!-- Error Messages -->
+    <string name="error_invalid_email">Geçersiz e-posta adresi.</string>
+    <string name="error_wrong_password">Hatalı şifre.</string>
+    <string name="error_user_not_found">Kullanıcı bulunamadı.</string>
+    <string name="error_user_disabled">Bu hesap devre dışı bırakılmış.</string>
+    <string name="error_too_many_requests">Çok fazla istek. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="error_email_already_in_use">Bu e-posta adresi zaten kullanımda.</string>
+    <string name="error_weak_password">Şifre çok zayıf. En az 6 karakter kullanın.</string>
+    <string name="error_operation_not_allowed">İşleme izin verilmiyor.</string>
+    <string name="error_auth_failed">Kimlik doğrulama başarısız.</string>
+    <string name="error_network">Ağ hatası. Lütfen bağlantınızı kontrol edin.</string>
+    <string name="error_unknown">Bilinmeyen bir hata oluştu.</string>
+    <string name="error_validation">Doğrulama hatası.</string>
+    <string name="error_invalid_email_format">Lütfen geçerli bir e-posta adresi girin.</string>
+    <string name="error_password_too_short">Şifre en az 6 karakter olmalıdır.</string>
+    <string name="error_full_name_required">İsim soyisim zorunludur.</string>
+    <string name="error_email_empty">E-posta boş olamaz.</string>
+    <string name="error_password_empty">Şifre boş olamaz.</string>
+    <string name="error_all_fields_required">Tüm alanlar zorunludur</string>
+    <string name="error_passwords_do_not_match">Şifreler eşleşmiyor</string>
+
+    <!-- Firebase Auth Error Messages -->
+    <string name="error_auth_token_expired">Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.</string>
+    <string name="error_auth_token_invalid">Geçersiz oturum. Lütfen tekrar giriş yapın.</string>
+    <string name="error_requires_recent_login">Bu işlem hassastır ve yakın zamanda kimlik doğrulaması gerektirir. Lütfen tekrar denemeden önce tekrar giriş yapın.</string>
+    <string name="error_invalid_credential">E-posta adresiniz veya şifreniz hatalı. Lütfen bilgilerinizi kontrol edip tekrar deneyin.</string>
+    <string name="error_account_exists_with_different_credential">Aynı e-posta adresine sahip ancak farklı oturum açma kimlik bilgilerine sahip bir hesap zaten var.</string>
+    <string name="error_invalid_action_code">İşlem kodu geçersiz. Bu, kodun hatalı biçimlendirilmesi, süresinin dolması veya daha önce kullanılmış olması durumunda olabilir.</string>
+
+    <!-- Success Messages -->
+    <string name="success_login">Giriş başarılı.</string>
+    <string name="success_register">Kayıt başarılı.</string>
+    <string name="success_password_reset">Şifre sıfırlama e-postası gönderildi.</string>
+    <string name="success_logout">Çıkış yapıldı.</string>
+    <string name="success_password_change">Şifre başarıyla değiştirildi</string>
+
+    <!-- Content Descriptions -->
+    <string name="content_description_back">Geri</string>
+    <string name="content_description_show_password">Şifreyi göster</string>
+    <string name="content_description_hide_password">Şifreyi gizle</string>
+
+    <!-- Password Strength -->
+    <string name="password_weak">Zayıf</string>
+    <string name="password_medium">Orta</string>
+    <string name="password_strong">Güçlü</string>
+
+    <!-- Change Password Dialog -->
+    <string name="change_password">Şifre Değiştir</string>
+    <string name="current_password">Mevcut Şifre</string>
+    <string name="new_password">Yeni Şifre</string>
+    <string name="confirm_new_password">Yeni Şifreyi Onayla</string>
+    <string name="change">Değiştir</string>
+
+    <!-- Exit Dialog -->
+    <string name="exit_app_title">Uygulamadan Çık</string>
+    <string name="exit_app_message">Uygulamadan çıkmak istiyor musunuz?</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+
+    <!-- Theme Selection Dialog -->
+    <string name="choose_theme">Tema Seç</string>
+    <string name="theme_system_default">Sistem Varsayılanı</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+    <!-- Language names -->
+    <string name="english">English</string>
+    <string name="turkish">Türkçe</string>
+
+    <!-- Bottom Navigation Bar -->
+    <string name="bottom_bar_home">Ana Sayfa</string>
+    <string name="bottom_bar_search">Arama</string>
+    <string name="bottom_bar_appointment">Randevu</string>
+    <string name="bottom_bar_profile">Profil</string>
+    <string name="bottom_bar_settings">Ayarlar</string>
+</resources>
