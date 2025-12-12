@@ -1,7 +1,5 @@
-package com.aqualogicasystem.izsu.ui.components
+package com.aqualogicasystem.izsu.ui.components.permission
 
-import android.Manifest
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.AlertDialog
@@ -18,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aqualogicasystem.izsu.R
-import com.aqualogicasystem.izsu.data.model.PermissionState
+import com.aqualogicasystem.izsu.data.model.permission.PermissionState
 import com.aqualogicasystem.izsu.ui.viewmodel.PermissionsViewModel
 
 /**
@@ -87,7 +85,7 @@ fun PermissionsManager(
                         else -> {
                             // İzin iste
                             permanentlyDeniedPermissionId = permissionId
-                            val manifestPermission = getManifestPermission(permissionId)
+                            val manifestPermission = permissionsViewModel.getManifestPermission(appPermission)
                             if (manifestPermission.isNotEmpty()) {
                                 singlePermissionLauncher.launch(manifestPermission)
                             }
@@ -124,32 +122,6 @@ fun PermissionsManager(
                 }
             }
         )
-    }
-}
-
-/**
- * Permission ID'den manifest permission string'ine dönüşüm yapar.
- */
-private fun getManifestPermission(permissionId: String): String {
-    return when (permissionId) {
-        PermissionsViewModel.PERMISSION_ID_CAMERA -> Manifest.permission.CAMERA
-        PermissionsViewModel.PERMISSION_ID_LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
-        PermissionsViewModel.PERMISSION_ID_NOTIFICATIONS -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.POST_NOTIFICATIONS
-            } else {
-                ""
-            }
-        }
-        PermissionsViewModel.PERMISSION_ID_MICROPHONE -> Manifest.permission.RECORD_AUDIO
-        PermissionsViewModel.PERMISSION_ID_STORAGE -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.READ_MEDIA_IMAGES
-            } else {
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }
-        }
-        else -> ""
     }
 }
 

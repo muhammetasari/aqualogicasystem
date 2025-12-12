@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Feedback
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,7 +27,7 @@ import com.aqualogicasystem.izsu.ui.components.ThemeSelectionDialog
 import com.aqualogicasystem.izsu.ui.components.AboutApplicationDialog
 import com.aqualogicasystem.izsu.ui.components.ListMenuItem
 import com.aqualogicasystem.izsu.ui.components.LanguageSelectionDialog
-import com.aqualogicasystem.izsu.ui.components.PermissionsManager
+import com.aqualogicasystem.izsu.ui.components.permission.PermissionsManager
 import com.aqualogicasystem.izsu.utils.LocaleHelper
 
 

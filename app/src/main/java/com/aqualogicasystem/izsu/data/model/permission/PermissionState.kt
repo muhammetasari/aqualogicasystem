@@ -1,4 +1,4 @@
-package com.aqualogicasystem.izsu.data.model
+package com.aqualogicasystem.izsu.data.model.permission
 
 /**
  * İzin durumlarını temsil eden sealed class.
@@ -25,22 +25,5 @@ sealed class PermissionState {
 
     /** İzin durumunun kalıcı olarak reddedilmiş olup olmadığını kontrol eder */
     fun isPermanentlyDenied(): Boolean = this is DeniedPermanently
-}
-
-/**
- * Uygulama tarafından kullanılan izin türlerini tanımlar.
- * Her izin için Android manifest permission string'i ve varsayılan durumu içerir.
- */
-enum class AppPermission(val manifestPermission: String) {
-    CAMERA(android.Manifest.permission.CAMERA),
-    LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION),
-    COARSE_LOCATION(android.Manifest.permission.ACCESS_COARSE_LOCATION),
-    NOTIFICATIONS("android.permission.POST_NOTIFICATIONS"),
-    RECORD_AUDIO(android.Manifest.permission.RECORD_AUDIO),
-    READ_EXTERNAL_STORAGE(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-    WRITE_EXTERNAL_STORAGE(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-    READ_MEDIA_IMAGES("android.permission.READ_MEDIA_IMAGES"),
-    READ_MEDIA_VIDEO("android.permission.READ_MEDIA_VIDEO"),
-    READ_MEDIA_AUDIO("android.permission.READ_MEDIA_AUDIO")
 }
 

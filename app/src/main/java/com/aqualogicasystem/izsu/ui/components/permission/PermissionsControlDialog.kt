@@ -1,4 +1,4 @@
-package com.aqualogicasystem.izsu.ui.components
+package com.aqualogicasystem.izsu.ui.components.permission
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,21 +9,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aqualogicasystem.izsu.R
+import com.aqualogicasystem.izsu.data.model.permission.PermissionItem
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 
-data class PermissionItem(
-    val id: String,
-    val icon: ImageVector,
-    val title: String,
-    val description: String,
-    val isGranted: Boolean
-)
-
+/**
+ * İzin kontrolü ve yönetimi için dialog.
+ * Kullanıcıya hangi izinlerin verildiğini/verilmediğini gösterir ve
+ * izin talep etme imkanı sunar.
+ *
+ * @param permissions Gösterilecek izin listesi
+ * @param onDismiss Dialog kapatıldığında çağrılacak callback
+ * @param onPermissionRequest İzin talep edildiğinde çağrılacak callback (permission ID ile)
+ */
 @Composable
 fun PermissionsControlDialog(
     permissions: List<PermissionItem> = emptyList(),
@@ -81,6 +82,12 @@ fun PermissionsControlDialog(
     )
 }
 
+/**
+ * Tek bir izin öğesini gösteren satır.
+ *
+ * @param permission İzin bilgileri
+ * @param onPermissionRequest İzin talep edildiğinde çağrılacak callback
+ */
 @Composable
 private fun PermissionItemRow(
     permission: PermissionItem,
@@ -152,7 +159,7 @@ private fun PermissionItemRow(
             Spacer(modifier = Modifier.width(8.dp))
             FilledTonalButton(
                 onClick = onPermissionRequest,
-                contentPadding = PaddingValues(horizontal = 1.dp, vertical = 1.dp)
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.grant_permission),
@@ -172,29 +179,29 @@ fun PermissionsControlDialogPreview() {
                 PermissionItem(
                     id = "camera",
                     icon = Icons.Default.Camera,
-                    title = "Camera",
-                    description = "To take photos and record videos",
+                    title = "Kamera",
+                    description = "Fotoğraf çekmek ve video kaydetmek için",
                     isGranted = true
                 ),
                 PermissionItem(
                     id = "location",
                     icon = Icons.Default.LocationOn,
-                    title = "Location",
-                    description = "To determine your location",
+                    title = "Konum",
+                    description = "Konumunuzu belirlemek için",
                     isGranted = false
                 ),
                 PermissionItem(
                     id = "storage",
                     icon = Icons.Default.Storage,
-                    title = "Storage",
-                    description = "To save and read files",
+                    title = "Depolama",
+                    description = "Dosyaları kaydetmek ve okumak için",
                     isGranted = true
                 ),
                 PermissionItem(
                     id = "notifications",
                     icon = Icons.Default.Notifications,
-                    title = "Notifications",
-                    description = "To communicate with you",
+                    title = "Bildirimler",
+                    description = "Sizinle iletişim kurmak için",
                     isGranted = false
                 )
             ),
@@ -202,3 +209,4 @@ fun PermissionsControlDialogPreview() {
         )
     }
 }
+
