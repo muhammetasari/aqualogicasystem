@@ -189,8 +189,9 @@ fun SettingsScreenContent(
         }
         if (showPermissionsDialog) {
             PermissionsManager(
-                showDialog = showPermissionsDialog,
+                showDialog = true,
                 onDismiss = { onShowPermissionsDialog(false) }
+
             )
         }
     }
