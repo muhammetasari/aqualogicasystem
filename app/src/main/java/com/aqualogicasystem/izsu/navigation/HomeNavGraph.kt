@@ -3,22 +3,40 @@ package com.aqualogicasystem.izsu.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.aqualogicasystem.izsu.ui.screens.HomeScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.CalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
-import com.aqualogicasystem.izsu.ui.screens.HomeScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
-    composable(Screen.Home.route) {
+    // Home Screen
+    composable(route = Screen.Home.route) {
         HomeScreen(navController = navController)
     }
-    composable(Screen.Calculator.route) {
+
+    // Bottom bar'dan erişilen calculator ekranları
+    composable(route = Screen.Iron3.route) {
         CalculatorScreen(navController = navController)
     }
-    composable(Screen.SodaCalculator.route) {
+
+    composable(route = Screen.Soda.route) {
         SodaCalculatorScreen(navController = navController)
     }
-    composable(Screen.ChlorineCalculator.route) {
+
+    composable(route = Screen.Chlorine.route) {
+        ChlorineCalculatorScreen(navController = navController)
+    }
+
+    // Eski route'lar (geriye dönük uyumluluk için)
+    composable(route = Screen.Calculator.route) {
+        CalculatorScreen(navController = navController)
+    }
+
+    composable(route = Screen.SodaCalculator.route) {
+        SodaCalculatorScreen(navController = navController)
+    }
+
+    composable(route = Screen.ChlorineCalculator.route) {
         ChlorineCalculatorScreen(navController = navController)
     }
 }

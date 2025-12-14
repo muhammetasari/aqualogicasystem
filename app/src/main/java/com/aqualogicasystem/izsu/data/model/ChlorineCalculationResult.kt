@@ -10,7 +10,6 @@ package com.aqualogicasystem.izsu.data.model
  * @property contactTargetPpm Kontak Tankı Hedef PPM
  * @property finalTargetPpm Son Klorlama Hedef PPM
  * @property timestamp Kayıt zamanı (Unix timestamp)
- * @property activePumps Çalışan pompa numaraları (1, 2, 3, 4, 5)
  */
 data class ChlorineCalculationResult(
     val preChlorineDosage: Double = 0.0,
@@ -19,7 +18,6 @@ data class ChlorineCalculationResult(
     val preTargetPpm: Double = 0.0,
     val contactTargetPpm: Double = 0.0,
     val finalTargetPpm: Double = 0.0,
-    val timestamp: Long = System.currentTimeMillis(),
-    val activePumps: Set<Int> = emptySet()
+    val timestamp: Long = System.currentTimeMillis()
 )
 

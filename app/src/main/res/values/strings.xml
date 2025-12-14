@@ -184,10 +184,11 @@
 
     <!-- Bottom Navigation Bar -->
     <string name="bottom_bar_home">Home</string>
-    <string name="bottom_bar_search">Search</string>
-    <string name="bottom_bar_appointment">Appointment</string>
+    <string name="bottom_bar_iron3">Iron 3</string>
+    <string name="bottom_bar_soda">Soda</string>
+    <string name="bottom_bar_chlorine">Chlorine</string>
+    <string name="bottom_bar_empty">Empty</string>
     <string name="bottom_bar_profile">Profile</string>
-    <string name="bottom_bar_settings">Settings</string>
 
     <!-- Pump Selection -->
     <string name="pump_selection_title">Active Pumps</string>

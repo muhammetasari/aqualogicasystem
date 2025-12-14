@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
-import com.aqualogicasystem.izsu.ui.components.PumpSelectionCard
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModel
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
@@ -114,6 +113,7 @@ fun CalculatorScreen(
             }
             ResultCard(
                 targetSeconds = state.calculatedTargetSeconds,
+                hourlyAmount = if (state.calculatedTargetSeconds > 5.0) 3600 / state.calculatedTargetSeconds else 0.0
             )
             HorizontalDivider()
             Text(
@@ -132,13 +132,6 @@ fun CalculatorScreen(
                 singleLine = true
             )
 
-            // Pompa Seçimi
-            PumpSelectionCard(
-                selectedPumps = state.selectedPumps,
-                onPumpToggle = { pumpNumber ->
-                    viewModel.onEvent(CalculatorEvent.TogglePump(pumpNumber))
-                }
-            )
 
             // Kaydet Butonu
             Button(
@@ -174,27 +167,34 @@ fun CalculatorScreen(
 }
 
 @Composable
-fun ResultCard(targetSeconds: Double) {
+fun ResultCard(
+    targetSeconds: Double,
+    hourlyAmount: Double
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "1 Litre Dolum Süresi",
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Text(
-                        text = String.format("%.1f sn", targetSeconds),
-                        style = MaterialTheme.typography.displaySmall,
+                        text = String.format(java.util.Locale.US, "%.1f sn", targetSeconds),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -203,20 +203,17 @@ fun ResultCard(targetSeconds: Double) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "1 Saatte Verilen Miktar (kg/saat)",
-                        style = MaterialTheme.typography.labelLarge,
+                        text = "Toplam Miktar",
+                        style = MaterialTheme.typography.labelSmall,
                     )
                     Text(
-                        text = if (targetSeconds > 5.0) {
-                            String.format("%.1f kg/s", 3600 / targetSeconds)
-                        } else {
-                            "0.0 kg/s"
-                        },
-                        style = MaterialTheme.typography.displaySmall,
+                        text = String.format(java.util.Locale.US, "%.1f kg/saat", hourlyAmount),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
+            }
         }
     }
 }

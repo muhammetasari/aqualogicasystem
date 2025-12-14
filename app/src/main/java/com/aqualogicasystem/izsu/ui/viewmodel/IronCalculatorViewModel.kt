@@ -18,7 +18,6 @@ data class CalculatorUiState(
     val targetPpm: String = "21.0",     // İstenen Dozaj (Varsayılan 21)
     val chemicalFactor: String = "549.0", // Kimyasal Faktörü (Varsayılan 549)
     val calculatedTargetSeconds: Double = 0.0, // Hesaplanan Sonuçlar
-    val selectedPumps: Set<Int> = emptySet(), // Seçili pompalar (1, 2, 3)
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false
 )
@@ -37,21 +36,10 @@ class CalculatorViewModel(
             is CalculatorEvent.UpdateFlow -> updateState { it.copy(waterFlow = event.value) }
             is CalculatorEvent.UpdatePpm -> updateState { it.copy(targetPpm = event.value) }
             is CalculatorEvent.UpdateFactor -> updateState { it.copy(chemicalFactor = event.value) }
-            is CalculatorEvent.TogglePump -> togglePump(event.pumpNumber)
             is CalculatorEvent.SaveCalculation -> saveCalculation()
         }
     }
 
-    private fun togglePump(pumpNumber: Int) {
-        _uiState.update { currentState ->
-            val newPumps = if (pumpNumber in currentState.selectedPumps) {
-                currentState.selectedPumps - pumpNumber
-            } else {
-                currentState.selectedPumps + pumpNumber
-            }
-            currentState.copy(selectedPumps = newPumps)
-        }
-    }
 
     private fun saveCalculation() {
         viewModelScope.launch {
@@ -65,8 +53,7 @@ class CalculatorViewModel(
                 val result = CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = System.currentTimeMillis(),
-                    activePumps = currentState.selectedPumps
+                    timestamp = System.currentTimeMillis()
                 )
 
                 repository.saveIronCalculationResult(result)
@@ -109,6 +96,5 @@ sealed class CalculatorEvent {
     data class UpdateFlow(val value: String) : CalculatorEvent()
     data class UpdatePpm(val value: String) : CalculatorEvent()
     data class UpdateFactor(val value: String) : CalculatorEvent()
-    data class TogglePump(val pumpNumber: Int) : CalculatorEvent()
     data object SaveCalculation : CalculatorEvent()
 }

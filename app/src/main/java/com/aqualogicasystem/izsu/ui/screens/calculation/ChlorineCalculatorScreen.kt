@@ -7,7 +7,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Calculate
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.aqualogicasystem.izsu.data.repository.fake.FakeUserPreferencesRepository
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
-import com.aqualogicasystem.izsu.ui.components.PumpSelectionCard
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorViewModel
@@ -56,38 +54,13 @@ fun ChlorineCalculatorScreen(
         title = "Klor Dozaj Hesaplayıcı",
         showTopBar = true,
         showBackButton = true,
-        showBottomBar = false
+        showBottomBar = true
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Bilgilendirme Kartı
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Sekmeler
             TabRow(
                 selectedTabIndex = selectedTabIndex,
@@ -163,21 +136,6 @@ fun ChlorineCalculatorScreen(
 
                 HorizontalDivider()
 
-                // POMPA SEÇİMİ (Her sekmede ortak)
-                Text(
-                    text = "Pompa Seçimi",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-
-                PumpSelectionCard(
-                    selectedPumps = state.selectedPumps,
-                    onPumpToggle = { pumpNumber ->
-                        viewModel.onEvent(ChlorineCalculatorEvent.TogglePump(pumpNumber))
-                    },
-                    pumpCount = 5
-                )
 
                 // KAYDET BUTONU (Her sekmede ortak)
                 Button(
@@ -414,12 +372,12 @@ fun ChlorineResultCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -431,11 +389,11 @@ fun ChlorineResultCard(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Hedef PPM",
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Text(
                         text = String.format(Locale.US, "%.2f", targetPpm),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -443,12 +401,12 @@ fun ChlorineResultCard(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Dozaj (kg/saat)",
-                        style = MaterialTheme.typography.labelMedium
+                        text = "Toplam Dozaj",
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Text(
-                        text = String.format(Locale.US, "%.2f", dosageKgPerHour),
-                        style = MaterialTheme.typography.headlineMedium,
+                        text = String.format(Locale.US, "%.2f kg/saat", dosageKgPerHour),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )

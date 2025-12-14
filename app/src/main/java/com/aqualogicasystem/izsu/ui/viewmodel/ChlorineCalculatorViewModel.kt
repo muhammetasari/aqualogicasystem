@@ -36,12 +36,11 @@ data class ChlorineCalculatorUiState(
 
     // Calculated Results
     val calculatedPreTargetPpm: Double = 0.0,  // Hesaplanan Ön Hedef PPM
-    val calculatedPreDosage: Double = 0.0,     // Ön Klorlama Dozajı (kg/saat)
-    val calculatedContactDosage: Double = 0.0, // Kontak Dozajı (kg/saat)
-    val calculatedFinalDosage: Double = 0.0,   // Son Klorlama Dozajı (kg/saat)
+    val calculatedPreDosage: Double = 0.0,     // Ön Klorlama Toplam Dozajı (kg/saat)
+    val calculatedContactDosage: Double = 0.0, // Kontak Toplam Dozajı (kg/saat)
+    val calculatedFinalDosage: Double = 0.0,   // Son Klorlama Toplam Dozajı (kg/saat)
 
     // UI State
-    val selectedPumps: Set<Int> = emptySet(),  // Seçili pompalar (1-5)
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false
 )
@@ -89,27 +88,12 @@ class ChlorineCalculatorViewModel(
             is ChlorineCalculatorEvent.UpdateTargetNetworkPpm ->
                 updateState { it.copy(targetNetworkPpm = event.value) }
 
-            // Pump Selection
-            is ChlorineCalculatorEvent.TogglePump -> togglePump(event.pumpNumber)
 
             // Save Calculation
             is ChlorineCalculatorEvent.SaveCalculation -> saveCalculation()
         }
     }
 
-    /**
-     * Toggles pump selection on/off
-     */
-    private fun togglePump(pumpNumber: Int) {
-        _uiState.update { currentState ->
-            val newPumps = if (pumpNumber in currentState.selectedPumps) {
-                currentState.selectedPumps - pumpNumber
-            } else {
-                currentState.selectedPumps + pumpNumber
-            }
-            currentState.copy(selectedPumps = newPumps)
-        }
-    }
 
     /**
      * Saves calculation results to repository
@@ -127,8 +111,7 @@ class ChlorineCalculatorViewModel(
                     preTargetPpm = currentState.calculatedPreTargetPpm,
                     contactTargetPpm = currentState.targetTankPpm.toDoubleOrNull() ?: 0.0,
                     finalTargetPpm = currentState.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
-                    timestamp = System.currentTimeMillis(),
-                    activePumps = currentState.selectedPumps
+                    timestamp = System.currentTimeMillis()
                 )
 
                 repository.saveChlorineCalculationResult(result)
@@ -230,8 +213,6 @@ sealed class ChlorineCalculatorEvent {
     data class UpdateCurrentTankPpm(val value: String) : ChlorineCalculatorEvent()
     data class UpdateTargetNetworkPpm(val value: String) : ChlorineCalculatorEvent()
 
-    // Pump Selection
-    data class TogglePump(val pumpNumber: Int) : ChlorineCalculatorEvent()
 
     // Save
     data object SaveCalculation : ChlorineCalculatorEvent()

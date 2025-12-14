@@ -84,7 +84,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -106,7 +105,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -136,7 +134,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     contactTargetPpm = contactTargetPpm ?: 0.0,
                     finalTargetPpm = finalTargetPpm ?: 0.0,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -179,7 +176,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.IRON_CALC_FILL_TIME] = result.fillTime
             preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT] = result.hourlyAmount
             preferences[PreferencesKeys.IRON_CALC_TIMESTAMP] = result.timestamp
-            preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
         }
     }
 
@@ -193,7 +189,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.SODA_CALC_FILL_TIME] = result.fillTime
             preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT] = result.hourlyAmount
             preferences[PreferencesKeys.SODA_CALC_TIMESTAMP] = result.timestamp
-            preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
         }
     }
 
@@ -215,7 +210,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -242,7 +236,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -265,7 +258,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM] = result.contactTargetPpm
             preferences[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM] = result.finalTargetPpm
             preferences[PreferencesKeys.CHLORINE_CALC_TIMESTAMP] = result.timestamp
-            preferences[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
         }
     }
 
@@ -295,7 +287,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                     contactTargetPpm = contactTargetPpm ?: 0.0,
                     finalTargetPpm = finalTargetPpm ?: 0.0,
                     timestamp = timestamp,
-                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null

@@ -181,10 +181,11 @@
 
     <!-- Bottom Navigation Bar -->
     <string name="bottom_bar_home">Ana Sayfa</string>
-    <string name="bottom_bar_search">Arama</string>
-    <string name="bottom_bar_appointment">Randevu</string>
+    <string name="bottom_bar_iron3">Demir 3</string>
+    <string name="bottom_bar_soda">Soda</string>
+    <string name="bottom_bar_chlorine">Klor</string>
+    <string name="bottom_bar_empty">Boş</string>
     <string name="bottom_bar_profile">Profil</string>
-    <string name="bottom_bar_settings">Ayarlar</string>
 
     <!-- Pump Selection -->
     <string name="pump_selection_title">Çalışan Pompalar</string>

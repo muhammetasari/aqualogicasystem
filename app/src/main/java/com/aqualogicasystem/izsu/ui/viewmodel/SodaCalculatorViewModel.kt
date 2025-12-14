@@ -17,8 +17,8 @@ data class SodaCalculatorUiState(
     val waterFlow: String = "",         // Su Debisi (lt/sn)
     val targetPpm: String = "7.5",      // İstenen Dozaj (Varsayılan 7.5)
     val chemicalFactor: String = "750.0", // Kimyasal Faktörü (Varsayılan 750)
-    val calculatedTargetSeconds: Double = 0.0, // Hesaplanan Sonuçlar
-    val selectedPumps: Set<Int> = emptySet(), // Seçili pompalar (1, 2, 3)
+    val calculatedTargetSeconds: Double = 0.0, // Hesaplanan Sonuçlar (Dolum Süresi)
+    val calculatedHourlyAmount: Double = 0.0,  // Saatlik Toplam Miktar (kg/saat)
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false
 )
@@ -37,21 +37,10 @@ class SodaCalculatorViewModel(
             is SodaCalculatorEvent.UpdateFlow -> updateState { it.copy(waterFlow = event.value) }
             is SodaCalculatorEvent.UpdatePpm -> updateState { it.copy(targetPpm = event.value) }
             is SodaCalculatorEvent.UpdateFactor -> updateState { it.copy(chemicalFactor = event.value) }
-            is SodaCalculatorEvent.TogglePump -> togglePump(event.pumpNumber)
             is SodaCalculatorEvent.SaveCalculation -> saveCalculation()
         }
     }
 
-    private fun togglePump(pumpNumber: Int) {
-        _uiState.update { currentState ->
-            val newPumps = if (pumpNumber in currentState.selectedPumps) {
-                currentState.selectedPumps - pumpNumber
-            } else {
-                currentState.selectedPumps + pumpNumber
-            }
-            currentState.copy(selectedPumps = newPumps)
-        }
-    }
 
     private fun saveCalculation() {
         viewModelScope.launch {
@@ -59,14 +48,10 @@ class SodaCalculatorViewModel(
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
-                val fillTime = currentState.calculatedTargetSeconds
-                val hourlyAmount = if (fillTime > 5.0) 3600 / fillTime else 0.0
-
                 val result = CalculationResult(
-                    fillTime = fillTime,
-                    hourlyAmount = hourlyAmount,
-                    timestamp = System.currentTimeMillis(),
-                    activePumps = currentState.selectedPumps
+                    fillTime = currentState.calculatedTargetSeconds,
+                    hourlyAmount = currentState.calculatedHourlyAmount,
+                    timestamp = System.currentTimeMillis()
                 )
 
                 repository.saveSodaCalculationResult(result)
@@ -98,8 +83,13 @@ class SodaCalculatorViewModel(
         } else {
             0.0
         }
+
+        // Saatlik toplam miktar hesapla
+        val hourlyAmount = if (targetSeconds > 5.0) 3600 / targetSeconds else 0.0
+
         return state.copy(
             calculatedTargetSeconds = targetSeconds,
+            calculatedHourlyAmount = hourlyAmount
         )
     }
 }
@@ -109,7 +99,6 @@ sealed class SodaCalculatorEvent {
     data class UpdateFlow(val value: String) : SodaCalculatorEvent()
     data class UpdatePpm(val value: String) : SodaCalculatorEvent()
     data class UpdateFactor(val value: String) : SodaCalculatorEvent()
-    data class TogglePump(val pumpNumber: Int) : SodaCalculatorEvent()
     data object SaveCalculation : SodaCalculatorEvent()
 }
 
