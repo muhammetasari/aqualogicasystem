@@ -1,6 +1,7 @@
 package com.aqualogicasystem.izsu.data.repository
 
 import com.aqualogicasystem.izsu.data.model.AppThemeConfig
+import com.aqualogicasystem.izsu.data.model.CalculationResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -19,6 +20,11 @@ interface IUserPreferencesRepository {
     val themeConfigFlow: Flow<AppThemeConfig>
 
     /**
+     * Flow that emits the last saved calculation result.
+     */
+    val calculationResultFlow: Flow<CalculationResult?>
+
+    /**
      * Saves the selected theme configuration.
      *
      * @param themeConfig The theme configuration to save
@@ -32,5 +38,19 @@ interface IUserPreferencesRepository {
      * @return The current theme configuration or FOLLOW_SYSTEM as default
      */
     suspend fun getThemeConfig(): AppThemeConfig
+
+    /**
+     * Saves a calculation result.
+     *
+     * @param result The calculation result to save
+     */
+    suspend fun saveCalculationResult(result: CalculationResult)
+
+    /**
+     * Gets the last saved calculation result.
+     *
+     * @return The last saved calculation result or null
+     */
+    suspend fun getCalculationResult(): CalculationResult?
 }
 

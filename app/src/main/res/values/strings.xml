@@ -82,6 +82,8 @@
     <string name="logout">Logout</string>
     <string name="profile">Profile</string>
     <string name="home_content">Home Screen Content</string>
+    <string name="calculator">Calculator</string>
+    <string name="go_to_calculator">Go to Dosage Calculator</string>
 
     <!-- Profile Screen -->
     <string name="account">Account</string>

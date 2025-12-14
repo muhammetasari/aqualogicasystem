@@ -82,6 +82,8 @@
     <string name="logout">Çıkış Yap</string>
     <string name="profile">Profil</string>
     <string name="home_content">Ana Sayfa İçeriği</string>
+    <string name="calculator">Hesap Makinesi</string>
+    <string name="go_to_calculator">Dozaj Hesaplayıcıya Git</string>
 
     <!-- Profile Screen -->
     <string name="account">Hesap</string>

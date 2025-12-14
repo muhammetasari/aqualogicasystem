@@ -26,6 +26,7 @@ fun StandardLayout(
     onNavigateBack: () -> Unit = { navController.popBackStack() },
     topAppBarActions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
+    snackbarHost: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -45,7 +46,8 @@ fun StandardLayout(
             if (showBottomBar) {
                 StandardBottomBar(navController = navController)
             }
-        }
+        },
+        snackbarHost = snackbarHost
     ) { paddingValues ->
         content(paddingValues)
     }
@@ -66,7 +68,6 @@ fun StandardLayoutPreview() {
         showBackButton = true,
         showBottomBar = true
     ) { paddingValues ->
-        // Örnek içerik - paddingValues kullanılarak preview uyarısı giderildi
         Box(modifier = Modifier.padding(paddingValues)) {
         }
     }
