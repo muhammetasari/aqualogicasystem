@@ -3,14 +3,11 @@ package com.aqualogicasystem.izsu.ui.screens.calculation
 import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Calculate
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -22,18 +19,20 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.aqualogicasystem.izsu.data.repository.fake.FakeUserPreferencesRepository
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
+import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
+import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
+import com.aqualogicasystem.izsu.ui.components.CalculatorSaveButton
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
+import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
 import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorViewModel
-import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorViewModelFactory
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChlorineCalculatorScreen(
     navController: NavController,
     viewModel: ChlorineCalculatorViewModel = viewModel(
-        factory = ChlorineCalculatorViewModelFactory(
+        factory = CalculatorViewModelFactory(
             LocalContext.current.applicationContext as Application
         )
     )
@@ -136,40 +135,14 @@ fun ChlorineCalculatorScreen(
 
                 HorizontalDivider()
 
-
-                // KAYDET BUTONU (Her sekmede ortak)
-                Button(
+                // Kaydet Butonu (Her sekmede ortak)
+                CalculatorSaveButton(
                     onClick = { viewModel.onEvent(ChlorineCalculatorEvent.SaveCalculation) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    enabled = !state.isSaving && (
-                        state.calculatedPreDosage > 0.0 ||
+                    enabled = state.calculatedPreDosage > 0.0 ||
                         state.calculatedContactDosage > 0.0 ||
-                        state.calculatedFinalDosage > 0.0
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    if (state.isSaving) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Save,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Kaydet",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
+                        state.calculatedFinalDosage > 0.0,
+                    isLoading = state.isSaving
+                )
             }
         }
     }
@@ -189,23 +162,19 @@ fun PreChlorinationSection(
         )
 
         // Giriş Alanları
-        OutlinedTextField(
+        CalculatorInputField(
             value = state.preFlowRate,
             onValueChange = { onEvent(ChlorineCalculatorEvent.UpdatePreFlowRate(it)) },
-            label = { Text("Havalandırma Çıkış Debisi (lt/sn)") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true
+            label = "Havalandırma Çıkış Debisi (lt/sn)",
+            keyboardType = KeyboardType.Decimal
         )
 
-        OutlinedTextField(
+        CalculatorInputField(
             value = state.preManualTargetPpm,
             onValueChange = { onEvent(ChlorineCalculatorEvent.UpdatePreManualTargetPpm(it)) },
-            label = { Text("Manuel Hedef PPM (Opsiyonel)") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true,
-            supportingText = { Text("Boş bırakılırsa otomatik hesaplanır") }
+            label = "Manuel Hedef PPM (Opsiyonel)",
+            supportingText = "Boş bırakılırsa otomatik hesaplanır",
+            keyboardType = KeyboardType.Decimal
         )
 
         // Önceki Vardiya Verileri
@@ -219,30 +188,31 @@ fun PreChlorinationSection(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.prevFlowRate,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdatePrevFlowRate(it)) },
-                label = { Text("Debi (lt/sn)") },
+                label = "Debi (lt/sn)",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true
+                keyboardType = KeyboardType.Decimal
             )
 
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.prevDosage,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdatePrevDosage(it)) },
-                label = { Text("Dozaj (kg/saat)") },
+                label = "Dozaj (kg/saat)",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true
+                keyboardType = KeyboardType.Decimal
             )
         }
 
         // Sonuç Kartı
-        ChlorineResultCard(
+        CalculatorResultCard(
             title = "Ön Klorlama Sonuçları",
-            targetPpm = state.calculatedPreTargetPpm,
-            dosageKgPerHour = state.calculatedPreDosage
+            leftLabel = "Hedef PPM",
+            leftValue = state.calculatedPreTargetPpm,
+            rightLabel = "Toplam Dozaj",
+            rightValue = state.calculatedPreDosage,
+            rightUnit = "kg/saat"
         )
     }
 }
@@ -260,44 +230,43 @@ fun ContactTankSection(
             fontWeight = FontWeight.Bold
         )
 
-        OutlinedTextField(
+        CalculatorInputField(
             value = state.contactFlowRate,
             onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateContactFlowRate(it)) },
-            label = { Text("Filtre Çıkış Debisi (lt/sn)") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true
+            label = "Filtre Çıkış Debisi (lt/sn)",
+            keyboardType = KeyboardType.Decimal
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.currentFilterPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateCurrentFilterPpm(it)) },
-                label = { Text("Mevcut PPM") },
+                label = "Mevcut PPM",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                supportingText = { Text("Filtre çıkışı") }
+                supportingText = "Filtre çıkışı",
+                keyboardType = KeyboardType.Decimal
             )
 
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.targetTankPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateTargetTankPpm(it)) },
-                label = { Text("Hedef PPM") },
+                label = "Hedef PPM",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                supportingText = { Text("Tank hedefi") }
+                supportingText = "Tank hedefi",
+                keyboardType = KeyboardType.Decimal
             )
         }
 
-        ChlorineResultCard(
+        CalculatorResultCard(
             title = "Kontak Tankı Sonuçları",
-            targetPpm = state.targetTankPpm.toDoubleOrNull() ?: 0.0,
-            dosageKgPerHour = state.calculatedContactDosage
+            leftLabel = "Hedef PPM",
+            leftValue = state.targetTankPpm.toDoubleOrNull() ?: 0.0,
+            rightLabel = "Toplam Dozaj",
+            rightValue = state.calculatedContactDosage,
+            rightUnit = "kg/saat"
         )
     }
 }
@@ -315,106 +284,47 @@ fun FinalChlorinationSection(
             fontWeight = FontWeight.Bold
         )
 
-        OutlinedTextField(
+        CalculatorInputField(
             value = state.finalFlowRate,
             onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateFinalFlowRate(it)) },
-            label = { Text("Tesis Çıkış Debisi (lt/sn)") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true
+            label = "Tesis Çıkış Debisi (lt/sn)",
+            keyboardType = KeyboardType.Decimal
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.currentTankPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateCurrentTankPpm(it)) },
-                label = { Text("Mevcut PPM") },
+                label = "Mevcut PPM",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                supportingText = { Text("Tank çıkışı") }
+                supportingText = "Tank çıkışı",
+                keyboardType = KeyboardType.Decimal
             )
 
-            OutlinedTextField(
+            CalculatorInputField(
                 value = state.targetNetworkPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateTargetNetworkPpm(it)) },
-                label = { Text("Hedef PPM") },
+                label = "Hedef PPM",
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                supportingText = { Text("Şebeke hedefi") }
+                supportingText = "Şebeke hedefi",
+                keyboardType = KeyboardType.Decimal
             )
         }
 
-        ChlorineResultCard(
+        CalculatorResultCard(
             title = "Son Klorlama Sonuçları",
-            targetPpm = state.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
-            dosageKgPerHour = state.calculatedFinalDosage
+            leftLabel = "Hedef PPM",
+            leftValue = state.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
+            rightLabel = "Toplam Dozaj",
+            rightValue = state.calculatedFinalDosage,
+            rightUnit = "kg/saat"
         )
     }
 }
 
-@Composable
-fun ChlorineResultCard(
-    title: String,
-    targetPpm: Double,
-    dosageKgPerHour: Double
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "Hedef PPM",
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                    Text(
-                        text = String.format(Locale.US, "%.2f", targetPpm),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "Toplam Dozaj",
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                    Text(
-                        text = String.format(Locale.US, "%.2f kg/saat", dosageKgPerHour),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
@@ -423,7 +333,7 @@ fun ChlorineCalculatorScreenPreview() {
         ChlorineCalculatorScreen(
             navController = rememberNavController(),
             viewModel = viewModel(
-                factory = ChlorineCalculatorViewModelFactory(
+                factory = CalculatorViewModelFactory(
                     application = LocalContext.current.applicationContext as Application,
                     repository = FakeUserPreferencesRepository()
                 )

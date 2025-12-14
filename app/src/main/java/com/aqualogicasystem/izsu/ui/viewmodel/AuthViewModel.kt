@@ -18,12 +18,27 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * Şifre değiştirme işleminin UI durumunu tutan data class.
+ *
+ * @property isLoading İşlem devam ediyor mu?
+ * @property error Hata mesajı (varsa)
+ * @property isSuccess İşlem başarılı oldu mu?
+ */
 data class PasswordChangeState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false
 )
 
+/**
+ * Kimlik doğrulama işlemlerini yöneten ViewModel.
+ *
+ * MVVM mimarisini takip eder ve tüm auth işlemlerini (giriş, kayıt, şifre sıfırlama vb.)
+ * merkezi olarak yönetir. Firebase Authentication ile entegre çalışır.
+ *
+ * @property repository Kimlik doğrulama işlemleri için IAuthRepository
+ */
 class AuthViewModel(private val repository: IAuthRepository = AuthRepository()) : ViewModel() {
 
     private val _authState = MutableStateFlow(AuthState())
@@ -32,6 +47,10 @@ class AuthViewModel(private val repository: IAuthRepository = AuthRepository()) 
     private val _passwordChangeState = MutableStateFlow(PasswordChangeState())
     val passwordChangeState: StateFlow<PasswordChangeState> = _passwordChangeState.asStateFlow()
 
+    /**
+     * Mevcut kullanıcıyı StateFlow olarak sağlar.
+     * Auth state'inden türetilir ve UI'da gözlemlenebilir.
+     */
     val currentUser: StateFlow<com.aqualogicasystem.izsu.data.model.User?> = authState
         .map { it.currentUser }
         .stateIn(
@@ -44,6 +63,9 @@ class AuthViewModel(private val repository: IAuthRepository = AuthRepository()) 
         checkCurrentUser()
     }
 
+    /**
+     * Mevcut oturum açmış kullanıcıyı kontrol eder ve state'i günceller.
+     */
     private fun checkCurrentUser() {
         viewModelScope.launch {
             try {

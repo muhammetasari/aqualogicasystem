@@ -1,4 +1,4 @@
-package com.aqualogicasystem.izsu.ui.screens
+package com.aqualogicasystem.izsu.ui.screens.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

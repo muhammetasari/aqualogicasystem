@@ -4,25 +4,25 @@ import android.content.Context
 import com.aqualogicasystem.izsu.R
 
 /**
- * Enum class representing the app's theme configuration options.
+ * Uygulamanın tema konfigürasyon seçeneklerini temsil eden Enum sınıfı.
  *
- * Provides three theme modes:
- * - FOLLOW_SYSTEM: Follows the device's system theme (Light/Dark)
- * - LIGHT: Forces the app to use Light theme
- * - DARK: Forces the app to use Dark theme
+ * Üç tema modu sağlar:
+ * - FOLLOW_SYSTEM: Cihazın sistem temasını takip eder (Açık/Koyu)
+ * - LIGHT: Uygulamayı Açık tema kullanmaya zorlar
+ * - DARK: Uygulamayı Koyu tema kullanmaya zorlar
  */
 enum class AppThemeConfig {
-    /** Follows the device's system theme setting */
+    /** Cihazın sistem tema ayarını takip eder */
     FOLLOW_SYSTEM,
 
-    /** Forces Light theme regardless of system settings */
+    /** Sistem ayarlarından bağımsız olarak Açık temayı zorlar */
     LIGHT,
 
-    /** Forces Dark theme regardless of system settings */
+    /** Sistem ayarlarından bağımsız olarak Koyu temayı zorlar */
     DARK;
 
     /**
-     * Returns a user-friendly display name for the theme option
+     * Tema seçeneği için kullanıcı dostu görünen isim döndürür
      */
     fun getDisplayName(context: Context): String = when (this) {
         FOLLOW_SYSTEM -> context.getString(R.string.theme_system_default)
@@ -32,7 +32,7 @@ enum class AppThemeConfig {
 
     companion object {
         /**
-         * Converts a string to AppThemeConfig enum, with FOLLOW_SYSTEM as default
+         * String'i AppThemeConfig enum'una çevirir, varsayılan olarak FOLLOW_SYSTEM döner
          */
         fun fromString(value: String?): AppThemeConfig {
             return try {

@@ -1,7 +1,9 @@
 package com.aqualogicasystem.izsu.data.model
 
 /**
- * Data class representing a saved calculation result
+ * Kaydedilmiş hesaplama sonucunu temsil eden data class.
+ *
+ * Demir ve Soda hesaplayıcıları için kullanılır.
  *
  * @property fillTime 1 Litre Dolum Süresi (saniye)
  * @property hourlyAmount Saatlik Miktar (kg/saat)

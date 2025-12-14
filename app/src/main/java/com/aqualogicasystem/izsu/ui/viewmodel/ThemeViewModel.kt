@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for managing the app's theme configuration.
+ * Uygulamanın tema konfigürasyonunu yöneten ViewModel.
  *
- * Follows MVVM architecture pattern and provides:
- * - Reactive theme state through StateFlow
- * - Theme configuration updates
- * - Persistence through UserPreferencesRepository
+ * MVVM mimari desenini takip eder ve şunları sağlar:
+ * - StateFlow aracılığıyla reaktif tema durumu
+ * - Tema konfigürasyonu güncellemeleri
+ * - UserPreferencesRepository aracılığıyla kalıcılık
  *
- * @param application Application context for repository initialization
- * @param repository Optional IUserPreferencesRepository for testing/preview purposes
+ * @param application Repository başlatma için Application context
+ * @param repository Test/preview amaçlı opsiyonel IUserPreferencesRepository
  */
 class ThemeViewModel(
     application: Application,
@@ -28,12 +28,12 @@ class ThemeViewModel(
 ) : AndroidViewModel(application) {
 
     /**
-     * StateFlow that emits the current theme configuration.
-     * Automatically updates when the configuration changes in DataStore.
+     * Mevcut tema konfigürasyonunu yayan StateFlow.
+     * DataStore'daki konfigürasyon değiştiğinde otomatik güncellenir.
      *
-     * - SharingStarted.WhileSubscribed(5000): Keeps the flow active for 5 seconds
-     *   after the last subscriber unsubscribes, preventing unnecessary restarts
-     * - initialValue: FOLLOW_SYSTEM as the default until the first value is loaded
+     * - SharingStarted.WhileSubscribed(5000): Son abone çıktıktan sonra flow'u
+     *   5 saniye daha aktif tutar, gereksiz yeniden başlatmaları önler
+     * - initialValue: İlk değer yüklenene kadar varsayılan olarak FOLLOW_SYSTEM
      */
     val themeConfig: StateFlow<AppThemeConfig> = repository.themeConfigFlow
         .stateIn(
@@ -43,9 +43,9 @@ class ThemeViewModel(
         )
 
     /**
-     * Updates the theme configuration and persists it to DataStore.
+     * Tema konfigürasyonunu günceller ve DataStore'a kaydeder.
      *
-     * @param config The new theme configuration to apply
+     * @param config Uygulanacak yeni tema konfigürasyonu
      */
     fun updateThemeConfig(config: AppThemeConfig) {
         viewModelScope.launch {

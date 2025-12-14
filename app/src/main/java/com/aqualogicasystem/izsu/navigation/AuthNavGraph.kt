@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.aqualogicasystem.izsu.ui.screens.SplashScreen
+import com.aqualogicasystem.izsu.ui.screens.main.SplashScreen
 import com.aqualogicasystem.izsu.ui.screens.authscreen.ForgotPasswordScreen
 import com.aqualogicasystem.izsu.ui.screens.authscreen.LoginScreen
 import com.aqualogicasystem.izsu.ui.screens.authscreen.RegisterScreen

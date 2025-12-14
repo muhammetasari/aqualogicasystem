@@ -3,8 +3,8 @@ package com.aqualogicasystem.izsu.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.aqualogicasystem.izsu.ui.screens.HomeScreen
-import com.aqualogicasystem.izsu.ui.screens.calculation.CalculatorScreen
+import com.aqualogicasystem.izsu.ui.screens.main.HomeScreen
+import com.aqualogicasystem.izsu.ui.screens.calculation.IronCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
 
@@ -16,7 +16,7 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 
     // Bottom bar'dan erişilen calculator ekranları
     composable(route = Screen.Iron3.route) {
-        CalculatorScreen(navController = navController)
+        IronCalculatorScreen(navController = navController)
     }
 
     composable(route = Screen.Soda.route) {
@@ -29,7 +29,7 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 
     // Eski route'lar (geriye dönük uyumluluk için)
     composable(route = Screen.Calculator.route) {
-        CalculatorScreen(navController = navController)
+        IronCalculatorScreen(navController = navController)
     }
 
     composable(route = Screen.SodaCalculator.route) {

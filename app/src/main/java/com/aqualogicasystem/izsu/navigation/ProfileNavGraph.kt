@@ -3,9 +3,9 @@ package com.aqualogicasystem.izsu.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.aqualogicasystem.izsu.ui.screens.ProfileScreen
+import com.aqualogicasystem.izsu.ui.screens.main.ProfileScreen
 import com.aqualogicasystem.izsu.ui.theme.demo.ThemeDemoScreen
-import com.aqualogicasystem.izsu.ui.screens.SettingsScreen
+import com.aqualogicasystem.izsu.ui.screens.main.SettingsScreen
 
 fun NavGraphBuilder.profileNavGraph(
     navController: NavController,

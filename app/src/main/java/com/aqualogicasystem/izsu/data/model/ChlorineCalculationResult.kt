@@ -1,7 +1,7 @@
 package com.aqualogicasystem.izsu.data.model
 
 /**
- * Data class representing a saved chlorine calculation result for 3 points
+ * 3 nokta için kaydedilmiş klor hesaplama sonucunu temsil eden data class.
  *
  * @property preChlorineDosage Ön Klorlama Dozajı (kg/saat)
  * @property contactTankDosage Kontak Tankı Dozajı (kg/saat)

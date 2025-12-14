@@ -5,73 +5,72 @@ import com.aqualogicasystem.izsu.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Interface for authentication repository operations.
+ * Kimlik doğrulama repository operasyonları için interface.
  *
- * This interface allows for easy testing and preview implementations
- * by providing a contract for authentication operations without
- * direct Firebase dependencies.
+ * Bu interface, Firebase bağımlılıkları olmadan kimlik doğrulama işlemleri için
+ * bir sözleşme sağlayarak kolay test ve preview implementasyonlarına olanak tanır.
  */
 interface IAuthRepository {
 
     /**
-     * Gets the current authenticated user as a Flow.
-     * Emits null if no user is authenticated.
+     * Mevcut kimliği doğrulanmış kullanıcıyı Flow olarak döndürür.
+     * Kimliği doğrulanmış kullanıcı yoksa null yayar.
      */
     fun getCurrentUserFlow(): Flow<User?>
 
     /**
-     * Gets the current authenticated user synchronously.
-     * Returns null if no user is authenticated.
+     * Mevcut kimliği doğrulanmış kullanıcıyı senkron olarak döndürür.
+     * Kimliği doğrulanmış kullanıcı yoksa null döner.
      */
     fun getCurrentUser(): User?
 
     /**
-     * Signs in a user with email and password.
+     * Email ve şifre ile kullanıcı girişi yapar.
      *
-     * @param email User's email address
-     * @param password User's password
-     * @return AuthResult with User data on success or error on failure
+     * @param email Kullanıcının email adresi
+     * @param password Kullanıcının şifresi
+     * @return Başarılı ise User verisi, hata durumunda exception içeren AuthResult
      */
     suspend fun signInWithEmail(email: String, password: String): AuthResult<User>
 
     /**
-     * Creates a new user account with email, password and full name.
+     * Email, şifre ve tam ad ile yeni kullanıcı hesabı oluşturur.
      *
-     * @param fullName User's full name
-     * @param email User's email address
-     * @param password User's password
-     * @return AuthResult with User data on success or error on failure
+     * @param fullName Kullanıcının tam adı
+     * @param email Kullanıcının email adresi
+     * @param password Kullanıcının şifresi
+     * @return Başarılı ise User verisi, hata durumunda exception içeren AuthResult
      */
     suspend fun signUpWithEmail(fullName: String, email: String, password: String): AuthResult<User>
 
 
     /**
-     * Sends a password reset email to the specified address.
+     * Belirtilen adrese şifre sıfırlama email'i gönderir.
      *
-     * @param email User's email address
-     * @return AuthResult with Unit on success or error on failure
+     * @param email Kullanıcının email adresi
+     * @return Başarılı ise Unit, hata durumunda exception içeren AuthResult
      */
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit>
 
     /**
-     * Signs in anonymously (as a guest user).
-     * Creates a temporary Firebase account without requiring credentials.
+     * Misafir kullanıcı olarak anonim giriş yapar.
+     * Kimlik bilgileri gerektirmeden geçici bir Firebase hesabı oluşturur.
      *
-     * @return AuthResult with User data on success or error on failure
+     * @return Başarılı ise User verisi, hata durumunda exception içeren AuthResult
      */
     suspend fun signInAnonymously(): AuthResult<User>
 
     /**
-     * Signs out the current user.
+     * Mevcut kullanıcının oturumunu kapatır.
      */
     fun signOut()
 
     /**
-     * Changes the current user's password.
+     * Mevcut kullanıcının şifresini değiştirir.
      *
-     * @param oldPassword The user's current password for re-authentication.
-     * @param newPassword The new password to set.
-     * @return AuthResult with Unit on success or error on failure.
+     * @param oldPassword Kullanıcının mevcut şifresi (yeniden kimlik doğrulama için)
+     * @param newPassword Ayarlanacak yeni şifre
+     * @return Başarılı ise Unit, hata durumunda exception içeren AuthResult
      */
     suspend fun changePassword(oldPassword: String, newPassword: String): AuthResult<Unit>
 }

@@ -1,4 +1,4 @@
-package com.aqualogicasystem.izsu.util
+package com.aqualogicasystem.izsu.logic
 
 /**
  * Tahtalı Arıtma Tesisi - Merkezi Klor Hesaplama Motoru
