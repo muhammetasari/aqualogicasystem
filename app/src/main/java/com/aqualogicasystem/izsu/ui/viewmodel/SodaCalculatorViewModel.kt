@@ -13,32 +13,32 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 // UI'daki tüm verileri tutan State sınıfı
-data class CalculatorUiState(
-    val waterFlow: String = "",         // Su Debisi (m³/sn)
-    val targetPpm: String = "21.0",     // İstenen Dozaj (Varsayılan 21)
-    val chemicalFactor: String = "549.0", // Kimyasal Faktörü (Varsayılan 549)
+data class SodaCalculatorUiState(
+    val waterFlow: String = "",         // Su Debisi (lt/sn)
+    val targetPpm: String = "7.5",      // İstenen Dozaj (Varsayılan 7.5)
+    val chemicalFactor: String = "750.0", // Kimyasal Faktörü (Varsayılan 750)
     val calculatedTargetSeconds: Double = 0.0, // Hesaplanan Sonuçlar
     val selectedPumps: Set<Int> = emptySet(), // Seçili pompalar (1, 2, 3)
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false
 )
 
-class CalculatorViewModel(
+class SodaCalculatorViewModel(
     application: Application,
     private val repository: IUserPreferencesRepository = UserPreferencesRepository.getInstance(application)
 ) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow(CalculatorUiState())
-    val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(SodaCalculatorUiState())
+    val uiState: StateFlow<SodaCalculatorUiState> = _uiState.asStateFlow()
 
     // Kullanıcı bir değeri değiştirdiğinde tetiklenir
-    fun onEvent(event: CalculatorEvent) {
+    fun onEvent(event: SodaCalculatorEvent) {
         when (event) {
-            is CalculatorEvent.UpdateFlow -> updateState { it.copy(waterFlow = event.value) }
-            is CalculatorEvent.UpdatePpm -> updateState { it.copy(targetPpm = event.value) }
-            is CalculatorEvent.UpdateFactor -> updateState { it.copy(chemicalFactor = event.value) }
-            is CalculatorEvent.TogglePump -> togglePump(event.pumpNumber)
-            is CalculatorEvent.SaveCalculation -> saveCalculation()
+            is SodaCalculatorEvent.UpdateFlow -> updateState { it.copy(waterFlow = event.value) }
+            is SodaCalculatorEvent.UpdatePpm -> updateState { it.copy(targetPpm = event.value) }
+            is SodaCalculatorEvent.UpdateFactor -> updateState { it.copy(chemicalFactor = event.value) }
+            is SodaCalculatorEvent.TogglePump -> togglePump(event.pumpNumber)
+            is SodaCalculatorEvent.SaveCalculation -> saveCalculation()
         }
     }
 
@@ -69,7 +69,7 @@ class CalculatorViewModel(
                     activePumps = currentState.selectedPumps
                 )
 
-                repository.saveIronCalculationResult(result)
+                repository.saveSodaCalculationResult(result)
                 _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
             } catch (_: Exception) {
                 _uiState.update { it.copy(isSaving = false, saveSuccess = false) }
@@ -81,14 +81,14 @@ class CalculatorViewModel(
         _uiState.update { it.copy(saveSuccess = false) }
     }
 
-    private fun updateState(update: (CalculatorUiState) -> CalculatorUiState) {
+    private fun updateState(update: (SodaCalculatorUiState) -> SodaCalculatorUiState) {
         _uiState.update { currentState ->
             val newState = update(currentState)
             calculateResults(newState)
         }
     }
 
-    private fun calculateResults(state: CalculatorUiState): CalculatorUiState {
+    private fun calculateResults(state: SodaCalculatorUiState): SodaCalculatorUiState {
         val flow = state.waterFlow.toDoubleOrNull() ?: 0.0
         val ppm = state.targetPpm.toDoubleOrNull() ?: 0.0
         val factor = state.chemicalFactor.toDoubleOrNull() ?: 0.0
@@ -105,10 +105,11 @@ class CalculatorViewModel(
 }
 
 // Kullanıcı etkileşimleri için Event sınıfı
-sealed class CalculatorEvent {
-    data class UpdateFlow(val value: String) : CalculatorEvent()
-    data class UpdatePpm(val value: String) : CalculatorEvent()
-    data class UpdateFactor(val value: String) : CalculatorEvent()
-    data class TogglePump(val pumpNumber: Int) : CalculatorEvent()
-    data object SaveCalculation : CalculatorEvent()
+sealed class SodaCalculatorEvent {
+    data class UpdateFlow(val value: String) : SodaCalculatorEvent()
+    data class UpdatePpm(val value: String) : SodaCalculatorEvent()
+    data class UpdateFactor(val value: String) : SodaCalculatorEvent()
+    data class TogglePump(val pumpNumber: Int) : SodaCalculatorEvent()
+    data object SaveCalculation : SodaCalculatorEvent()
 }
+

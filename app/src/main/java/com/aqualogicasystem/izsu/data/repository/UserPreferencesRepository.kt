@@ -34,9 +34,18 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
      */
     private object PreferencesKeys {
         val THEME_CONFIG = stringPreferencesKey("theme_config")
-        val CALC_FILL_TIME = doublePreferencesKey("calc_fill_time")
-        val CALC_HOURLY_AMOUNT = doublePreferencesKey("calc_hourly_amount")
-        val CALC_TIMESTAMP = longPreferencesKey("calc_timestamp")
+
+        // Demir-3 hesaplama sonuçları
+        val IRON_CALC_FILL_TIME = doublePreferencesKey("iron_calc_fill_time")
+        val IRON_CALC_HOURLY_AMOUNT = doublePreferencesKey("iron_calc_hourly_amount")
+        val IRON_CALC_TIMESTAMP = longPreferencesKey("iron_calc_timestamp")
+        val IRON_CALC_ACTIVE_PUMPS = stringPreferencesKey("iron_calc_active_pumps")
+
+        // Soda hesaplama sonuçları
+        val SODA_CALC_FILL_TIME = doublePreferencesKey("soda_calc_fill_time")
+        val SODA_CALC_HOURLY_AMOUNT = doublePreferencesKey("soda_calc_hourly_amount")
+        val SODA_CALC_TIMESTAMP = longPreferencesKey("soda_calc_timestamp")
+        val SODA_CALC_ACTIVE_PUMPS = stringPreferencesKey("soda_calc_active_pumps")
     }
 
     /**
@@ -50,19 +59,43 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         }
 
     /**
-     * Flow that emits the last saved calculation result.
+     * Flow that emits the last saved Demir-3 calculation result.
      */
-    override val calculationResultFlow: Flow<CalculationResult?> = context.dataStore.data
+    override val ironCalculationResultFlow: Flow<CalculationResult?> = context.dataStore.data
         .map { preferences ->
-            val fillTime = preferences[PreferencesKeys.CALC_FILL_TIME]
-            val hourlyAmount = preferences[PreferencesKeys.CALC_HOURLY_AMOUNT]
-            val timestamp = preferences[PreferencesKeys.CALC_TIMESTAMP]
+            val fillTime = preferences[PreferencesKeys.IRON_CALC_FILL_TIME]
+            val hourlyAmount = preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
+            val timestamp = preferences[PreferencesKeys.IRON_CALC_TIMESTAMP]
+            val activePumpsString = preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS]
 
             if (fillTime != null && hourlyAmount != null && timestamp != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
+                )
+            } else {
+                null
+            }
+        }
+
+    /**
+     * Flow that emits the last saved Soda calculation result.
+     */
+    override val sodaCalculationResultFlow: Flow<CalculationResult?> = context.dataStore.data
+        .map { preferences ->
+            val fillTime = preferences[PreferencesKeys.SODA_CALC_FILL_TIME]
+            val hourlyAmount = preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
+            val timestamp = preferences[PreferencesKeys.SODA_CALC_TIMESTAMP]
+            val activePumpsString = preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS]
+
+            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+                CalculationResult(
+                    fillTime = fillTime,
+                    hourlyAmount = hourlyAmount,
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
@@ -96,41 +129,113 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
     }
 
     /**
-     * Saves a calculation result to DataStore.
+     * Saves a Demir-3 calculation result to DataStore.
      *
      * @param result The calculation result to save
      */
-    override suspend fun saveCalculationResult(result: CalculationResult) {
+    override suspend fun saveIronCalculationResult(result: CalculationResult) {
         context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.CALC_FILL_TIME] = result.fillTime
-            preferences[PreferencesKeys.CALC_HOURLY_AMOUNT] = result.hourlyAmount
-            preferences[PreferencesKeys.CALC_TIMESTAMP] = result.timestamp
+            preferences[PreferencesKeys.IRON_CALC_FILL_TIME] = result.fillTime
+            preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT] = result.hourlyAmount
+            preferences[PreferencesKeys.IRON_CALC_TIMESTAMP] = result.timestamp
+            preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
         }
     }
 
     /**
-     * Gets the last saved calculation result.
+     * Saves a Soda calculation result to DataStore.
+     *
+     * @param result The calculation result to save
+     */
+    override suspend fun saveSodaCalculationResult(result: CalculationResult) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SODA_CALC_FILL_TIME] = result.fillTime
+            preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT] = result.hourlyAmount
+            preferences[PreferencesKeys.SODA_CALC_TIMESTAMP] = result.timestamp
+            preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
+        }
+    }
+
+    /**
+     * Gets the last saved Demir-3 calculation result.
      *
      * @return The last saved calculation result or null
      */
-    override suspend fun getCalculationResult(): CalculationResult? {
+    override suspend fun getIronCalculationResult(): CalculationResult? {
         var result: CalculationResult? = null
         context.dataStore.data.map { prefs ->
-            val fillTime = prefs[PreferencesKeys.CALC_FILL_TIME]
-            val hourlyAmount = prefs[PreferencesKeys.CALC_HOURLY_AMOUNT]
-            val timestamp = prefs[PreferencesKeys.CALC_TIMESTAMP]
+            val fillTime = prefs[PreferencesKeys.IRON_CALC_FILL_TIME]
+            val hourlyAmount = prefs[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
+            val timestamp = prefs[PreferencesKeys.IRON_CALC_TIMESTAMP]
+            val activePumpsString = prefs[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS]
 
             if (fillTime != null && hourlyAmount != null && timestamp != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
                 )
             } else {
                 null
             }
         }.collect { result = it }
         return result
+    }
+
+    /**
+     * Gets the last saved Soda calculation result.
+     *
+     * @return The last saved calculation result or null
+     */
+    override suspend fun getSodaCalculationResult(): CalculationResult? {
+        var result: CalculationResult? = null
+        context.dataStore.data.map { prefs ->
+            val fillTime = prefs[PreferencesKeys.SODA_CALC_FILL_TIME]
+            val hourlyAmount = prefs[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
+            val timestamp = prefs[PreferencesKeys.SODA_CALC_TIMESTAMP]
+            val activePumpsString = prefs[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS]
+
+            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+                CalculationResult(
+                    fillTime = fillTime,
+                    hourlyAmount = hourlyAmount,
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
+                )
+            } else {
+                null
+            }
+        }.collect { result = it }
+        return result
+    }
+
+    /**
+     * Formats a set of pump numbers to a comma-separated string.
+     *
+     * @param pumps Set of pump numbers (1, 2, 3)
+     * @return Comma-separated string (e.g., "1,2,3")
+     */
+    private fun formatPumpSet(pumps: Set<Int>): String {
+        return pumps.sorted().joinToString(",")
+    }
+
+    /**
+     * Parses a comma-separated string to a set of pump numbers.
+     *
+     * @param pumpsString Comma-separated string (e.g., "1,2,3")
+     * @return Set of pump numbers
+     */
+    private fun parsePumpSet(pumpsString: String?): Set<Int> {
+        if (pumpsString.isNullOrEmpty()) return emptySet()
+        return try {
+            pumpsString.split(",")
+                .mapNotNull { it.trim().toIntOrNull() }
+                .filter { it in 1..5 }
+                .toSet()
+        } catch (_: Exception) {
+            emptySet()
+        }
     }
 
     companion object {

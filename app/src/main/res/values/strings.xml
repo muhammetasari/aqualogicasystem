@@ -188,4 +188,14 @@
     <string name="bottom_bar_appointment">Appointment</string>
     <string name="bottom_bar_profile">Profile</string>
     <string name="bottom_bar_settings">Settings</string>
+
+    <!-- Pump Selection -->
+    <string name="pump_selection_title">Active Pumps</string>
+    <string name="pump_1">Pump 1</string>
+    <string name="pump_2">Pump 2</string>
+    <string name="pump_3">Pump 3</string>
+    <string name="pump_4">Pump 4</string>
+    <string name="pump_5">Pump 5</string>
+    <string name="active_pumps">Active Pumps</string>
+    <string name="no_pumps_selected">No pumps selected</string>
 </resources>

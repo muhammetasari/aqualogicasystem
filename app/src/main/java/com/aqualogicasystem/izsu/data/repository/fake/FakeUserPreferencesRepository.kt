@@ -15,13 +15,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     private val _themeConfigFlow = MutableStateFlow(AppThemeConfig.FOLLOW_SYSTEM)
-    private val _calculationResultFlow = MutableStateFlow<CalculationResult?>(null)
+    private val _ironCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
+    private val _sodaCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
 
     override val themeConfigFlow: Flow<AppThemeConfig>
         get() = _themeConfigFlow
 
-    override val calculationResultFlow: Flow<CalculationResult?>
-        get() = _calculationResultFlow
+    override val ironCalculationResultFlow: Flow<CalculationResult?>
+        get() = _ironCalculationResultFlow
+
+    override val sodaCalculationResultFlow: Flow<CalculationResult?>
+        get() = _sodaCalculationResultFlow
 
     override suspend fun saveThemeConfig(themeConfig: AppThemeConfig) {
         _themeConfigFlow.value = themeConfig
@@ -31,12 +35,20 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
         return _themeConfigFlow.value
     }
 
-    override suspend fun saveCalculationResult(result: CalculationResult) {
-        _calculationResultFlow.value = result
+    override suspend fun saveIronCalculationResult(result: CalculationResult) {
+        _ironCalculationResultFlow.value = result
     }
 
-    override suspend fun getCalculationResult(): CalculationResult? {
-        return _calculationResultFlow.value
+    override suspend fun saveSodaCalculationResult(result: CalculationResult) {
+        _sodaCalculationResultFlow.value = result
+    }
+
+    override suspend fun getIronCalculationResult(): CalculationResult? {
+        return _ironCalculationResultFlow.value
+    }
+
+    override suspend fun getSodaCalculationResult(): CalculationResult? {
+        return _sodaCalculationResultFlow.value
     }
 }
 

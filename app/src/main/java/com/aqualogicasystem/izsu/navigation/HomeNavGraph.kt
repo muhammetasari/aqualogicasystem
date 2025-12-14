@@ -3,7 +3,8 @@ package com.aqualogicasystem.izsu.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.aqualogicasystem.izsu.ui.screens.CalculatorScreen
+import com.aqualogicasystem.izsu.ui.screens.calculation.CalculatorScreen
+import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.HomeScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
@@ -12,5 +13,8 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
     }
     composable(Screen.Calculator.route) {
         CalculatorScreen(navController = navController)
+    }
+    composable(Screen.SodaCalculator.route) {
+        SodaCalculatorScreen(navController = navController)
     }
 }

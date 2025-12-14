@@ -1,5 +1,6 @@
-package com.aqualogicasystem.izsu.ui.screens
+package com.aqualogicasystem.izsu.ui.screens.calculation
 
+import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
+import com.aqualogicasystem.izsu.ui.components.PumpSelectionCard
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModel
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
@@ -29,7 +31,7 @@ fun CalculatorScreen(
     navController: NavController,
     viewModel: CalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
-            LocalContext.current.applicationContext as android.app.Application
+            LocalContext.current.applicationContext as Application
         )
     )
 ) {
@@ -124,10 +126,18 @@ fun CalculatorScreen(
             OutlinedTextField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(CalculatorEvent.UpdateFlow(it)) },
-                label = { Text("Su Debisi (lt/sn)") },
+                label = { Text("Havalandırma Giriş Değeri (lt/sn)") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true
+            )
+
+            // Pompa Seçimi
+            PumpSelectionCard(
+                selectedPumps = state.selectedPumps,
+                onPumpToggle = { pumpNumber ->
+                    viewModel.onEvent(CalculatorEvent.TogglePump(pumpNumber))
+                }
             )
 
             // Kaydet Butonu

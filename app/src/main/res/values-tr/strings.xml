@@ -185,4 +185,14 @@
     <string name="bottom_bar_appointment">Randevu</string>
     <string name="bottom_bar_profile">Profil</string>
     <string name="bottom_bar_settings">Ayarlar</string>
+
+    <!-- Pump Selection -->
+    <string name="pump_selection_title">Çalışan Pompalar</string>
+    <string name="pump_1">Pompa 1</string>
+    <string name="pump_2">Pompa 2</string>
+    <string name="pump_3">Pompa 3</string>
+    <string name="pump_4">Pompa 4</string>
+    <string name="pump_5">Pompa 5</string>
+    <string name="active_pumps">Çalışan Pompalar</string>
+    <string name="no_pumps_selected">Pompa seçilmedi</string>
 </resources>

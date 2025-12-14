@@ -20,9 +20,14 @@ interface IUserPreferencesRepository {
     val themeConfigFlow: Flow<AppThemeConfig>
 
     /**
-     * Flow that emits the last saved calculation result.
+     * Flow that emits the last saved Demir-3 calculation result.
      */
-    val calculationResultFlow: Flow<CalculationResult?>
+    val ironCalculationResultFlow: Flow<CalculationResult?>
+
+    /**
+     * Flow that emits the last saved Soda calculation result.
+     */
+    val sodaCalculationResultFlow: Flow<CalculationResult?>
 
     /**
      * Saves the selected theme configuration.
@@ -40,17 +45,31 @@ interface IUserPreferencesRepository {
     suspend fun getThemeConfig(): AppThemeConfig
 
     /**
-     * Saves a calculation result.
+     * Saves a Demir-3 calculation result.
      *
-     * @param result The calculation result to save
+     * @param result The calculation result to save (includes active pump info)
      */
-    suspend fun saveCalculationResult(result: CalculationResult)
+    suspend fun saveIronCalculationResult(result: CalculationResult)
 
     /**
-     * Gets the last saved calculation result.
+     * Saves a Soda calculation result.
+     *
+     * @param result The calculation result to save (includes active pump info)
+     */
+    suspend fun saveSodaCalculationResult(result: CalculationResult)
+
+    /**
+     * Gets the last saved Demir-3 calculation result.
      *
      * @return The last saved calculation result or null
      */
-    suspend fun getCalculationResult(): CalculationResult?
+    suspend fun getIronCalculationResult(): CalculationResult?
+
+    /**
+     * Gets the last saved Soda calculation result.
+     *
+     * @return The last saved calculation result or null
+     */
+    suspend fun getSodaCalculationResult(): CalculationResult?
 }
 
