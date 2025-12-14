@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aqualogicasystem.izsu.data.model.AppThemeConfig
 import com.aqualogicasystem.izsu.data.model.CalculationResult
+import com.aqualogicasystem.izsu.data.model.ChlorineCalculationResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -46,6 +47,16 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         val SODA_CALC_HOURLY_AMOUNT = doublePreferencesKey("soda_calc_hourly_amount")
         val SODA_CALC_TIMESTAMP = longPreferencesKey("soda_calc_timestamp")
         val SODA_CALC_ACTIVE_PUMPS = stringPreferencesKey("soda_calc_active_pumps")
+
+        // Chlorine hesaplama sonuçları (3 nokta)
+        val CHLORINE_PRE_DOSAGE = doublePreferencesKey("chlorine_pre_dosage")
+        val CHLORINE_CONTACT_DOSAGE = doublePreferencesKey("chlorine_contact_dosage")
+        val CHLORINE_FINAL_DOSAGE = doublePreferencesKey("chlorine_final_dosage")
+        val CHLORINE_PRE_TARGET_PPM = doublePreferencesKey("chlorine_pre_target_ppm")
+        val CHLORINE_CONTACT_TARGET_PPM = doublePreferencesKey("chlorine_contact_target_ppm")
+        val CHLORINE_FINAL_TARGET_PPM = doublePreferencesKey("chlorine_final_target_ppm")
+        val CHLORINE_CALC_TIMESTAMP = longPreferencesKey("chlorine_calc_timestamp")
+        val CHLORINE_CALC_ACTIVE_PUMPS = stringPreferencesKey("chlorine_calc_active_pumps")
     }
 
     /**
@@ -94,6 +105,36 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
+                )
+            } else {
+                null
+            }
+        }
+
+    /**
+     * Flow that emits the last saved Chlorine calculation result.
+     */
+    override val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?> = context.dataStore.data
+        .map { preferences ->
+            val preDosage = preferences[PreferencesKeys.CHLORINE_PRE_DOSAGE]
+            val contactDosage = preferences[PreferencesKeys.CHLORINE_CONTACT_DOSAGE]
+            val finalDosage = preferences[PreferencesKeys.CHLORINE_FINAL_DOSAGE]
+            val preTargetPpm = preferences[PreferencesKeys.CHLORINE_PRE_TARGET_PPM]
+            val contactTargetPpm = preferences[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM]
+            val finalTargetPpm = preferences[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM]
+            val timestamp = preferences[PreferencesKeys.CHLORINE_CALC_TIMESTAMP]
+            val activePumpsString = preferences[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS]
+
+            if (preDosage != null && contactDosage != null && finalDosage != null && timestamp != null) {
+                ChlorineCalculationResult(
+                    preChlorineDosage = preDosage,
+                    contactTankDosage = contactDosage,
+                    finalChlorineDosage = finalDosage,
+                    preTargetPpm = preTargetPpm ?: 0.0,
+                    contactTargetPpm = contactTargetPpm ?: 0.0,
+                    finalTargetPpm = finalTargetPpm ?: 0.0,
                     timestamp = timestamp,
                     activePumps = parsePumpSet(activePumpsString)
                 )
@@ -200,6 +241,59 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
+                    timestamp = timestamp,
+                    activePumps = parsePumpSet(activePumpsString)
+                )
+            } else {
+                null
+            }
+        }.collect { result = it }
+        return result
+    }
+
+    /**
+     * Saves a Chlorine calculation result to DataStore.
+     *
+     * @param result The chlorine calculation result to save
+     */
+    override suspend fun saveChlorineCalculationResult(result: ChlorineCalculationResult) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.CHLORINE_PRE_DOSAGE] = result.preChlorineDosage
+            preferences[PreferencesKeys.CHLORINE_CONTACT_DOSAGE] = result.contactTankDosage
+            preferences[PreferencesKeys.CHLORINE_FINAL_DOSAGE] = result.finalChlorineDosage
+            preferences[PreferencesKeys.CHLORINE_PRE_TARGET_PPM] = result.preTargetPpm
+            preferences[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM] = result.contactTargetPpm
+            preferences[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM] = result.finalTargetPpm
+            preferences[PreferencesKeys.CHLORINE_CALC_TIMESTAMP] = result.timestamp
+            preferences[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS] = formatPumpSet(result.activePumps)
+        }
+    }
+
+    /**
+     * Gets the last saved Chlorine calculation result.
+     *
+     * @return The last saved calculation result or null
+     */
+    override suspend fun getChlorineCalculationResult(): ChlorineCalculationResult? {
+        var result: ChlorineCalculationResult? = null
+        context.dataStore.data.map { prefs ->
+            val preDosage = prefs[PreferencesKeys.CHLORINE_PRE_DOSAGE]
+            val contactDosage = prefs[PreferencesKeys.CHLORINE_CONTACT_DOSAGE]
+            val finalDosage = prefs[PreferencesKeys.CHLORINE_FINAL_DOSAGE]
+            val preTargetPpm = prefs[PreferencesKeys.CHLORINE_PRE_TARGET_PPM]
+            val contactTargetPpm = prefs[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM]
+            val finalTargetPpm = prefs[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM]
+            val timestamp = prefs[PreferencesKeys.CHLORINE_CALC_TIMESTAMP]
+            val activePumpsString = prefs[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS]
+
+            if (preDosage != null && contactDosage != null && finalDosage != null && timestamp != null) {
+                ChlorineCalculationResult(
+                    preChlorineDosage = preDosage,
+                    contactTankDosage = contactDosage,
+                    finalChlorineDosage = finalDosage,
+                    preTargetPpm = preTargetPpm ?: 0.0,
+                    contactTargetPpm = contactTargetPpm ?: 0.0,
+                    finalTargetPpm = finalTargetPpm ?: 0.0,
                     timestamp = timestamp,
                     activePumps = parsePumpSet(activePumpsString)
                 )

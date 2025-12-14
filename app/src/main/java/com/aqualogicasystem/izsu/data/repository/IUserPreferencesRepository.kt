@@ -2,6 +2,7 @@ package com.aqualogicasystem.izsu.data.repository
 
 import com.aqualogicasystem.izsu.data.model.AppThemeConfig
 import com.aqualogicasystem.izsu.data.model.CalculationResult
+import com.aqualogicasystem.izsu.data.model.ChlorineCalculationResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -28,6 +29,11 @@ interface IUserPreferencesRepository {
      * Flow that emits the last saved Soda calculation result.
      */
     val sodaCalculationResultFlow: Flow<CalculationResult?>
+
+    /**
+     * Flow that emits the last saved Chlorine calculation result.
+     */
+    val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?>
 
     /**
      * Saves the selected theme configuration.
@@ -71,5 +77,19 @@ interface IUserPreferencesRepository {
      * @return The last saved calculation result or null
      */
     suspend fun getSodaCalculationResult(): CalculationResult?
+
+    /**
+     * Saves a Chlorine calculation result.
+     *
+     * @param result The chlorine calculation result to save (includes 3 points and active pump info)
+     */
+    suspend fun saveChlorineCalculationResult(result: ChlorineCalculationResult)
+
+    /**
+     * Gets the last saved Chlorine calculation result.
+     *
+     * @return The last saved calculation result or null
+     */
+    suspend fun getChlorineCalculationResult(): ChlorineCalculationResult?
 }
 

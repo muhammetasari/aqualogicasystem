@@ -51,7 +51,7 @@ fun CalculatorScreen(
         title = "Demir-3 Dozaj Hesaplayıcı",
         showTopBar = true,
         showBackButton = true,
-        showBottomBar = false
+        showBottomBar = true
     ) { paddingValues ->
         Column(
             modifier = Modifier

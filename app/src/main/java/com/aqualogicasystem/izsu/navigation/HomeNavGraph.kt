@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.aqualogicasystem.izsu.ui.screens.calculation.CalculatorScreen
+import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.HomeScreen
 
@@ -16,5 +17,8 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
     }
     composable(Screen.SodaCalculator.route) {
         SodaCalculatorScreen(navController = navController)
+    }
+    composable(Screen.ChlorineCalculator.route) {
+        ChlorineCalculatorScreen(navController = navController)
     }
 }

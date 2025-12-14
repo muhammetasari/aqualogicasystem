@@ -1,6 +1,8 @@
 package com.aqualogicasystem.izsu.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CheckCircle
@@ -17,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.aqualogicasystem.izsu.R
 import com.aqualogicasystem.izsu.data.model.CalculationResult
+import com.aqualogicasystem.izsu.data.model.ChlorineCalculationResult
 import com.aqualogicasystem.izsu.data.repository.UserPreferencesRepository
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
@@ -34,6 +37,7 @@ fun HomeScreen(
     val repository = remember { UserPreferencesRepository.getInstance(context) }
     val ironCalculationResult by repository.ironCalculationResultFlow.collectAsState(initial = null)
     val sodaCalculationResult by repository.sodaCalculationResultFlow.collectAsState(initial = null)
+    val chlorineCalculationResult by repository.chlorineCalculationResultFlow.collectAsState(initial = null)
 
     StandardLayout(
         navController = navController,
@@ -44,11 +48,15 @@ fun HomeScreen(
             modifier = Modifier.padding(paddingValues),
             ironCalculationResult = ironCalculationResult,
             sodaCalculationResult = sodaCalculationResult,
+            chlorineCalculationResult = chlorineCalculationResult,
             onNavigateToCalculator = {
                 navController.navigate(Screen.Calculator.route)
             },
             onNavigateToSodaCalculator = {
                 navController.navigate(Screen.SodaCalculator.route)
+            },
+            onNavigateToChlorineCalculator = {
+                navController.navigate(Screen.ChlorineCalculator.route)
             }
         )
     }
@@ -59,14 +67,17 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     ironCalculationResult: CalculationResult? = null,
     sodaCalculationResult: CalculationResult? = null,
+    chlorineCalculationResult: ChlorineCalculationResult? = null,
     onNavigateToCalculator: () -> Unit = {},
-    onNavigateToSodaCalculator: () -> Unit = {}
+    onNavigateToSodaCalculator: () -> Unit = {},
+    onNavigateToChlorineCalculator: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -74,7 +85,7 @@ fun HomeContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Dozaj Hesaplayıcı Kartı
         Card(
@@ -87,8 +98,8 @@ fun HomeContent(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -97,12 +108,12 @@ fun HomeContent(
                     Icon(
                         imageVector = Icons.Default.Calculate,
                         contentDescription = null,
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(28.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
                         text = "Demir-3 Dozaj Hesaplaması",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -208,8 +219,8 @@ fun HomeContent(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -218,12 +229,12 @@ fun HomeContent(
                     Icon(
                         imageVector = Icons.Default.Calculate,
                         contentDescription = null,
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(28.dp),
                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
                         text = "Soda Dozaj Hesaplaması",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -316,6 +327,195 @@ fun HomeContent(
                     )
                 }
             }
+        }
+
+        // Klor Dozaj Hesaplayıcı Kartı
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onNavigateToChlorineCalculator,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Calculate,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                    Text(
+                        text = "Klor Dozaj Hesaplaması",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                }
+
+                if (chlorineCalculationResult != null) {
+                    HorizontalDivider()
+
+                    // 3 Nokta Sonuçları - Sekmeli Gösterim
+                    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex,
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ) {
+                        Tab(
+                            selected = selectedTabIndex == 0,
+                            onClick = { selectedTabIndex = 0 },
+                            text = { Text("Ön Klorlama", style = MaterialTheme.typography.labelMedium) }
+                        )
+                        Tab(
+                            selected = selectedTabIndex == 1,
+                            onClick = { selectedTabIndex = 1 },
+                            text = { Text("Kontak Tankı", style = MaterialTheme.typography.labelMedium) }
+                        )
+                        Tab(
+                            selected = selectedTabIndex == 2,
+                            onClick = { selectedTabIndex = 2 },
+                            text = { Text("Son Klorlama", style = MaterialTheme.typography.labelMedium) }
+                        )
+                    }
+
+                    // Sekme İçeriği
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        when (selectedTabIndex) {
+                            0 -> ChlorineResultDetail(
+                                ppm = chlorineCalculationResult.preTargetPpm,
+                                dosage = chlorineCalculationResult.preChlorineDosage
+                            )
+                            1 -> ChlorineResultDetail(
+                                ppm = chlorineCalculationResult.contactTargetPpm,
+                                dosage = chlorineCalculationResult.contactTankDosage
+                            )
+                            2 -> ChlorineResultDetail(
+                                ppm = chlorineCalculationResult.finalTargetPpm,
+                                dosage = chlorineCalculationResult.finalChlorineDosage
+                            )
+                        }
+                    }
+
+                    // Tarih ve Saat
+                    Text(
+                        text = "Kayıt: ${formatDate(chlorineCalculationResult.timestamp)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
+                    )
+
+                    // Aktif Pompalar
+                    if (chlorineCalculationResult.activePumps.isNotEmpty()) {
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.active_pumps) + ":",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                            chlorineCalculationResult.activePumps.sorted().forEach { pumpNumber ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                        tint = MaterialTheme.colorScheme.tertiary
+                                    )
+                                    Text(
+                                        text = pumpNumber.toString(),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Text(
+                        text = "Henüz kayıtlı hesaplama yok",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChlorineResultDetail(
+    ppm: Double,
+    dosage: Double
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "Hedef PPM",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+            )
+            Text(
+                text = String.format(java.util.Locale.US, "%.2f", ppm),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+            Text(
+                text = "ppm",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "Dozaj",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+            )
+            Text(
+                text = String.format(java.util.Locale.US, "%.2f", dosage),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+            Text(
+                text = "kg/saat",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
+            )
         }
     }
 }

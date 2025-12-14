@@ -2,6 +2,7 @@ package com.aqualogicasystem.izsu.data.repository.fake
 
 import com.aqualogicasystem.izsu.data.model.AppThemeConfig
 import com.aqualogicasystem.izsu.data.model.CalculationResult
+import com.aqualogicasystem.izsu.data.model.ChlorineCalculationResult
 import com.aqualogicasystem.izsu.data.repository.IUserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
     private val _themeConfigFlow = MutableStateFlow(AppThemeConfig.FOLLOW_SYSTEM)
     private val _ironCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
     private val _sodaCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
+    private val _chlorineCalculationResultFlow = MutableStateFlow<ChlorineCalculationResult?>(null)
 
     override val themeConfigFlow: Flow<AppThemeConfig>
         get() = _themeConfigFlow
@@ -26,6 +28,9 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override val sodaCalculationResultFlow: Flow<CalculationResult?>
         get() = _sodaCalculationResultFlow
+
+    override val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?>
+        get() = _chlorineCalculationResultFlow
 
     override suspend fun saveThemeConfig(themeConfig: AppThemeConfig) {
         _themeConfigFlow.value = themeConfig
@@ -49,6 +54,14 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override suspend fun getSodaCalculationResult(): CalculationResult? {
         return _sodaCalculationResultFlow.value
+    }
+
+    override suspend fun saveChlorineCalculationResult(result: ChlorineCalculationResult) {
+        _chlorineCalculationResultFlow.value = result
+    }
+
+    override suspend fun getChlorineCalculationResult(): ChlorineCalculationResult? {
+        return _chlorineCalculationResultFlow.value
     }
 }
 

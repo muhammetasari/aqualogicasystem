@@ -51,7 +51,7 @@ fun SodaCalculatorScreen(
         title = "Soda Dozaj Hesaplayıcı",
         showTopBar = true,
         showBackButton = true,
-        showBottomBar = false
+        showBottomBar = true
     ) { paddingValues ->
         Column(
             modifier = Modifier
