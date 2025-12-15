@@ -68,7 +68,7 @@ fun IronCalculatorScreen(
             )
 
             CalculatorResultCard(
-                leftLabel = "1 Litre Dolum Süresi",
+                leftLabel = "Kalibrasyon Süresi",
                 leftValue = state.calculatedTargetSeconds,
                 leftUnit = "sn",
                 rightLabel = "Toplam Miktar",
@@ -76,9 +76,10 @@ fun IronCalculatorScreen(
                 rightUnit = "kg/saat",
                 valueFormat = "%.1f"
             )
+
             HorizontalDivider()
             Text(
-                text = "Tesis Su Giriş Değeri",
+                text = "Tesis Su Giriş Debisi (lt/sn) ",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -87,7 +88,7 @@ fun IronCalculatorScreen(
             CalculatorInputField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateFlow(it)) },
-                label = "Su Debisi (lt/sn)",
+                label = "Tesis Su Giriş Debisi (lt/sn)",
                 keyboardType = KeyboardType.Number
             )
 

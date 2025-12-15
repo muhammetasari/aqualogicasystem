@@ -12,6 +12,7 @@ import com.aqualogicasystem.izsu.data.model.AppThemeConfig
 import com.aqualogicasystem.izsu.data.model.CalculationResult
 import com.aqualogicasystem.izsu.data.model.ChlorineCalculationResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -59,6 +60,12 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         val CHLORINE_CONTACT_TIMESTAMP = longPreferencesKey("chlorine_contact_timestamp")
         val CHLORINE_FINAL_TIMESTAMP = longPreferencesKey("chlorine_final_timestamp")
         val CHLORINE_CALC_ACTIVE_PUMPS = stringPreferencesKey("chlorine_calc_active_pumps")
+
+        // Kimyasal dozaj ayarları
+        val IRON_TARGET_PPM = doublePreferencesKey("iron_target_ppm")
+        val IRON_CHEMICAL_FACTOR = doublePreferencesKey("iron_chemical_factor")
+        val SODA_TARGET_PPM = doublePreferencesKey("soda_target_ppm")
+        val SODA_CHEMICAL_FACTOR = doublePreferencesKey("soda_chemical_factor")
     }
 
     /**
@@ -332,6 +339,78 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         } catch (_: Exception) {
             emptySet()
         }
+    }
+
+    /**
+     * Flow that emits Iron-3 chemical settings (PPM and Factor).
+     */
+    override val ironChemicalSettingsFlow: Flow<Pair<Double, Double>> = context.dataStore.data
+        .map { preferences ->
+            val ppm = preferences[PreferencesKeys.IRON_TARGET_PPM] ?: 21.0
+            val factor = preferences[PreferencesKeys.IRON_CHEMICAL_FACTOR] ?: 594.0
+            Pair(ppm, factor)
+        }
+
+    /**
+     * Flow that emits Soda chemical settings (PPM and Factor).
+     */
+    override val sodaChemicalSettingsFlow: Flow<Pair<Double, Double>> = context.dataStore.data
+        .map { preferences ->
+            val ppm = preferences[PreferencesKeys.SODA_TARGET_PPM] ?: 7.5
+            val factor = preferences[PreferencesKeys.SODA_CHEMICAL_FACTOR] ?: 750.0
+            Pair(ppm, factor)
+        }
+
+    /**
+     * Saves Iron-3 chemical settings.
+     */
+    override suspend fun saveIronChemicalSettings(targetPpm: Double, chemicalFactor: Double) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.IRON_TARGET_PPM] = targetPpm
+            preferences[PreferencesKeys.IRON_CHEMICAL_FACTOR] = chemicalFactor
+        }
+    }
+
+    /**
+     * Saves Soda chemical settings.
+     */
+    override suspend fun saveSodaChemicalSettings(targetPpm: Double, chemicalFactor: Double) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SODA_TARGET_PPM] = targetPpm
+            preferences[PreferencesKeys.SODA_CHEMICAL_FACTOR] = chemicalFactor
+        }
+    }
+
+    /**
+     * Gets Iron-3 chemical settings.
+     */
+    override suspend fun getIronChemicalSettings(): Pair<Double, Double>? {
+        val preferences = context.dataStore.data.map { prefs ->
+            val ppm = prefs[PreferencesKeys.IRON_TARGET_PPM]
+            val factor = prefs[PreferencesKeys.IRON_CHEMICAL_FACTOR]
+            if (ppm != null && factor != null) {
+                Pair(ppm, factor)
+            } else {
+                null
+            }
+        }
+        return preferences.first()
+    }
+
+    /**
+     * Gets Soda chemical settings.
+     */
+    override suspend fun getSodaChemicalSettings(): Pair<Double, Double>? {
+        val preferences = context.dataStore.data.map { prefs ->
+            val ppm = prefs[PreferencesKeys.SODA_TARGET_PPM]
+            val factor = prefs[PreferencesKeys.SODA_CHEMICAL_FACTOR]
+            if (ppm != null && factor != null) {
+                Pair(ppm, factor)
+            } else {
+                null
+            }
+        }
+        return preferences.first()
     }
 
     companion object {

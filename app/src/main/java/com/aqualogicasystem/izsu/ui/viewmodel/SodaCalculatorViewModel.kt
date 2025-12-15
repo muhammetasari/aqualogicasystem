@@ -57,6 +57,22 @@ class SodaCalculatorViewModel(
     private val _uiState = MutableStateFlow(SodaCalculatorUiState())
     val uiState: StateFlow<SodaCalculatorUiState> = _uiState.asStateFlow()
 
+    init {
+        // Load saved chemical settings from repository
+        viewModelScope.launch {
+            repository.sodaChemicalSettingsFlow.collect { (ppm, factor) ->
+                _uiState.update { currentState ->
+                    calculateResults(
+                        currentState.copy(
+                            targetPpm = ppm.toString(),
+                            chemicalFactor = factor.toString()
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * Kullanıcı etkileşimlerini işler ve state'i günceller.
      *

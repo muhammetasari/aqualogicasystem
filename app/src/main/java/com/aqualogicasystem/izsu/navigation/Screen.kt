@@ -13,6 +13,7 @@ sealed class Screen(val route: String) {
     object ProfileDetail : Screen("profile_detail")
     object ThemeDemo : Screen("theme_demo")
     object Settings : Screen("settings")
+    object ChemicalSettings : Screen("chemical_settings")
     object Calculator : Screen("calculator")
     object SodaCalculator : Screen("soda_calculator")
     object ChlorineCalculator : Screen("chlorine_calculator/{tab}") {

@@ -199,4 +199,18 @@
     <string name="pump_5">Pump 5</string>
     <string name="active_pumps">Active Pumps</string>
     <string name="no_pumps_selected">No pumps selected</string>
+
+    <!-- Chemical Settings -->
+    <string name="chemical_settings">Chemical Dosage Settings</string>
+    <string name="chemical_settings_description">Configure default PPM and chemical factor values</string>
+    <string name="iron3_settings">Iron-3 (FeCl3) Settings</string>
+    <string name="soda_settings">Soda (NaOH) Settings</string>
+    <string name="target_ppm">Target PPM</string>
+    <string name="chemical_factor">Chemical Factor (g/L)</string>
+    <string name="reset_to_default">Reset to Default</string>
+    <string name="save_settings">Save Settings</string>
+    <string name="settings_saved">Settings saved successfully</string>
+    <string name="iron3_section">Iron-3 Dosage Parameters</string>
+    <string name="soda_section">Soda Dosage Parameters</string>
+    <string name="default_value">Default: %s</string>
 </resources>

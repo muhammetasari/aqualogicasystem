@@ -55,6 +55,22 @@ class IronCalculatorViewModel(
     private val _uiState = MutableStateFlow(IronCalculatorUiState())
     val uiState: StateFlow<IronCalculatorUiState> = _uiState.asStateFlow()
 
+    init {
+        // Load saved chemical settings from repository
+        viewModelScope.launch {
+            repository.ironChemicalSettingsFlow.collect { (ppm, factor) ->
+                _uiState.update { currentState ->
+                    calculateResults(
+                        currentState.copy(
+                            targetPpm = ppm.toString(),
+                            chemicalFactor = factor.toString()
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * Kullanıcı etkileşimlerini işler ve state'i günceller.
      *

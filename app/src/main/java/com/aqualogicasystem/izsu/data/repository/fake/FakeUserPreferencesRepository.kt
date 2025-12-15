@@ -19,6 +19,8 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
     private val _ironCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
     private val _sodaCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
     private val _chlorineCalculationResultFlow = MutableStateFlow<ChlorineCalculationResult?>(null)
+    private val _ironChemicalSettingsFlow = MutableStateFlow(Pair(21.0, 594.0))
+    private val _sodaChemicalSettingsFlow = MutableStateFlow(Pair(7.5, 750.0))
 
     override val themeConfigFlow: Flow<AppThemeConfig>
         get() = _themeConfigFlow
@@ -31,6 +33,12 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?>
         get() = _chlorineCalculationResultFlow
+
+    override val ironChemicalSettingsFlow: Flow<Pair<Double, Double>>
+        get() = _ironChemicalSettingsFlow
+
+    override val sodaChemicalSettingsFlow: Flow<Pair<Double, Double>>
+        get() = _sodaChemicalSettingsFlow
 
     override suspend fun saveThemeConfig(themeConfig: AppThemeConfig) {
         _themeConfigFlow.value = themeConfig
@@ -62,6 +70,22 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override suspend fun getChlorineCalculationResult(): ChlorineCalculationResult? {
         return _chlorineCalculationResultFlow.value
+    }
+
+    override suspend fun saveIronChemicalSettings(targetPpm: Double, chemicalFactor: Double) {
+        _ironChemicalSettingsFlow.value = Pair(targetPpm, chemicalFactor)
+    }
+
+    override suspend fun saveSodaChemicalSettings(targetPpm: Double, chemicalFactor: Double) {
+        _sodaChemicalSettingsFlow.value = Pair(targetPpm, chemicalFactor)
+    }
+
+    override suspend fun getIronChemicalSettings(): Pair<Double, Double>? {
+        return _ironChemicalSettingsFlow.value
+    }
+
+    override suspend fun getSodaChemicalSettings(): Pair<Double, Double>? {
+        return _sodaChemicalSettingsFlow.value
     }
 }
 

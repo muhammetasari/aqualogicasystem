@@ -127,6 +127,13 @@ fun SettingsScreenContent(
                     )
 
                     ListMenuItem(
+                        icon = Icons.Default.Science,
+                        title = stringResource(id = R.string.chemical_settings),
+                        subtitle = stringResource(id = R.string.chemical_settings_description),
+                        onClick = { navController.navigate(com.aqualogicasystem.izsu.navigation.Screen.ChemicalSettings.route) }
+                    )
+
+                    ListMenuItem(
                         icon = Icons.Outlined.Notifications,
                         title = stringResource(id = R.string.notification_settings),
                         onClick = { onShowPermissionsDialog(true) }

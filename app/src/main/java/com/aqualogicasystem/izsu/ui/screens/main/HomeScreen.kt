@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -127,7 +127,7 @@ fun HomeContent(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        imageVector = Icons.Default.ArrowRightAlt,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -215,7 +215,7 @@ fun HomeContent(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        imageVector = Icons.Default.ArrowRightAlt,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -320,7 +320,7 @@ fun HomeContent(
                     // Kontak Tankı
                     ChlorineDetailCard(
                         modifier = Modifier.weight(1f),
-                        title = "Kontak Klor",
+                        title = "Kontak Tank Klor",
                         ppm = chlorineCalculationResult?.contactTargetPpm ?: 0.0,
                         dosage = chlorineCalculationResult?.contactTankDosage ?: 0.0,
                         timestamp = chlorineCalculationResult?.contactTimestamp,

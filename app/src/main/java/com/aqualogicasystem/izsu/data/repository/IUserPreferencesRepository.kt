@@ -91,5 +91,45 @@ interface IUserPreferencesRepository {
      * @return The last saved calculation result or null
      */
     suspend fun getChlorineCalculationResult(): ChlorineCalculationResult?
+
+    /**
+     * Flow that emits Iron-3 chemical settings (PPM and Factor).
+     */
+    val ironChemicalSettingsFlow: Flow<Pair<Double, Double>>
+
+    /**
+     * Flow that emits Soda chemical settings (PPM and Factor).
+     */
+    val sodaChemicalSettingsFlow: Flow<Pair<Double, Double>>
+
+    /**
+     * Saves Iron-3 chemical settings.
+     *
+     * @param targetPpm Target PPM value for Iron-3
+     * @param chemicalFactor Chemical factor (g/L) for Iron-3
+     */
+    suspend fun saveIronChemicalSettings(targetPpm: Double, chemicalFactor: Double)
+
+    /**
+     * Saves Soda chemical settings.
+     *
+     * @param targetPpm Target PPM value for Soda
+     * @param chemicalFactor Chemical factor (g/L) for Soda
+     */
+    suspend fun saveSodaChemicalSettings(targetPpm: Double, chemicalFactor: Double)
+
+    /**
+     * Gets Iron-3 chemical settings.
+     *
+     * @return Pair of (targetPpm, chemicalFactor) or null if not set
+     */
+    suspend fun getIronChemicalSettings(): Pair<Double, Double>?
+
+    /**
+     * Gets Soda chemical settings.
+     *
+     * @return Pair of (targetPpm, chemicalFactor) or null if not set
+     */
+    suspend fun getSodaChemicalSettings(): Pair<Double, Double>?
 }
 

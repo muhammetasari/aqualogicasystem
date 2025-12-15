@@ -9,6 +9,7 @@ import com.aqualogicasystem.izsu.ui.screens.main.HomeScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.IronCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
+import com.aqualogicasystem.izsu.ui.screens.main.ChemicalSettingsScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
     // Home Screen
@@ -18,6 +19,11 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 
     // Bottom bar'dan erişilen calculator ekranları
     composable(route = Screen.Iron3.route) {
+        IronCalculatorScreen(navController = navController)
+    }
+
+    // Calculator route (HomeScreen'den erişim için, Iron3 ile aynı ekran)
+    composable(route = Screen.Calculator.route) {
         IronCalculatorScreen(navController = navController)
     }
 
@@ -47,5 +53,10 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
             navController = navController,
             initialTab = tab
         )
+    }
+
+    // Chemical Settings Screen
+    composable(route = Screen.ChemicalSettings.route) {
+        ChemicalSettingsScreen(navController = navController)
     }
 }

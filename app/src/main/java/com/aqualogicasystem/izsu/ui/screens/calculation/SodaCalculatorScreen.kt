@@ -68,7 +68,7 @@ fun SodaCalculatorScreen(
             )
 
             CalculatorResultCard(
-                leftLabel = "1 Litre Dolum Süresi",
+                leftLabel = "Kalibrasyon Süresi",
                 leftValue = state.calculatedTargetSeconds,
                 leftUnit = "sn",
                 rightLabel = "Toplam Miktar",
@@ -77,9 +77,10 @@ fun SodaCalculatorScreen(
                 valueFormat = "%.1f"
             )
 
+
             HorizontalDivider()
             Text(
-                text = "Giriş Değerleri",
+                text = "Filtre Çıkış Debisi (lt/sn)",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -88,7 +89,7 @@ fun SodaCalculatorScreen(
             CalculatorInputField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateFlow(it)) },
-                label = "Filtre Çıkış Değeri (lt/sn)",
+                label = "Filtre Çıkış Debisi (lt/sn)",
                 keyboardType = KeyboardType.Number
             )
 

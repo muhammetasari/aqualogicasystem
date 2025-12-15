@@ -196,4 +196,18 @@
     <string name="pump_5">Pompa 5</string>
     <string name="active_pumps">Çalışan Pompalar</string>
     <string name="no_pumps_selected">Pompa seçilmedi</string>
+
+    <!-- Chemical Settings -->
+    <string name="chemical_settings">Kimyasal Dozaj Ayarları</string>
+    <string name="chemical_settings_description">Varsayılan PPM ve kimyasal faktör değerlerini yapılandırın</string>
+    <string name="iron3_settings">Demir-3 (FeCl3) Ayarları</string>
+    <string name="soda_settings">Soda (NaOH) Ayarları</string>
+    <string name="target_ppm">Hedef PPM</string>
+    <string name="chemical_factor">Kimyasal Faktörü (g/L)</string>
+    <string name="reset_to_default">Varsayılana Sıfırla</string>
+    <string name="save_settings">Ayarları Kaydet</string>
+    <string name="settings_saved">Ayarlar başarıyla kaydedildi</string>
+    <string name="iron3_section">Demir-3 Dozaj Parametreleri</string>
+    <string name="soda_section">Soda Dozaj Parametreleri</string>
+    <string name="default_value">Varsayılan: %s</string>
 </resources>
