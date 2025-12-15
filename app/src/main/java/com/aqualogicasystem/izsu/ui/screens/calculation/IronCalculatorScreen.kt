@@ -87,7 +87,7 @@ fun IronCalculatorScreen(
             CalculatorInputField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateFlow(it)) },
-                label = "Su Debisi (m³/sn)",
+                label = "Su Debisi (lt/sn)",
                 keyboardType = KeyboardType.Number
             )
 

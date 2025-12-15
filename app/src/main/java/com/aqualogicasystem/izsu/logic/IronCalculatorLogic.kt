@@ -28,7 +28,7 @@ object IronCalculatorLogic {
      * Demir giderme için varsayılan kimyasal faktörü (g/L).
      * FeCl3 (Demir-3 Klorür) kimyasalının yoğunluk faktörü.
      */
-    const val DEFAULT_CHEMICAL_FACTOR = 549.0
+    const val DEFAULT_CHEMICAL_FACTOR = 594.0
 
     /**
      * Minimum su debisi limiti (m³/sn).
