@@ -124,6 +124,10 @@ class ChlorineCalculatorViewModel(
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
+                val currentTime = System.currentTimeMillis()
+
+                // Her nokta için kendi timestamp'i ile kaydet
+                // Eğer bir noktanın dozajı 0'dan büyükse o noktanın timestamp'ini güncelle
                 val result = ChlorineCalculationResult(
                     preChlorineDosage = currentState.calculatedPreDosage,
                     contactTankDosage = currentState.calculatedContactDosage,
@@ -131,7 +135,9 @@ class ChlorineCalculatorViewModel(
                     preTargetPpm = currentState.calculatedPreTargetPpm,
                     contactTargetPpm = currentState.targetTankPpm.toDoubleOrNull() ?: 0.0,
                     finalTargetPpm = currentState.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
-                    timestamp = System.currentTimeMillis()
+                    preTimestamp = if (currentState.calculatedPreDosage > 0.0) currentTime else null,
+                    contactTimestamp = if (currentState.calculatedContactDosage > 0.0) currentTime else null,
+                    finalTimestamp = if (currentState.calculatedFinalDosage > 0.0) currentTime else null
                 )
 
                 repository.saveChlorineCalculationResult(result)

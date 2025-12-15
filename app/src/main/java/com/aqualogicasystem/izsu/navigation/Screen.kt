@@ -15,5 +15,7 @@ sealed class Screen(val route: String) {
     object Settings : Screen("settings")
     object Calculator : Screen("calculator")
     object SodaCalculator : Screen("soda_calculator")
-    object ChlorineCalculator : Screen("chlorine_calculator")
+    object ChlorineCalculator : Screen("chlorine_calculator/{tab}") {
+        fun createRoute(tab: Int = 0) = "chlorine_calculator/$tab"
+    }
 }

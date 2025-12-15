@@ -55,7 +55,9 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         val CHLORINE_PRE_TARGET_PPM = doublePreferencesKey("chlorine_pre_target_ppm")
         val CHLORINE_CONTACT_TARGET_PPM = doublePreferencesKey("chlorine_contact_target_ppm")
         val CHLORINE_FINAL_TARGET_PPM = doublePreferencesKey("chlorine_final_target_ppm")
-        val CHLORINE_CALC_TIMESTAMP = longPreferencesKey("chlorine_calc_timestamp")
+        val CHLORINE_PRE_TIMESTAMP = longPreferencesKey("chlorine_pre_timestamp")
+        val CHLORINE_CONTACT_TIMESTAMP = longPreferencesKey("chlorine_contact_timestamp")
+        val CHLORINE_FINAL_TIMESTAMP = longPreferencesKey("chlorine_final_timestamp")
         val CHLORINE_CALC_ACTIVE_PUMPS = stringPreferencesKey("chlorine_calc_active_pumps")
     }
 
@@ -122,18 +124,21 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val preTargetPpm = preferences[PreferencesKeys.CHLORINE_PRE_TARGET_PPM]
             val contactTargetPpm = preferences[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM]
             val finalTargetPpm = preferences[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM]
-            val timestamp = preferences[PreferencesKeys.CHLORINE_CALC_TIMESTAMP]
-            val activePumpsString = preferences[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS]
+            val preTimestamp = preferences[PreferencesKeys.CHLORINE_PRE_TIMESTAMP]
+            val contactTimestamp = preferences[PreferencesKeys.CHLORINE_CONTACT_TIMESTAMP]
+            val finalTimestamp = preferences[PreferencesKeys.CHLORINE_FINAL_TIMESTAMP]
 
-            if (preDosage != null && contactDosage != null && finalDosage != null && timestamp != null) {
+            if (preDosage != null || contactDosage != null || finalDosage != null) {
                 ChlorineCalculationResult(
-                    preChlorineDosage = preDosage,
-                    contactTankDosage = contactDosage,
-                    finalChlorineDosage = finalDosage,
+                    preChlorineDosage = preDosage ?: 0.0,
+                    contactTankDosage = contactDosage ?: 0.0,
+                    finalChlorineDosage = finalDosage ?: 0.0,
                     preTargetPpm = preTargetPpm ?: 0.0,
                     contactTargetPpm = contactTargetPpm ?: 0.0,
                     finalTargetPpm = finalTargetPpm ?: 0.0,
-                    timestamp = timestamp,
+                    preTimestamp = preTimestamp,
+                    contactTimestamp = contactTimestamp,
+                    finalTimestamp = finalTimestamp
                 )
             } else {
                 null
@@ -257,7 +262,9 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.CHLORINE_PRE_TARGET_PPM] = result.preTargetPpm
             preferences[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM] = result.contactTargetPpm
             preferences[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM] = result.finalTargetPpm
-            preferences[PreferencesKeys.CHLORINE_CALC_TIMESTAMP] = result.timestamp
+            result.preTimestamp?.let { preferences[PreferencesKeys.CHLORINE_PRE_TIMESTAMP] = it }
+            result.contactTimestamp?.let { preferences[PreferencesKeys.CHLORINE_CONTACT_TIMESTAMP] = it }
+            result.finalTimestamp?.let { preferences[PreferencesKeys.CHLORINE_FINAL_TIMESTAMP] = it }
         }
     }
 
@@ -275,18 +282,22 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val preTargetPpm = prefs[PreferencesKeys.CHLORINE_PRE_TARGET_PPM]
             val contactTargetPpm = prefs[PreferencesKeys.CHLORINE_CONTACT_TARGET_PPM]
             val finalTargetPpm = prefs[PreferencesKeys.CHLORINE_FINAL_TARGET_PPM]
-            val timestamp = prefs[PreferencesKeys.CHLORINE_CALC_TIMESTAMP]
-            val activePumpsString = prefs[PreferencesKeys.CHLORINE_CALC_ACTIVE_PUMPS]
+            val preTimestamp = prefs[PreferencesKeys.CHLORINE_PRE_TIMESTAMP]
+            val contactTimestamp = prefs[PreferencesKeys.CHLORINE_CONTACT_TIMESTAMP]
+            val finalTimestamp = prefs[PreferencesKeys.CHLORINE_FINAL_TIMESTAMP]
 
-            if (preDosage != null && contactDosage != null && finalDosage != null && timestamp != null) {
+            // En az bir dozaj kaydı varsa result döndür
+            if (preDosage != null || contactDosage != null || finalDosage != null) {
                 ChlorineCalculationResult(
-                    preChlorineDosage = preDosage,
-                    contactTankDosage = contactDosage,
-                    finalChlorineDosage = finalDosage,
+                    preChlorineDosage = preDosage ?: 0.0,
+                    contactTankDosage = contactDosage ?: 0.0,
+                    finalChlorineDosage = finalDosage ?: 0.0,
                     preTargetPpm = preTargetPpm ?: 0.0,
                     contactTargetPpm = contactTargetPpm ?: 0.0,
                     finalTargetPpm = finalTargetPpm ?: 0.0,
-                    timestamp = timestamp,
+                    preTimestamp = preTimestamp,
+                    contactTimestamp = contactTimestamp,
+                    finalTimestamp = finalTimestamp
                 )
             } else {
                 null

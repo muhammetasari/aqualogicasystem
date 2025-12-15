@@ -9,7 +9,9 @@ package com.aqualogicasystem.izsu.data.model
  * @property preTargetPpm Ön Klorlama Hedef PPM
  * @property contactTargetPpm Kontak Tankı Hedef PPM
  * @property finalTargetPpm Son Klorlama Hedef PPM
- * @property timestamp Kayıt zamanı (Unix timestamp)
+ * @property preTimestamp Ön Klorlama kayıt zamanı (Unix timestamp)
+ * @property contactTimestamp Kontak Tankı kayıt zamanı (Unix timestamp)
+ * @property finalTimestamp Son Klorlama kayıt zamanı (Unix timestamp)
  */
 data class ChlorineCalculationResult(
     val preChlorineDosage: Double = 0.0,
@@ -18,6 +20,8 @@ data class ChlorineCalculationResult(
     val preTargetPpm: Double = 0.0,
     val contactTargetPpm: Double = 0.0,
     val finalTargetPpm: Double = 0.0,
-    val timestamp: Long = System.currentTimeMillis()
+    val preTimestamp: Long? = null,
+    val contactTimestamp: Long? = null,
+    val finalTimestamp: Long? = null
 )
 

@@ -2,7 +2,9 @@ package com.aqualogicasystem.izsu.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.aqualogicasystem.izsu.ui.screens.main.HomeScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.IronCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
@@ -27,16 +29,23 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
         ChlorineCalculatorScreen(navController = navController)
     }
 
-    // Eski route'lar (geriye dönük uyumluluk için)
-    composable(route = Screen.Calculator.route) {
-        IronCalculatorScreen(navController = navController)
-    }
-
     composable(route = Screen.SodaCalculator.route) {
         SodaCalculatorScreen(navController = navController)
     }
 
-    composable(route = Screen.ChlorineCalculator.route) {
-        ChlorineCalculatorScreen(navController = navController)
+    composable(
+        route = Screen.ChlorineCalculator.route,
+        arguments = listOf(
+            navArgument("tab") {
+                type = NavType.IntType
+                defaultValue = 0
+            }
+        )
+    ) { backStackEntry ->
+        val tab = backStackEntry.arguments?.getInt("tab") ?: 0
+        ChlorineCalculatorScreen(
+            navController = navController,
+            initialTab = tab
+        )
     }
 }

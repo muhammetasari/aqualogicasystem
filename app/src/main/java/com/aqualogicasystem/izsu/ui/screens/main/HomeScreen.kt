@@ -54,8 +54,14 @@ fun HomeScreen(
             onNavigateToSodaCalculator = {
                 navController.navigate(Screen.SodaCalculator.route)
             },
-            onNavigateToChlorineCalculator = {
-                navController.navigate(Screen.ChlorineCalculator.route)
+            onNavigateToPreChlorine = {
+                navController.navigate(Screen.ChlorineCalculator.createRoute(0))
+            },
+            onNavigateToContactTank = {
+                navController.navigate(Screen.ChlorineCalculator.createRoute(1))
+            },
+            onNavigateToFinalChlorine = {
+                navController.navigate(Screen.ChlorineCalculator.createRoute(2))
             }
         )
     }
@@ -69,7 +75,9 @@ fun HomeContent(
     chlorineCalculationResult: ChlorineCalculationResult? = null,
     onNavigateToCalculator: () -> Unit = {},
     onNavigateToSodaCalculator: () -> Unit = {},
-    onNavigateToChlorineCalculator: () -> Unit = {}
+    onNavigateToPreChlorine: () -> Unit = {},
+    onNavigateToContactTank: () -> Unit = {},
+    onNavigateToFinalChlorine: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -118,56 +126,52 @@ fun HomeContent(
                     )
                 }
 
-                if (ironCalculationResult != null) {
-                    HorizontalDivider()
+                HorizontalDivider()
 
-                    // Kaydedilen Değerler
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = "1 Litre Dolum Süresi",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                text = String.format("%.1f sn", ironCalculationResult.fillTime),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-
-                        Column(horizontalAlignment = Alignment.End) {
-                            Text(
-                                text = "Saatlik Miktar",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                text = String.format("%.1f kg/s", ironCalculationResult.hourlyAmount),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
+                // Kaydedilen Değerler
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "1 Litre Dolum Süresi",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.1f sn", ironCalculationResult?.fillTime ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
 
-                    // Tarih ve Saat
-                    Text(
-                        text = "Kayıt: ${formatDate(ironCalculationResult.timestamp)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
-                    )
-                } else {
-                    Text(
-                        text = "Henüz kayıtlı hesaplama yok",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "Saatlik Miktar",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.1f kg/s", ironCalculationResult?.hourlyAmount ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
+
+                // Tarih ve Saat
+                Text(
+                    text = if (ironCalculationResult != null) {
+                        "Kayıt: ${formatDate(ironCalculationResult.timestamp)}"
+                    } else {
+                        "Henüz hesaplama yapılmadı"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
+                )
             }
         }
 
@@ -203,63 +207,58 @@ fun HomeContent(
                     )
                 }
 
-                if (sodaCalculationResult != null) {
-                    HorizontalDivider()
+                HorizontalDivider()
 
-                    // Kaydedilen Değerler
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = "1 Litre Dolum Süresi",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                text = String.format("%.1f sn", sodaCalculationResult.fillTime),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-
-                        Column(horizontalAlignment = Alignment.End) {
-                            Text(
-                                text = "Saatlik Miktar",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                text = String.format("%.1f kg/s", sodaCalculationResult.hourlyAmount),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
+                // Kaydedilen Değerler
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "1 Litre Dolum Süresi",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.1f sn", sodaCalculationResult?.fillTime ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
                     }
 
-                    // Tarih ve Saat
-                    Text(
-                        text = "Kayıt: ${formatDate(sodaCalculationResult.timestamp)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
-                    )
-                } else {
-                    Text(
-                        text = "Henüz kayıtlı hesaplama yok",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
-                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "Saatlik Miktar",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.1f kg/s", sodaCalculationResult?.hourlyAmount ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
+
+                // Tarih ve Saat
+                Text(
+                    text = if (sodaCalculationResult != null) {
+                        "Kayıt: ${formatDate(sodaCalculationResult.timestamp)}"
+                    } else {
+                        "Henüz hesaplama yapılmadı"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                )
             }
         }
 
         // Klor Dozaj Hesaplayıcı Kartı
         Card(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onNavigateToChlorineCalculator,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer
             )
@@ -288,67 +287,41 @@ fun HomeContent(
                     )
                 }
 
-                if (chlorineCalculationResult != null) {
-                    HorizontalDivider()
+                HorizontalDivider()
 
-                    // 3 Nokta Sonuçları - Sekmeli Gösterim
-                    var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-                    TabRow(
-                        selectedTabIndex = selectedTabIndex,
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                    ) {
-                        Tab(
-                            selected = selectedTabIndex == 0,
-                            onClick = { selectedTabIndex = 0 },
-                            text = { Text("Ön Klorlama", style = MaterialTheme.typography.labelMedium) }
-                        )
-                        Tab(
-                            selected = selectedTabIndex == 1,
-                            onClick = { selectedTabIndex = 1 },
-                            text = { Text("Kontak Tankı", style = MaterialTheme.typography.labelMedium) }
-                        )
-                        Tab(
-                            selected = selectedTabIndex == 2,
-                            onClick = { selectedTabIndex = 2 },
-                            text = { Text("Son Klorlama", style = MaterialTheme.typography.labelMedium) }
-                        )
-                    }
-
-                    // Sekme İçeriği
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        when (selectedTabIndex) {
-                            0 -> ChlorineResultDetail(
-                                ppm = chlorineCalculationResult.preTargetPpm,
-                                dosage = chlorineCalculationResult.preChlorineDosage
-                            )
-                            1 -> ChlorineResultDetail(
-                                ppm = chlorineCalculationResult.contactTargetPpm,
-                                dosage = chlorineCalculationResult.contactTankDosage
-                            )
-                            2 -> ChlorineResultDetail(
-                                ppm = chlorineCalculationResult.finalTargetPpm,
-                                dosage = chlorineCalculationResult.finalChlorineDosage
-                            )
-                        }
-                    }
-
-                    // Tarih ve Saat
-                    Text(
-                        text = "Kayıt: ${formatDate(chlorineCalculationResult.timestamp)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
+                // 3 Nokta Sonuçları - Yan Yana Kartlar
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Ön Klorlama
+                    ChlorineDetailCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Ön Klorlama",
+                        ppm = chlorineCalculationResult?.preTargetPpm ?: 0.0,
+                        dosage = chlorineCalculationResult?.preChlorineDosage ?: 0.0,
+                        timestamp = chlorineCalculationResult?.preTimestamp,
+                        onClick = onNavigateToPreChlorine
                     )
-                } else {
-                    Text(
-                        text = "Henüz kayıtlı hesaplama yok",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+
+                    // Kontak Tankı
+                    ChlorineDetailCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Kontak Tankı",
+                        ppm = chlorineCalculationResult?.contactTargetPpm ?: 0.0,
+                        dosage = chlorineCalculationResult?.contactTankDosage ?: 0.0,
+                        timestamp = chlorineCalculationResult?.contactTimestamp,
+                        onClick = onNavigateToContactTank
+                    )
+
+                    // Son Klorlama
+                    ChlorineDetailCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Son Klorlama",
+                        ppm = chlorineCalculationResult?.finalTargetPpm ?: 0.0,
+                        dosage = chlorineCalculationResult?.finalChlorineDosage ?: 0.0,
+                        timestamp = chlorineCalculationResult?.finalTimestamp,
+                        onClick = onNavigateToFinalChlorine
                     )
                 }
             }
@@ -357,55 +330,82 @@ fun HomeContent(
 }
 
 @Composable
-private fun ChlorineResultDetail(
+private fun ChlorineDetailCard(
+    modifier: Modifier = Modifier,
+    title: String,
     ppm: Double,
-    dosage: Double
+    dosage: Double,
+    timestamp: Long? = null,
+    onClick: () -> Unit = {}
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+    Card(
+        modifier = modifier,
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
-                text = "Hedef PPM",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                text = title,
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Text(
-                text = String.format(java.util.Locale.US, "%.2f", ppm),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-            Text(
-                text = "ppm",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
-            )
-        }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
+            HorizontalDivider(thickness = 1.dp)
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = String.format(Locale.US, "%.2f", ppm),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "ppm",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = String.format(Locale.US, "%.2f", dosage),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = "kg/saat",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+
+            // Tarih ve Saat
+            HorizontalDivider(thickness = 1.dp)
             Text(
-                text = "Dozaj",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
-            )
-            Text(
-                text = String.format(java.util.Locale.US, "%.2f", dosage),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-            Text(
-                text = "kg/saat",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.6f)
+                text = if (timestamp != null) {
+                    formatDate(timestamp)
+                } else {
+                    "Kayıt yok"
+                },
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             )
         }
     }

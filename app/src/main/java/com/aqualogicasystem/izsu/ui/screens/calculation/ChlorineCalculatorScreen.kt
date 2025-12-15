@@ -31,6 +31,7 @@ import com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorViewModel
 @Composable
 fun ChlorineCalculatorScreen(
     navController: NavController,
+    initialTab: Int = 0,
     viewModel: ChlorineCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
             LocalContext.current.applicationContext as Application
@@ -38,7 +39,7 @@ fun ChlorineCalculatorScreen(
     )
 ) {
     val state by viewModel.uiState.collectAsState()
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(initialTab) }
 
     // Kayıt başarılı olduğunda anasayfaya dön
     LaunchedEffect(state.saveSuccess) {
@@ -298,27 +299,27 @@ fun FinalChlorinationSection(
             CalculatorInputField(
                 value = state.currentTankPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateCurrentTankPpm(it)) },
-                label = "Mevcut PPM",
+                label = "Kontak Tank PPM",
                 modifier = Modifier.weight(1f),
-                supportingText = "Tank çıkışı",
+                supportingText = "Kontak Tank PPM",
                 keyboardType = KeyboardType.Decimal
             )
 
             CalculatorInputField(
                 value = state.targetNetworkPpm,
                 onValueChange = { onEvent(ChlorineCalculatorEvent.UpdateTargetNetworkPpm(it)) },
-                label = "Hedef PPM",
+                label = "Hedef Çıkış PPM",
                 modifier = Modifier.weight(1f),
-                supportingText = "Şebeke hedefi",
+                supportingText = "Hedef Çıkış PPM",
                 keyboardType = KeyboardType.Decimal
             )
         }
 
         CalculatorResultCard(
-            title = "Son Klorlama Sonuçları",
-            leftLabel = "Hedef PPM",
+            title = "Son Klorlama Dozaj",
+            leftLabel = "Tesis Çıkış Hedef PPM",
             leftValue = state.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
-            rightLabel = "Toplam Dozaj",
+            rightLabel = "Son Klor Dozaj",
             rightValue = state.calculatedFinalDosage,
             rightUnit = "kg/saat"
         )
