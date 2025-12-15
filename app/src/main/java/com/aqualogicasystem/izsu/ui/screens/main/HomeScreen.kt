@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,8 +24,8 @@ import com.aqualogicasystem.izsu.data.repository.UserPreferencesRepository
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.aqualogicasystem.izsu.ui.components.ChlorineDetailCard
+import com.aqualogicasystem.izsu.ui.components.formatDate
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,6 +125,13 @@ fun HomeContent(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Default.ArrowRightAlt,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
 
                 HorizontalDivider()
@@ -205,11 +213,16 @@ fun HomeContent(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Default.ArrowRightAlt,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
 
                 HorizontalDivider()
-
-                // Kaydedilen Değerler
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -297,7 +310,7 @@ fun HomeContent(
                     // Ön Klorlama
                     ChlorineDetailCard(
                         modifier = Modifier.weight(1f),
-                        title = "Ön Klorlama",
+                        title = "Ön Klor",
                         ppm = chlorineCalculationResult?.preTargetPpm ?: 0.0,
                         dosage = chlorineCalculationResult?.preChlorineDosage ?: 0.0,
                         timestamp = chlorineCalculationResult?.preTimestamp,
@@ -307,7 +320,7 @@ fun HomeContent(
                     // Kontak Tankı
                     ChlorineDetailCard(
                         modifier = Modifier.weight(1f),
-                        title = "Kontak Tankı",
+                        title = "Kontak Klor",
                         ppm = chlorineCalculationResult?.contactTargetPpm ?: 0.0,
                         dosage = chlorineCalculationResult?.contactTankDosage ?: 0.0,
                         timestamp = chlorineCalculationResult?.contactTimestamp,
@@ -317,7 +330,7 @@ fun HomeContent(
                     // Son Klorlama
                     ChlorineDetailCard(
                         modifier = Modifier.weight(1f),
-                        title = "Son Klorlama",
+                        title = "Son Klor",
                         ppm = chlorineCalculationResult?.finalTargetPpm ?: 0.0,
                         dosage = chlorineCalculationResult?.finalChlorineDosage ?: 0.0,
                         timestamp = chlorineCalculationResult?.finalTimestamp,
@@ -327,94 +340,6 @@ fun HomeContent(
             }
         }
     }
-}
-
-@Composable
-private fun ChlorineDetailCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    ppm: Double,
-    dosage: Double,
-    timestamp: Long? = null,
-    onClick: () -> Unit = {}
-) {
-    Card(
-        modifier = modifier,
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            HorizontalDivider(thickness = 1.dp)
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Text(
-                    text = String.format(Locale.US, "%.2f", ppm),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "ppm",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Text(
-                    text = String.format(Locale.US, "%.2f", dosage),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                Text(
-                    text = "kg/saat",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-            }
-
-            // Tarih ve Saat
-            HorizontalDivider(thickness = 1.dp)
-            Text(
-                text = if (timestamp != null) {
-                    formatDate(timestamp)
-                } else {
-                    "Kayıt yok"
-                },
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-        }
-    }
-}
-
-private fun formatDate(timestamp: Long): String {
-    val locale = Locale.Builder().setLanguage("tr").setRegion("TR").build()
-    val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", locale)
-    return sdf.format(Date(timestamp))
 }
 
 @Preview(showBackground = true)
