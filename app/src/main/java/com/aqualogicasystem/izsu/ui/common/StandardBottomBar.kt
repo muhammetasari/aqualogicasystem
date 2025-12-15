@@ -2,11 +2,15 @@ package com.aqualogicasystem.izsu.ui.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.GasMeter
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Iron
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.Square
+import androidx.compose.material.icons.twotone.HeatPump
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -42,7 +46,7 @@ fun StandardBottomBar(navController: NavController) {
         stringResource(id = R.string.bottom_bar_iron3),
         stringResource(id = R.string.bottom_bar_soda),
         stringResource(id = R.string.bottom_bar_chlorine),
-        stringResource(id = R.string.bottom_bar_empty),
+        stringResource(id = R.string.bottom_bar_chemical_settings),
         stringResource(id = R.string.bottom_bar_profile)
     )
 
@@ -52,10 +56,10 @@ fun StandardBottomBar(navController: NavController) {
                 icon = {
                     when (index) {
                         0 -> Icon(Icons.Default.Home, contentDescription = item)
-                        1 -> Icon(Icons.Default.Science, contentDescription = item)
+                        1 -> Icon(Icons.TwoTone.HeatPump, contentDescription = item)
                         2 -> Icon(Icons.Default.WaterDrop, contentDescription = item)
-                        3 -> Icon(Icons.Default.Opacity, contentDescription = item)
-                        4 -> Icon(Icons.Default.Square, contentDescription = item)
+                        3 -> Icon(Icons.Default.GasMeter, contentDescription = item)
+                        4 -> Icon(Icons.Default.Science, contentDescription = item)
                         5 -> Icon(Icons.Default.AccountCircle, contentDescription = item)
                     }
                 },
@@ -76,7 +80,9 @@ fun StandardBottomBar(navController: NavController) {
                         3 -> navController.navigate(Screen.Chlorine.route) {
                             launchSingleTop = true
                         }
-                        // 4 -> Boş - navigasyon yok
+                        4 -> navController.navigate(Screen.ChemicalSettings.route) {
+                            launchSingleTop = true
+                        }
                         5 -> navController.navigate(Screen.Profile.route) {
                             launchSingleTop = true
                         }

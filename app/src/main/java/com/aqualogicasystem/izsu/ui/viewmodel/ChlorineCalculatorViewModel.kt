@@ -106,43 +106,116 @@ class ChlorineCalculatorViewModel(
             is ChlorineCalculatorEvent.UpdateTargetNetworkPpm ->
                 updateState { it.copy(targetNetworkPpm = event.value) }
 
-
-            // Save Calculation
-            is ChlorineCalculatorEvent.SaveCalculation -> saveCalculation()
+            // Save Events - Her hesaplama için bağımsız kaydetme
+            is ChlorineCalculatorEvent.SavePreChlorination -> savePreChlorination()
+            is ChlorineCalculatorEvent.SaveContactTank -> saveContactTank()
+            is ChlorineCalculatorEvent.SaveFinalChlorination -> saveFinalChlorination()
         }
     }
 
     /**
-     * Hesaplama sonuçlarını repository'ye kaydeder.
-     *
-     * 3 nokta için tüm klor dozaj sonuçlarını ChlorineCalculationResult olarak kaydeder.
-     * Coroutine içinde çalışır ve isSaving/saveSuccess state'lerini günceller.
+     * Sadece Ön Klorlama hesaplamasını kaydeder.
+     * Mevcut Kontak Tank ve Son Klor değerlerini korur.
      */
-    private fun saveCalculation() {
+    private fun savePreChlorination() {
         viewModelScope.launch {
             val currentState = _uiState.value
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
-                val currentTime = System.currentTimeMillis()
+                // Mevcut kaydedilmiş değerleri al
+                val existingResult = repository.getChlorineCalculationResult()
 
-                // Her nokta için kendi timestamp'i ile kaydet
-                // Eğer bir noktanın dozajı 0'dan büyükse o noktanın timestamp'ini güncelle
+                // Sadece Ön Klorlama değerlerini güncelle
                 val result = ChlorineCalculationResult(
                     preChlorineDosage = currentState.calculatedPreDosage,
-                    contactTankDosage = currentState.calculatedContactDosage,
-                    finalChlorineDosage = currentState.calculatedFinalDosage,
                     preTargetPpm = currentState.calculatedPreTargetPpm,
-                    contactTargetPpm = currentState.targetTankPpm.toDoubleOrNull() ?: 0.0,
-                    finalTargetPpm = currentState.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
-                    preTimestamp = if (currentState.calculatedPreDosage > 0.0) currentTime else null,
-                    contactTimestamp = if (currentState.calculatedContactDosage > 0.0) currentTime else null,
-                    finalTimestamp = if (currentState.calculatedFinalDosage > 0.0) currentTime else null
+                    preTimestamp = System.currentTimeMillis(),
+                    // Mevcut değerleri koru
+                    contactTankDosage = existingResult?.contactTankDosage ?: 0.0,
+                    contactTargetPpm = existingResult?.contactTargetPpm ?: 0.0,
+                    contactTimestamp = existingResult?.contactTimestamp,
+                    finalChlorineDosage = existingResult?.finalChlorineDosage ?: 0.0,
+                    finalTargetPpm = existingResult?.finalTargetPpm ?: 0.0,
+                    finalTimestamp = existingResult?.finalTimestamp
                 )
 
                 repository.saveChlorineCalculationResult(result)
                 _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isSaving = false, saveSuccess = false) }
+            }
+        }
+    }
+
+    /**
+     * Sadece Kontak Tank hesaplamasını kaydeder.
+     * Mevcut Ön Klor ve Son Klor değerlerini korur.
+     */
+    private fun saveContactTank() {
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
+
+            try {
+                // Mevcut kaydedilmiş değerleri al
+                val existingResult = repository.getChlorineCalculationResult()
+
+                // Sadece Kontak Tank değerlerini güncelle
+                val result = ChlorineCalculationResult(
+                    contactTankDosage = currentState.calculatedContactDosage,
+                    contactTargetPpm = currentState.targetTankPpm.toDoubleOrNull() ?: 0.0,
+                    contactTimestamp = System.currentTimeMillis(),
+                    // Mevcut değerleri koru
+                    preChlorineDosage = existingResult?.preChlorineDosage ?: 0.0,
+                    preTargetPpm = existingResult?.preTargetPpm ?: 0.0,
+                    preTimestamp = existingResult?.preTimestamp,
+                    finalChlorineDosage = existingResult?.finalChlorineDosage ?: 0.0,
+                    finalTargetPpm = existingResult?.finalTargetPpm ?: 0.0,
+                    finalTimestamp = existingResult?.finalTimestamp
+                )
+
+                repository.saveChlorineCalculationResult(result)
+                _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isSaving = false, saveSuccess = false) }
+            }
+        }
+    }
+
+    /**
+     * Sadece Son Klorlama hesaplamasını kaydeder.
+     * Mevcut Ön Klor ve Kontak Tank değerlerini korur.
+     */
+    private fun saveFinalChlorination() {
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
+
+            try {
+                // Mevcut kaydedilmiş değerleri al
+                val existingResult = repository.getChlorineCalculationResult()
+
+                // Sadece Son Klor değerlerini güncelle
+                val result = ChlorineCalculationResult(
+                    finalChlorineDosage = currentState.calculatedFinalDosage,
+                    finalTargetPpm = currentState.targetNetworkPpm.toDoubleOrNull() ?: 0.0,
+                    finalTimestamp = System.currentTimeMillis(),
+                    // Mevcut değerleri koru
+                    preChlorineDosage = existingResult?.preChlorineDosage ?: 0.0,
+                    preTargetPpm = existingResult?.preTargetPpm ?: 0.0,
+                    preTimestamp = existingResult?.preTimestamp,
+                    contactTankDosage = existingResult?.contactTankDosage ?: 0.0,
+                    contactTargetPpm = existingResult?.contactTargetPpm ?: 0.0,
+                    contactTimestamp = existingResult?.contactTimestamp
+                )
+
+                repository.saveChlorineCalculationResult(result)
+                _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
+            } catch (e: Exception) {
+                e.printStackTrace()
                 _uiState.update { it.copy(isSaving = false, saveSuccess = false) }
             }
         }
@@ -265,7 +338,12 @@ sealed class ChlorineCalculatorEvent {
     /** Şebeke hedef PPM güncelleme event'i */
     data class UpdateTargetNetworkPpm(val value: String) : ChlorineCalculatorEvent()
 
-    /** Hesaplama sonuçlarını kaydetme isteği */
-    data object SaveCalculation : ChlorineCalculatorEvent()
+    // Save Events - Her hesaplama için bağımsız kaydetme
+    /** Sadece Ön Klorlama hesaplamasını kaydetme isteği */
+    data object SavePreChlorination : ChlorineCalculatorEvent()
+    /** Sadece Kontak Tankı hesaplamasını kaydetme isteği */
+    data object SaveContactTank : ChlorineCalculatorEvent()
+    /** Sadece Son Klorlama hesaplamasını kaydetme isteği */
+    data object SaveFinalChlorination : ChlorineCalculatorEvent()
 }
 

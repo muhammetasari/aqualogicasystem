@@ -281,8 +281,7 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
      * @return The last saved calculation result or null
      */
     override suspend fun getChlorineCalculationResult(): ChlorineCalculationResult? {
-        var result: ChlorineCalculationResult? = null
-        context.dataStore.data.map { prefs ->
+        return context.dataStore.data.map { prefs ->
             val preDosage = prefs[PreferencesKeys.CHLORINE_PRE_DOSAGE]
             val contactDosage = prefs[PreferencesKeys.CHLORINE_CONTACT_DOSAGE]
             val finalDosage = prefs[PreferencesKeys.CHLORINE_FINAL_DOSAGE]
@@ -309,8 +308,7 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             } else {
                 null
             }
-        }.collect { result = it }
-        return result
+        }.first()
     }
 
     /**

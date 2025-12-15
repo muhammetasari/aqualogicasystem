@@ -4,17 +4,20 @@ import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Science
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aqualogicasystem.izsu.logic.SodaCalculatorLogic
+import com.aqualogicasystem.izsu.R
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
-import com.aqualogicasystem.izsu.ui.components.AdvancedSettingsCard
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
 import com.aqualogicasystem.izsu.ui.components.CalculatorSaveButton
@@ -33,7 +36,6 @@ fun SodaCalculatorScreen(
     )
 ) {
     val state by viewModel.uiState.collectAsState()
-    var showAdvancedSettings by remember { mutableStateOf(false) }
 
     // Kayıt başarılı olduğunda anasayfaya dön
     LaunchedEffect(state.saveSuccess) {
@@ -58,14 +60,52 @@ fun SodaCalculatorScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AdvancedSettingsCard(
-                ppmValue = state.targetPpm,
-                onPpmChange = { viewModel.onEvent(SodaCalculatorEvent.UpdatePpm(it)) },
-                factorValue = state.chemicalFactor,
-                onFactorChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateFactor(it)) },
-                factorSupportingText = "Varsayılan: ${SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toInt()} (Soda için)",
-                initialExpanded = showAdvancedSettings
-            )
+            // Mevcut Kimyasal Ayarları Bilgi Kartı
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Science,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.current_settings),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${stringResource(R.string.current_ppm)}: ${state.targetPpm}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Text(
+                                text = "${stringResource(R.string.current_factor)}: ${state.chemicalFactor}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+                    }
+                }
+            }
 
             CalculatorResultCard(
                 leftLabel = "Kalibrasyon Süresi",

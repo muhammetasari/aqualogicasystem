@@ -9,7 +9,7 @@ import com.aqualogicasystem.izsu.ui.screens.main.HomeScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.IronCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.ChlorineCalculatorScreen
 import com.aqualogicasystem.izsu.ui.screens.calculation.SodaCalculatorScreen
-import com.aqualogicasystem.izsu.ui.screens.main.ChemicalSettingsScreen
+import com.aqualogicasystem.izsu.ui.screens.calculation.ChemicalSettingsScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
     // Home Screen

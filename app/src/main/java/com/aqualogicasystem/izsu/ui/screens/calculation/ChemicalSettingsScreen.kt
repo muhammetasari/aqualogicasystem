@@ -1,4 +1,4 @@
-package com.aqualogicasystem.izsu.ui.screens.main
+package com.aqualogicasystem.izsu.ui.screens.calculation
 
 import android.app.Application
 import androidx.compose.foundation.layout.*
@@ -24,6 +24,7 @@ import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 import com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsEvent
+import com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsUiState
 import com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsViewModel
 import com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsViewModelFactory
 
@@ -75,7 +76,7 @@ fun ChemicalSettingsScreen(
 @Composable
 fun ChemicalSettingsScreenContent(
     navController: NavController,
-    state: com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsUiState,
+    state: ChemicalSettingsUiState,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onEvent: (ChemicalSettingsEvent) -> Unit = {}
 ) {
@@ -95,8 +96,8 @@ fun ChemicalSettingsScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Description Card
             Card(
@@ -108,17 +109,18 @@ fun ChemicalSettingsScreenContent(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Science,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(20.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.chemical_settings_description),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
@@ -134,12 +136,12 @@ fun ChemicalSettingsScreenContent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.iron3_section),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
 
@@ -184,12 +186,12 @@ fun ChemicalSettingsScreenContent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.soda_section),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
 
@@ -240,8 +242,6 @@ fun ChemicalSettingsScreenContent(
                 }
                 Text(text = stringResource(id = R.string.save_settings))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -252,7 +252,7 @@ fun ChemicalSettingsScreenPreview() {
     IzsuAppTheme {
         ChemicalSettingsScreenContent(
             navController = rememberNavController(),
-            state = com.aqualogicasystem.izsu.ui.viewmodel.ChemicalSettingsUiState()
+            state = ChemicalSettingsUiState()
         )
     }
 }

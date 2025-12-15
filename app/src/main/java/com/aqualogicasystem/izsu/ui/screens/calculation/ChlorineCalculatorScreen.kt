@@ -129,21 +129,10 @@ fun ChlorineCalculatorScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 when (selectedTabIndex) {
-                    0 -> PreChlorinationSection(state, viewModel::onEvent)
-                    1 -> ContactTankSection(state, viewModel::onEvent)
-                    2 -> FinalChlorinationSection(state, viewModel::onEvent)
+                    0 -> PreChlorinationSection(state, viewModel::onEvent, state.isSaving)
+                    1 -> ContactTankSection(state, viewModel::onEvent, state.isSaving)
+                    2 -> FinalChlorinationSection(state, viewModel::onEvent, state.isSaving)
                 }
-
-                HorizontalDivider()
-
-                // Kaydet Butonu (Her sekmede ortak)
-                CalculatorSaveButton(
-                    onClick = { viewModel.onEvent(ChlorineCalculatorEvent.SaveCalculation) },
-                    enabled = state.calculatedPreDosage > 0.0 ||
-                        state.calculatedContactDosage > 0.0 ||
-                        state.calculatedFinalDosage > 0.0,
-                    isLoading = state.isSaving
-                )
             }
         }
     }
@@ -152,7 +141,8 @@ fun ChlorineCalculatorScreen(
 @Composable
 fun PreChlorinationSection(
     state: com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorUiState,
-    onEvent: (ChlorineCalculatorEvent) -> Unit
+    onEvent: (ChlorineCalculatorEvent) -> Unit,
+    isSaving: Boolean
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
@@ -215,13 +205,23 @@ fun PreChlorinationSection(
             rightValue = state.calculatedPreDosage,
             rightUnit = "kg/saat"
         )
+
+        HorizontalDivider()
+
+        // Ön Klorlama Kaydet Butonu
+        CalculatorSaveButton(
+            onClick = { onEvent(ChlorineCalculatorEvent.SavePreChlorination) },
+            enabled = state.calculatedPreDosage > 0.0,
+            isLoading = isSaving
+        )
     }
 }
 
 @Composable
 fun ContactTankSection(
     state: com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorUiState,
-    onEvent: (ChlorineCalculatorEvent) -> Unit
+    onEvent: (ChlorineCalculatorEvent) -> Unit,
+    isSaving: Boolean
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
@@ -269,13 +269,23 @@ fun ContactTankSection(
             rightValue = state.calculatedContactDosage,
             rightUnit = "kg/saat"
         )
+
+        HorizontalDivider()
+
+        // Kontak Tankı Kaydet Butonu
+        CalculatorSaveButton(
+            onClick = { onEvent(ChlorineCalculatorEvent.SaveContactTank) },
+            enabled = state.calculatedContactDosage > 0.0,
+            isLoading = isSaving
+        )
     }
 }
 
 @Composable
 fun FinalChlorinationSection(
     state: com.aqualogicasystem.izsu.ui.viewmodel.ChlorineCalculatorUiState,
-    onEvent: (ChlorineCalculatorEvent) -> Unit
+    onEvent: (ChlorineCalculatorEvent) -> Unit,
+    isSaving: Boolean
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
@@ -322,6 +332,15 @@ fun FinalChlorinationSection(
             rightLabel = "Son Klor Dozaj",
             rightValue = state.calculatedFinalDosage,
             rightUnit = "kg/saat"
+        )
+
+        HorizontalDivider()
+
+        // Son Klorlama Kaydet Butonu
+        CalculatorSaveButton(
+            onClick = { onEvent(ChlorineCalculatorEvent.SaveFinalChlorination) },
+            enabled = state.calculatedFinalDosage > 0.0,
+            isLoading = isSaving
         )
     }
 }

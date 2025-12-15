@@ -187,7 +187,7 @@
     <string name="bottom_bar_iron3">Iron 3</string>
     <string name="bottom_bar_soda">Soda</string>
     <string name="bottom_bar_chlorine">Chlorine</string>
-    <string name="bottom_bar_empty">Empty</string>
+    <string name="bottom_bar_chemical_settings">Dosage</string>
     <string name="bottom_bar_profile">Profile</string>
 
     <!-- Pump Selection -->
@@ -213,4 +213,7 @@
     <string name="iron3_section">Iron-3 Dosage Parameters</string>
     <string name="soda_section">Soda Dosage Parameters</string>
     <string name="default_value">Default: %s</string>
+    <string name="current_settings">Current Settings</string>
+    <string name="current_ppm">Current PPM</string>
+    <string name="current_factor">Current Factor</string>
 </resources>

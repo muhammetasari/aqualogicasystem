@@ -184,7 +184,7 @@
     <string name="bottom_bar_iron3">Demir 3</string>
     <string name="bottom_bar_soda">Soda</string>
     <string name="bottom_bar_chlorine">Klor</string>
-    <string name="bottom_bar_empty">Boş</string>
+    <string name="bottom_bar_chemical_settings">Dozaj</string>
     <string name="bottom_bar_profile">Profil</string>
 
     <!-- Pump Selection -->
@@ -210,4 +210,7 @@
     <string name="iron3_section">Demir-3 Dozaj Parametreleri</string>
     <string name="soda_section">Soda Dozaj Parametreleri</string>
     <string name="default_value">Varsayılan: %s</string>
+    <string name="current_settings">Mevcut Ayarlar</string>
+    <string name="current_ppm">Mevcut PPM</string>
+    <string name="current_factor">Mevcut Faktör</string>
 </resources>
