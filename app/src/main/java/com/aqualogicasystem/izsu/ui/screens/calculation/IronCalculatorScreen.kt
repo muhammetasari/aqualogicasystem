@@ -78,7 +78,7 @@ fun IronCalculatorScreen(
             )
             HorizontalDivider()
             Text(
-                text = "Giriş Değerleri",
+                text = "Tesis Su Giriş Değeri",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )

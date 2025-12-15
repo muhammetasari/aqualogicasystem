@@ -79,12 +79,12 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = stringResource(id = R.string.home_content),
             style = MaterialTheme.typography.bodyLarge
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Dozaj Hesaplayıcı Kartı
         Card(
