@@ -69,6 +69,15 @@ class IronCalculatorViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            repository.ironLastFlowFlow.collect { lastFlow ->
+                if (lastFlow != null) {
+                    _uiState.update { currentState ->
+                        calculateResults(currentState.copy(waterFlow = lastFlow))
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -97,13 +106,18 @@ class IronCalculatorViewModel(
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
+                if (currentState.waterFlow.isNotEmpty()) {
+                    repository.saveIronLastFlow(currentState.waterFlow)
+                }
+
                 val fillTime = currentState.calculatedTargetSeconds
-                // Saatlik miktar hesaplaması logic katmanında yapılır
                 val hourlyAmount = IronCalculatorLogic.calculateHourlyAmount(fillTime)
+                val flowRate = (currentState.waterFlow.toDoubleOrNull() ?: 0.0)
 
                 val result = CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
+                    flowRate = flowRate,
                     timestamp = System.currentTimeMillis()
                 )
 

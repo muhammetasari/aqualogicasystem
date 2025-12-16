@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -40,18 +40,6 @@ fun ChemicalSettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val settingsSavedMessage = stringResource(id = R.string.settings_saved)
-
-    // Handle save success
-    LaunchedEffect(state.saveSuccess) {
-        if (state.saveSuccess) {
-            snackbarHostState.showSnackbar(
-                message = settingsSavedMessage,
-                duration = SnackbarDuration.Short
-            )
-            viewModel.resetSaveSuccess()
-        }
-    }
 
     // Handle error messages
     LaunchedEffect(state.errorMessage) {
@@ -99,132 +87,29 @@ fun ChemicalSettingsScreenContent(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Description Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Science,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.chemical_settings_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            }
-
             // Iron-3 Settings Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.iron3_section),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    CalculatorInputField(
-                        value = state.ironPpm,
-                        onValueChange = { onEvent(ChemicalSettingsEvent.UpdateIronPpm(it)) },
-                        label = stringResource(id = R.string.target_ppm),
-                        supportingText = stringResource(
-                            id = R.string.default_value,
-                            IronCalculatorLogic.DEFAULT_TARGET_PPM.toString()
-                        ),
-                        keyboardType = KeyboardType.Decimal
-                    )
-
-                    CalculatorInputField(
-                        value = state.ironFactor,
-                        onValueChange = { onEvent(ChemicalSettingsEvent.UpdateIronFactor(it)) },
-                        label = stringResource(id = R.string.chemical_factor),
-                        supportingText = stringResource(
-                            id = R.string.default_value,
-                            IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toInt().toString()
-                        ),
-                        keyboardType = KeyboardType.Decimal
-                    )
-
-                    OutlinedButton(
-                        onClick = { onEvent(ChemicalSettingsEvent.ResetIronToDefault) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = stringResource(id = R.string.reset_to_default))
-                    }
-                }
-            }
+            ChemicalSettingSection(
+                title = stringResource(id = R.string.iron3_section),
+                ppmValue = state.ironPpm,
+                onPpmValueChange = { onEvent(ChemicalSettingsEvent.UpdateIronPpm(it)) },
+                defaultPpm = IronCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
+                factorValue = state.ironFactor,
+                onFactorValueChange = { onEvent(ChemicalSettingsEvent.UpdateIronFactor(it)) },
+                defaultFactor = IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toInt().toString(),
+                onReset = { onEvent(ChemicalSettingsEvent.ResetIronToDefault) }
+            )
 
             // Soda Settings Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.soda_section),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    CalculatorInputField(
-                        value = state.sodaPpm,
-                        onValueChange = { onEvent(ChemicalSettingsEvent.UpdateSodaPpm(it)) },
-                        label = stringResource(id = R.string.target_ppm),
-                        supportingText = stringResource(
-                            id = R.string.default_value,
-                            SodaCalculatorLogic.DEFAULT_TARGET_PPM.toString()
-                        ),
-                        keyboardType = KeyboardType.Decimal
-                    )
-
-                    CalculatorInputField(
-                        value = state.sodaFactor,
-                        onValueChange = { onEvent(ChemicalSettingsEvent.UpdateSodaFactor(it)) },
-                        label = stringResource(id = R.string.chemical_factor),
-                        supportingText = stringResource(
-                            id = R.string.default_value,
-                            SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toInt().toString()
-                        ),
-                        keyboardType = KeyboardType.Decimal
-                    )
-
-                    OutlinedButton(
-                        onClick = { onEvent(ChemicalSettingsEvent.ResetSodaToDefault) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = stringResource(id = R.string.reset_to_default))
-                    }
-                }
-            }
+            ChemicalSettingSection(
+                title = stringResource(id = R.string.soda_section),
+                ppmValue = state.sodaPpm,
+                onPpmValueChange = { onEvent(ChemicalSettingsEvent.UpdateSodaPpm(it)) },
+                defaultPpm = SodaCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
+                factorValue = state.sodaFactor,
+                onFactorValueChange = { onEvent(ChemicalSettingsEvent.UpdateSodaFactor(it)) },
+                defaultFactor = SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toInt().toString(),
+                onReset = { onEvent(ChemicalSettingsEvent.ResetSodaToDefault) }
+            )
 
             // Save Button
             Button(
@@ -246,6 +131,74 @@ fun ChemicalSettingsScreenContent(
     }
 }
 
+@Composable
+private fun ChemicalSettingSection(
+    title: String,
+    ppmValue: String,
+    onPpmValueChange: (String) -> Unit,
+    defaultPpm: String,
+    factorValue: String,
+    onFactorValueChange: (String) -> Unit,
+    defaultFactor: String,
+    onReset: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                IconButton(
+                    onClick = onReset,
+                    modifier = Modifier.size(24.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SettingsBackupRestore,
+                        contentDescription = stringResource(id = R.string.reset_to_default))
+                }
+            }
+
+
+            CalculatorInputField(
+                value = ppmValue,
+                onValueChange = onPpmValueChange,
+                label = stringResource(id = R.string.target_ppm),
+                supportingText = stringResource(
+                    id = R.string.default_value,
+                    defaultPpm
+                ),
+                keyboardType = KeyboardType.Decimal
+            )
+
+            CalculatorInputField(
+                value = factorValue,
+                onValueChange = onFactorValueChange,
+                label = stringResource(id = R.string.chemical_factor),
+                supportingText = stringResource(
+                    id = R.string.default_value,
+                    defaultFactor
+                ),
+                keyboardType = KeyboardType.Decimal
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun ChemicalSettingsScreenPreview() {
@@ -256,4 +209,3 @@ fun ChemicalSettingsScreenPreview() {
         )
     }
 }
-

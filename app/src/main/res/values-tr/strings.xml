@@ -210,7 +210,7 @@
     <string name="iron3_section">Demir-3 Dozaj Parametreleri</string>
     <string name="soda_section">Soda Dozaj Parametreleri</string>
     <string name="default_value">Varsayılan: %s</string>
-    <string name="current_settings">Mevcut Ayarlar</string>
-    <string name="current_ppm">Mevcut PPM</string>
-    <string name="current_factor">Mevcut Faktör</string>
+    <string name="current_settings">Mevcut Kimyasal Ayarlar</string>
+    <string name="current_ppm">İstenen PPM</string>
+    <string name="current_factor">Faktör (g/L)</string>
 </resources>

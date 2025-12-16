@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -100,7 +101,7 @@ fun HomeContent(
             modifier = Modifier.fillMaxWidth(),
             onClick = onNavigateToCalculator,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = Color(0xFF8D6E63) // Kahverengi
             )
         ) {
             Column(
@@ -117,41 +118,55 @@ fun HomeContent(
                         imageVector = Icons.Default.Calculate,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = Color.White
                     )
                     Text(
                         text = "Demir-3 Dozaj Hesaplaması",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = Color.White
                     )
                 }
 
-                HorizontalDivider()
+                HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
 
                 // Kaydedilen Değerler
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Tesis Giriş Debisi",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.0f lt/sn", ironCalculationResult?.flowRate ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+
                     Column(horizontalAlignment = Alignment.Start) {
                         Text(
-                            text = "1 Litre Dolum Süresi",
+                            text = "Kalibrasyon Süresi",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
                             text = String.format(Locale.US, "%.1f sn", ironCalculationResult?.fillTime ?: 0.0),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color.White
                         )
                     }
 
@@ -159,13 +174,13 @@ fun HomeContent(
                         Text(
                             text = "Saatlik Miktar",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
-                            text = String.format(Locale.US, "%.1f kg/s", ironCalculationResult?.hourlyAmount ?: 0.0),
+                            text = String.format(Locale.US, "%.1f kg/sa", ironCalculationResult?.hourlyAmount ?: 0.0),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color.White
                         )
                     }
                 }
@@ -178,7 +193,7 @@ fun HomeContent(
                         "Henüz hesaplama yapılmadı"
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
+                    color = Color.White.copy(alpha = 0.6f)
                 )
             }
         }
@@ -188,7 +203,7 @@ fun HomeContent(
             modifier = Modifier.fillMaxWidth(),
             onClick = onNavigateToSodaCalculator,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = Color(0xFF26A69A) // Turkuaz
             )
         ) {
             Column(
@@ -205,39 +220,53 @@ fun HomeContent(
                         imageVector = Icons.Default.Calculate,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = Color.White
                     )
                     Text(
                         text = "Soda Dozaj Hesaplaması",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = Color.White
                     )
                 }
 
-                HorizontalDivider()
+                HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Filtre Çıkış Debisi",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = String.format(Locale.US, "%.0f lt/sn", sodaCalculationResult?.flowRate ?: 0.0),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+
                     Column(horizontalAlignment = Alignment.Start) {
                         Text(
-                            text = "1 Litre Dolum Süresi",
+                            text = "Kalibrasyon Süresi",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
                             text = String.format(Locale.US, "%.1f sn", sodaCalculationResult?.fillTime ?: 0.0),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = Color.White
                         )
                     }
 
@@ -245,13 +274,13 @@ fun HomeContent(
                         Text(
                             text = "Saatlik Miktar",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
-                            text = String.format(Locale.US, "%.1f kg/s", sodaCalculationResult?.hourlyAmount ?: 0.0),
+                            text = String.format(Locale.US, "%.1f kg/sa", sodaCalculationResult?.hourlyAmount ?: 0.0),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = Color.White
                         )
                     }
                 }
@@ -264,7 +293,7 @@ fun HomeContent(
                         "Henüz hesaplama yapılmadı"
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                    color = Color.White.copy(alpha = 0.6f)
                 )
             }
         }
@@ -273,7 +302,7 @@ fun HomeContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                containerColor = Color(0xFFFBC02D) // Koyu Sarı
             )
         ) {
             Column(
@@ -290,13 +319,13 @@ fun HomeContent(
                         imageVector = Icons.Default.Calculate,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                        tint = Color.Black
                     )
                     Text(
                         text = "Klor Dozaj Hesaplaması",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                        color = Color.Black
                     )
                 }
 

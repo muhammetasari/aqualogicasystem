@@ -8,10 +8,9 @@ import com.aqualogicasystem.izsu.data.repository.UserPreferencesRepository
 import com.aqualogicasystem.izsu.logic.IronCalculatorLogic
 import com.aqualogicasystem.izsu.logic.SodaCalculatorLogic
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
@@ -23,7 +22,6 @@ data class ChemicalSettingsUiState(
     val sodaPpm: String = SodaCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
     val sodaFactor: String = SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toString(),
     val isSaving: Boolean = false,
-    val saveSuccess: Boolean = false,
     val errorMessage: String? = null
 )
 
@@ -41,28 +39,6 @@ class ChemicalSettingsViewModel(
     private val _uiState = MutableStateFlow(ChemicalSettingsUiState())
     val uiState: StateFlow<ChemicalSettingsUiState> = _uiState.asStateFlow()
 
-    // Observe Iron-3 settings from repository
-    val ironSettings: StateFlow<Pair<Double, Double>> = repository.ironChemicalSettingsFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = Pair(
-                IronCalculatorLogic.DEFAULT_TARGET_PPM,
-                IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
-            )
-        )
-
-    // Observe Soda settings from repository
-    val sodaSettings: StateFlow<Pair<Double, Double>> = repository.sodaChemicalSettingsFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = Pair(
-                SodaCalculatorLogic.DEFAULT_TARGET_PPM,
-                SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
-            )
-        )
-
     init {
         loadSettings()
     }
@@ -72,8 +48,8 @@ class ChemicalSettingsViewModel(
      */
     private fun loadSettings() {
         viewModelScope.launch {
-            val ironSettings = repository.ironChemicalSettingsFlow.stateIn(viewModelScope).value
-            val sodaSettings = repository.sodaChemicalSettingsFlow.stateIn(viewModelScope).value
+            val ironSettings = repository.ironChemicalSettingsFlow.first()
+            val sodaSettings = repository.sodaChemicalSettingsFlow.first()
 
             _uiState.value = _uiState.value.copy(
                 ironPpm = ironSettings.first.toString(),
@@ -102,20 +78,38 @@ class ChemicalSettingsViewModel(
                 _uiState.value = _uiState.value.copy(sodaFactor = event.value)
             }
             ChemicalSettingsEvent.ResetIronToDefault -> {
-                _uiState.value = _uiState.value.copy(
-                    ironPpm = IronCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
-                    ironFactor = IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toString()
-                )
+                resetIronToDefault()
             }
             ChemicalSettingsEvent.ResetSodaToDefault -> {
-                _uiState.value = _uiState.value.copy(
-                    sodaPpm = SodaCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
-                    sodaFactor = SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toString()
-                )
+                resetSodaToDefault()
             }
             ChemicalSettingsEvent.SaveSettings -> {
                 saveSettings()
             }
+        }
+    }
+
+    private fun resetIronToDefault() {
+        viewModelScope.launch {
+            val defaultPpm = IronCalculatorLogic.DEFAULT_TARGET_PPM
+            val defaultFactor = IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
+            repository.saveIronChemicalSettings(defaultPpm, defaultFactor)
+            _uiState.value = _uiState.value.copy(
+                ironPpm = defaultPpm.toString(),
+                ironFactor = defaultFactor.toString(),
+            )
+        }
+    }
+
+    private fun resetSodaToDefault() {
+        viewModelScope.launch {
+            val defaultPpm = SodaCalculatorLogic.DEFAULT_TARGET_PPM
+            val defaultFactor = SodaCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
+            repository.saveSodaChemicalSettings(defaultPpm, defaultFactor)
+            _uiState.value = _uiState.value.copy(
+                sodaPpm = defaultPpm.toString(),
+                sodaFactor = defaultFactor.toString(),
+            )
         }
     }
 
@@ -134,57 +128,37 @@ class ChemicalSettingsViewModel(
                 val sodaFactor = _uiState.value.sodaFactor.toDoubleOrNull()
 
                 // Validation
-                if (ironPpm == null || ironPpm <= 0) {
+                val validationError = when {
+                    ironPpm == null || ironPpm <= 0 -> "Geçersiz Demir-3 PPM değeri"
+                    ironFactor == null || ironFactor <= 0 -> "Geçersiz Demir-3 Faktör değeri"
+                    sodaPpm == null || sodaPpm <= 0 -> "Geçersiz Soda PPM değeri"
+                    sodaFactor == null || sodaFactor <= 0 -> "Geçersiz Soda Faktör değeri"
+                    else -> null
+                }
+
+                if (validationError != null) {
                     _uiState.value = _uiState.value.copy(
                         isSaving = false,
-                        errorMessage = "Invalid Iron-3 PPM value"
+                        errorMessage = validationError
                     )
                     return@launch
                 }
-                if (ironFactor == null || ironFactor <= 0) {
-                    _uiState.value = _uiState.value.copy(
-                        isSaving = false,
-                        errorMessage = "Invalid Iron-3 Factor value"
-                    )
-                    return@launch
-                }
-                if (sodaPpm == null || sodaPpm <= 0) {
-                    _uiState.value = _uiState.value.copy(
-                        isSaving = false,
-                        errorMessage = "Invalid Soda PPM value"
-                    )
-                    return@launch
-                }
-                if (sodaFactor == null || sodaFactor <= 0) {
-                    _uiState.value = _uiState.value.copy(
-                        isSaving = false,
-                        errorMessage = "Invalid Soda Factor value"
-                    )
-                    return@launch
-                }
+
 
                 // Save to repository
-                repository.saveIronChemicalSettings(ironPpm, ironFactor)
-                repository.saveSodaChemicalSettings(sodaPpm, sodaFactor)
+                repository.saveIronChemicalSettings(ironPpm!!, ironFactor!!)
+                repository.saveSodaChemicalSettings(sodaPpm!!, sodaFactor!!)
 
                 _uiState.value = _uiState.value.copy(
-                    isSaving = false,
-                    saveSuccess = true
+                    isSaving = false
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isSaving = false,
-                    errorMessage = e.message ?: "Unknown error occurred"
+                    errorMessage = e.message ?: "Bilinmeyen bir hata oluştu"
                 )
             }
         }
-    }
-
-    /**
-     * Reset save success state
-     */
-    fun resetSaveSuccess() {
-        _uiState.value = _uiState.value.copy(saveSuccess = false)
     }
 
     /**
@@ -207,4 +181,3 @@ sealed class ChemicalSettingsEvent {
     object ResetSodaToDefault : ChemicalSettingsEvent()
     object SaveSettings : ChemicalSettingsEvent()
 }
-

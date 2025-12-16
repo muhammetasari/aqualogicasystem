@@ -21,6 +21,8 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
     private val _chlorineCalculationResultFlow = MutableStateFlow<ChlorineCalculationResult?>(null)
     private val _ironChemicalSettingsFlow = MutableStateFlow(Pair(21.0, 594.0))
     private val _sodaChemicalSettingsFlow = MutableStateFlow(Pair(7.5, 750.0))
+    private val _ironLastFlowFlow = MutableStateFlow<String?>(null)
+    private val _sodaLastFlowFlow = MutableStateFlow<String?>(null)
 
     override val themeConfigFlow: Flow<AppThemeConfig>
         get() = _themeConfigFlow
@@ -34,6 +36,12 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
     override val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?>
         get() = _chlorineCalculationResultFlow
 
+    override val ironLastFlowFlow: Flow<String?>
+        get() = _ironLastFlowFlow
+
+    override val sodaLastFlowFlow: Flow<String?>
+        get() = _sodaLastFlowFlow
+
     override val ironChemicalSettingsFlow: Flow<Pair<Double, Double>>
         get() = _ironChemicalSettingsFlow
 
@@ -46,6 +54,14 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override suspend fun getThemeConfig(): AppThemeConfig {
         return _themeConfigFlow.value
+    }
+
+    override suspend fun saveIronLastFlow(flow: String) {
+        _ironLastFlowFlow.value = flow
+    }
+
+    override suspend fun saveSodaLastFlow(flow: String) {
+        _sodaLastFlowFlow.value = flow
     }
 
     override suspend fun saveIronCalculationResult(result: CalculationResult) {
@@ -88,4 +104,3 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
         return _sodaChemicalSettingsFlow.value
     }
 }
-

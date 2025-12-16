@@ -36,6 +36,16 @@ interface IUserPreferencesRepository {
     val chlorineCalculationResultFlow: Flow<ChlorineCalculationResult?>
 
     /**
+     * Flow that emits the last used water flow for the iron calculator.
+     */
+    val ironLastFlowFlow: Flow<String?>
+
+    /**
+     * Flow that emits the last used water flow for the soda calculator.
+     */
+    val sodaLastFlowFlow: Flow<String?>
+
+    /**
      * Saves the selected theme configuration.
      *
      * @param themeConfig The theme configuration to save
@@ -51,7 +61,21 @@ interface IUserPreferencesRepository {
     suspend fun getThemeConfig(): AppThemeConfig
 
     /**
-     * Saves a Demir-3 calculation result.
+     * Saves the last used water flow for the iron calculator.
+     *
+     * @param flow The water flow value to save
+     */
+    suspend fun saveIronLastFlow(flow: String)
+
+    /**
+     * Saves the last used water flow for the soda calculator.
+     *
+     * @param flow The water flow value to save
+     */
+    suspend fun saveSodaLastFlow(flow: String)
+
+    /**
+     * Saves the result of a Demir-3 calculation.
      *
      * @param result The calculation result to save (includes active pump info)
      */
@@ -132,4 +156,3 @@ interface IUserPreferencesRepository {
      */
     suspend fun getSodaChemicalSettings(): Pair<Double, Double>?
 }
-

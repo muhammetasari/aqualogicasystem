@@ -37,19 +37,18 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
     private object PreferencesKeys {
         val THEME_CONFIG = stringPreferencesKey("theme_config")
 
-        // Demir-3 hesaplama sonuçları
         val IRON_CALC_FILL_TIME = doublePreferencesKey("iron_calc_fill_time")
         val IRON_CALC_HOURLY_AMOUNT = doublePreferencesKey("iron_calc_hourly_amount")
+        val IRON_CALC_FLOW_RATE = doublePreferencesKey("iron_calc_flow_rate")
         val IRON_CALC_TIMESTAMP = longPreferencesKey("iron_calc_timestamp")
-        val IRON_CALC_ACTIVE_PUMPS = stringPreferencesKey("iron_calc_active_pumps")
+        val IRON_LAST_FLOW = stringPreferencesKey("iron_last_flow")
 
-        // Soda hesaplama sonuçları
         val SODA_CALC_FILL_TIME = doublePreferencesKey("soda_calc_fill_time")
         val SODA_CALC_HOURLY_AMOUNT = doublePreferencesKey("soda_calc_hourly_amount")
+        val SODA_CALC_FLOW_RATE = doublePreferencesKey("soda_calc_flow_rate")
         val SODA_CALC_TIMESTAMP = longPreferencesKey("soda_calc_timestamp")
-        val SODA_CALC_ACTIVE_PUMPS = stringPreferencesKey("soda_calc_active_pumps")
+        val SODA_LAST_FLOW = stringPreferencesKey("soda_last_flow")
 
-        // Chlorine hesaplama sonuçları (3 nokta)
         val CHLORINE_PRE_DOSAGE = doublePreferencesKey("chlorine_pre_dosage")
         val CHLORINE_CONTACT_DOSAGE = doublePreferencesKey("chlorine_contact_dosage")
         val CHLORINE_FINAL_DOSAGE = doublePreferencesKey("chlorine_final_dosage")
@@ -59,9 +58,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         val CHLORINE_PRE_TIMESTAMP = longPreferencesKey("chlorine_pre_timestamp")
         val CHLORINE_CONTACT_TIMESTAMP = longPreferencesKey("chlorine_contact_timestamp")
         val CHLORINE_FINAL_TIMESTAMP = longPreferencesKey("chlorine_final_timestamp")
-        val CHLORINE_CALC_ACTIVE_PUMPS = stringPreferencesKey("chlorine_calc_active_pumps")
-
-        // Kimyasal dozaj ayarları
         val IRON_TARGET_PPM = doublePreferencesKey("iron_target_ppm")
         val IRON_CHEMICAL_FACTOR = doublePreferencesKey("iron_chemical_factor")
         val SODA_TARGET_PPM = doublePreferencesKey("soda_target_ppm")
@@ -85,18 +81,31 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         .map { preferences ->
             val fillTime = preferences[PreferencesKeys.IRON_CALC_FILL_TIME]
             val hourlyAmount = preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
+            val flowRate = preferences[PreferencesKeys.IRON_CALC_FLOW_RATE]
             val timestamp = preferences[PreferencesKeys.IRON_CALC_TIMESTAMP]
-            val activePumpsString = preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS]
-
-            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+            if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp,
+                    flowRate = flowRate,
+                    timestamp = timestamp
                 )
             } else {
                 null
             }
+        }
+
+    /**
+     * Flow that emits the last used water flow for the iron calculator.
+     */
+    override val ironLastFlowFlow: Flow<String?> = context.dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.IRON_LAST_FLOW]
+        }
+
+    override val sodaLastFlowFlow: Flow<String?> = context.dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.SODA_LAST_FLOW]
         }
 
     /**
@@ -106,14 +115,14 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         .map { preferences ->
             val fillTime = preferences[PreferencesKeys.SODA_CALC_FILL_TIME]
             val hourlyAmount = preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
+            val flowRate = preferences[PreferencesKeys.SODA_CALC_FLOW_RATE]
             val timestamp = preferences[PreferencesKeys.SODA_CALC_TIMESTAMP]
-            val activePumpsString = preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS]
-
-            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+            if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp,
+                    flowRate = flowRate,
+                    timestamp = timestamp
                 )
             } else {
                 null
@@ -179,6 +188,23 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
     }
 
     /**
+     * Saves the last used water flow for the iron calculator.
+     *
+     * @param flow The water flow value to save
+     */
+    override suspend fun saveIronLastFlow(flow: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.IRON_LAST_FLOW] = flow
+        }
+    }
+
+    override suspend fun saveSodaLastFlow(flow: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SODA_LAST_FLOW] = flow
+        }
+    }
+
+    /**
      * Saves a Demir-3 calculation result to DataStore.
      *
      * @param result The calculation result to save
@@ -187,6 +213,7 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.IRON_CALC_FILL_TIME] = result.fillTime
             preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT] = result.hourlyAmount
+            preferences[PreferencesKeys.IRON_CALC_FLOW_RATE] = result.flowRate
             preferences[PreferencesKeys.IRON_CALC_TIMESTAMP] = result.timestamp
         }
     }
@@ -200,6 +227,7 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.SODA_CALC_FILL_TIME] = result.fillTime
             preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT] = result.hourlyAmount
+            preferences[PreferencesKeys.SODA_CALC_FLOW_RATE] = result.flowRate
             preferences[PreferencesKeys.SODA_CALC_TIMESTAMP] = result.timestamp
         }
     }
@@ -214,14 +242,14 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         context.dataStore.data.map { prefs ->
             val fillTime = prefs[PreferencesKeys.IRON_CALC_FILL_TIME]
             val hourlyAmount = prefs[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
+            val flowRate = prefs[PreferencesKeys.IRON_CALC_FLOW_RATE]
             val timestamp = prefs[PreferencesKeys.IRON_CALC_TIMESTAMP]
-            val activePumpsString = prefs[PreferencesKeys.IRON_CALC_ACTIVE_PUMPS]
-
-            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+            if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp,
+                    flowRate = flowRate,
+                    timestamp = timestamp
                 )
             } else {
                 null
@@ -240,14 +268,14 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         context.dataStore.data.map { prefs ->
             val fillTime = prefs[PreferencesKeys.SODA_CALC_FILL_TIME]
             val hourlyAmount = prefs[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
+            val flowRate = prefs[PreferencesKeys.SODA_CALC_FLOW_RATE]
             val timestamp = prefs[PreferencesKeys.SODA_CALC_TIMESTAMP]
-            val activePumpsString = prefs[PreferencesKeys.SODA_CALC_ACTIVE_PUMPS]
-
-            if (fillTime != null && hourlyAmount != null && timestamp != null) {
+            if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
-                    timestamp = timestamp,
+                    flowRate = flowRate,
+                    timestamp = timestamp
                 )
             } else {
                 null
@@ -292,7 +320,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val contactTimestamp = prefs[PreferencesKeys.CHLORINE_CONTACT_TIMESTAMP]
             val finalTimestamp = prefs[PreferencesKeys.CHLORINE_FINAL_TIMESTAMP]
 
-            // En az bir dozaj kaydı varsa result döndür
             if (preDosage != null || contactDosage != null || finalDosage != null) {
                 ChlorineCalculationResult(
                     preChlorineDosage = preDosage ?: 0.0,
@@ -310,35 +337,6 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             }
         }.first()
     }
-
-    /**
-     * Formats a set of pump numbers to a comma-separated string.
-     *
-     * @param pumps Set of pump numbers (1, 2, 3)
-     * @return Comma-separated string (e.g., "1,2,3")
-     */
-    private fun formatPumpSet(pumps: Set<Int>): String {
-        return pumps.sorted().joinToString(",")
-    }
-
-    /**
-     * Parses a comma-separated string to a set of pump numbers.
-     *
-     * @param pumpsString Comma-separated string (e.g., "1,2,3")
-     * @return Set of pump numbers
-     */
-    private fun parsePumpSet(pumpsString: String?): Set<Int> {
-        if (pumpsString.isNullOrEmpty()) return emptySet()
-        return try {
-            pumpsString.split(",")
-                .mapNotNull { it.trim().toIntOrNull() }
-                .filter { it in 1..5 }
-                .toSet()
-        } catch (_: Exception) {
-            emptySet()
-        }
-    }
-
     /**
      * Flow that emits Iron-3 chemical settings (PPM and Factor).
      */

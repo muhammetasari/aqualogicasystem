@@ -71,6 +71,15 @@ class SodaCalculatorViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            repository.sodaLastFlowFlow.collect { lastFlow ->
+                if (lastFlow != null) {
+                    _uiState.update { currentState ->
+                        calculateResults(currentState.copy(waterFlow = lastFlow))
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -94,9 +103,18 @@ class SodaCalculatorViewModel(
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
+                if (currentState.waterFlow.isNotEmpty()) {
+                    repository.saveSodaLastFlow(currentState.waterFlow)
+                }
+
+                val fillTime = currentState.calculatedTargetSeconds
+                val hourlyAmount = currentState.calculatedHourlyAmount
+                val flowRate = currentState.waterFlow.toDoubleOrNull() ?: 0.0
+
                 val result = CalculationResult(
-                    fillTime = currentState.calculatedTargetSeconds,
-                    hourlyAmount = currentState.calculatedHourlyAmount,
+                    fillTime = fillTime,
+                    hourlyAmount = hourlyAmount,
+                    flowRate = flowRate,
                     timestamp = System.currentTimeMillis()
                 )
 
@@ -179,4 +197,3 @@ sealed class SodaCalculatorEvent {
      */
     data object SaveCalculation : SodaCalculatorEvent()
 }
-

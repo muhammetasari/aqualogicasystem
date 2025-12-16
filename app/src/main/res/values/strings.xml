@@ -213,7 +213,7 @@
     <string name="iron3_section">Iron-3 Dosage Parameters</string>
     <string name="soda_section">Soda Dosage Parameters</string>
     <string name="default_value">Default: %s</string>
-    <string name="current_settings">Current Settings</string>
-    <string name="current_ppm">Current PPM</string>
-    <string name="current_factor">Current Factor</string>
+    <string name="current_settings">Current Chemical Settings</string>
+    <string name="current_ppm">Lab PPM</string>
+    <string name="current_factor">Factor (g/L)</string>
 </resources>
