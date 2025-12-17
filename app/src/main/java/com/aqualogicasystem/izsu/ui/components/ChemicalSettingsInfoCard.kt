@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,10 +26,12 @@ import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 fun ChemicalSettingsInfoCard(
     modifier: Modifier = Modifier,
     targetPpm: String,
-    chemicalFactor: String
+    chemicalFactor: String,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
+        onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
@@ -70,8 +73,23 @@ fun ChemicalSettingsInfoCard(
                     )
                 }
             }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(R.string.go_to_settings),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer
+            )
         }
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun ChemicalSettingsInfoCardPreview() {
+    IzsuAppTheme {
+        ChemicalSettingsInfoCard(
+            targetPpm = "5.0",
+            chemicalFactor = "1.2",
+            onClick = {}
+        )
+    }
+}

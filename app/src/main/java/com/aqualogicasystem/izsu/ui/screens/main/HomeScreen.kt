@@ -139,50 +139,41 @@ fun HomeContent(
 
                 // Kaydedilen Değerler
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Tesis Giriş Debisi",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.0f lt/sn", ironCalculationResult?.flowRate ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text(
-                            text = "Kalibrasyon Süresi",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.1f sn", ironCalculationResult?.fillTime ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = "Saatlik Miktar",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.1f kg/sa", ironCalculationResult?.hourlyAmount ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Tesis Giriş Debisi",
+                        value = String.format(Locale.US, "%.0f", ironCalculationResult?.flowRate ?: 0.0),
+                        unit = "lt/sn"
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Kalibrasyon Süresi",
+                        value = String.format(Locale.US, "%.1f", ironCalculationResult?.fillTime ?: 0.0),
+                        unit = "sn"
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Saatlik Miktar",
+                        value = String.format(Locale.US, "%.1f", ironCalculationResult?.hourlyAmount ?: 0.0),
+                        unit = "kg/sa"
+                    )
                 }
 
                 // Tarih ve Saat
@@ -239,50 +230,41 @@ fun HomeContent(
 
                 HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Filtre Çıkış Debisi",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.0f lt/sn", sodaCalculationResult?.flowRate ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text(
-                            text = "Kalibrasyon Süresi",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.1f sn", sodaCalculationResult?.fillTime ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = "Saatlik Miktar",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        Text(
-                            text = String.format(Locale.US, "%.1f kg/sa", sodaCalculationResult?.hourlyAmount ?: 0.0),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Filtre Çıkış Debisi",
+                        value = String.format(Locale.US, "%.0f", sodaCalculationResult?.flowRate ?: 0.0),
+                        unit = "lt/sn"
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Kalibrasyon Süresi",
+                        value = String.format(Locale.US, "%.1f", sodaCalculationResult?.fillTime ?: 0.0),
+                        unit = "sn"
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Saatlik Miktar",
+                        value = String.format(Locale.US, "%.1f", sodaCalculationResult?.hourlyAmount ?: 0.0),
+                        unit = "kg/sa"
+                    )
                 }
 
                 // Tarih ve Saat
@@ -367,6 +349,42 @@ fun HomeContent(
                     )
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+private fun ResultItem(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    unit: String
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = Color.White.copy(alpha = 0.8f)
+        )
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = unit,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.8f),
+                modifier = Modifier.paddingFromBaseline(bottom = 4.dp)
+            )
         }
     }
 }

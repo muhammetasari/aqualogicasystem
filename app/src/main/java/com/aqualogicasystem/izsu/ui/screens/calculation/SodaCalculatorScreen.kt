@@ -17,10 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aqualogicasystem.izsu.R
+import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
 import com.aqualogicasystem.izsu.ui.components.CalculatorSaveButton
+import com.aqualogicasystem.izsu.ui.components.ChemicalSettingsInfoCard
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
 import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorViewModel
@@ -60,52 +62,15 @@ fun SodaCalculatorScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             // Mevcut Kimyasal Ayarları Bilgi Kartı
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Science,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.current_settings),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "${stringResource(R.string.current_ppm)}: ${state.targetPpm}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                            Text(
-                                text = "${stringResource(R.string.current_factor)}: ${state.chemicalFactor}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-                    }
+            ChemicalSettingsInfoCard(
+                targetPpm = state.targetPpm,
+                chemicalFactor = state.chemicalFactor,
+                onClick = {
+                    navController.navigate(Screen.ChemicalSettings.route)
                 }
-            }
+            )
 
             CalculatorResultCard(
                 leftLabel = "Kalibrasyon Süresi",

@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aqualogicasystem.izsu.logic.IronCalculatorLogic
+import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
@@ -60,7 +61,10 @@ fun IronCalculatorScreen(
             // Mevcut Kimyasal Ayarları Bilgi Kartı
             ChemicalSettingsInfoCard(
                 targetPpm = state.targetPpm,
-                chemicalFactor = state.chemicalFactor
+                chemicalFactor = state.chemicalFactor,
+                onClick = {
+                    navController.navigate(Screen.ChemicalSettings.route)
+                }
             )
 
             CalculatorResultCard(

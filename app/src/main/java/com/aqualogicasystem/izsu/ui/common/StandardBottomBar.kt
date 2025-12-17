@@ -37,7 +37,7 @@ fun StandardBottomBar(navController: NavController) {
         Screen.Iron3.route, Screen.Calculator.route -> 1
         Screen.Soda.route, Screen.SodaCalculator.route -> 2
         Screen.Chlorine.route, Screen.ChlorineCalculator.route -> 3
-        Screen.Profile.route -> 5
+        Screen.Profile.route -> 4
         else -> 0 // Varsayılan olarak Home seçili
     }
 
@@ -46,7 +46,6 @@ fun StandardBottomBar(navController: NavController) {
         stringResource(id = R.string.bottom_bar_iron3),
         stringResource(id = R.string.bottom_bar_soda),
         stringResource(id = R.string.bottom_bar_chlorine),
-        stringResource(id = R.string.bottom_bar_chemical_settings),
         stringResource(id = R.string.bottom_bar_profile)
     )
 
@@ -59,8 +58,7 @@ fun StandardBottomBar(navController: NavController) {
                         1 -> Icon(Icons.TwoTone.HeatPump, contentDescription = item)
                         2 -> Icon(Icons.Default.WaterDrop, contentDescription = item)
                         3 -> Icon(Icons.Default.GasMeter, contentDescription = item)
-                        4 -> Icon(Icons.Default.Science, contentDescription = item)
-                        5 -> Icon(Icons.Default.AccountCircle, contentDescription = item)
+                        4 -> Icon(Icons.Default.AccountCircle, contentDescription = item)
                     }
                 },
                 label = {Text(item)},
@@ -80,10 +78,7 @@ fun StandardBottomBar(navController: NavController) {
                         3 -> navController.navigate(Screen.Chlorine.route) {
                             launchSingleTop = true
                         }
-                        4 -> navController.navigate(Screen.ChemicalSettings.route) {
-                            launchSingleTop = true
-                        }
-                        5 -> navController.navigate(Screen.Profile.route) {
+                        4 -> navController.navigate(Screen.Profile.route) {
                             launchSingleTop = true
                         }
                     }

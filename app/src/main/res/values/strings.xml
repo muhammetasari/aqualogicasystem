@@ -216,4 +216,5 @@
     <string name="current_settings">Current Chemical Settings</string>
     <string name="current_ppm">Lab PPM</string>
     <string name="current_factor">Factor (g/L)</string>
+    <string name="go_to_settings">Kimyasal Dozaj Ayarları</string>
 </resources>
