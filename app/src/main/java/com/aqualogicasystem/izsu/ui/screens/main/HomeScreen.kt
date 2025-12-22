@@ -26,6 +26,7 @@ import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 import com.aqualogicasystem.izsu.ui.components.ChlorineDetailCard
+import com.aqualogicasystem.izsu.ui.components.ResultItem
 import com.aqualogicasystem.izsu.ui.components.formatDate
 import java.util.Locale
 
@@ -162,19 +163,36 @@ fun HomeContent(
                         value = String.format(Locale.US, "%.1f", ironCalculationResult?.fillTime ?: 0.0),
                         unit = "sn"
                     )
+                }
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Pompa Hz",
+                        value = "", // TODO:Demir 3 Pompa Hz gelecek.
+                        unit = "Hz",
+                    )
                     VerticalDivider(
                         modifier = Modifier
                             .height(40.dp)
                             .padding(horizontal = 4.dp),
                         color = Color.White.copy(alpha = 0.5f)
                     )
+
                     ResultItem(
                         modifier = Modifier.weight(1f),
-                        label = "Saatlik Miktar",
-                        value = String.format(Locale.US, "%.1f", ironCalculationResult?.hourlyAmount ?: 0.0),
-                        unit = "kg/sa"
+                        label = "Pompa Açıklık",
+                        value = "", // TODO:Demir 3 Pompa Açıklık gelecek.
+                        unit = "%",
                     )
                 }
+
+
 
                 // Tarih ve Saat
                 Text(
@@ -253,18 +271,28 @@ fun HomeContent(
                         value = String.format(Locale.US, "%.1f", sodaCalculationResult?.fillTime ?: 0.0),
                         unit = "sn"
                     )
-                    VerticalDivider(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(horizontal = 4.dp),
-                        color = Color.White.copy(alpha = 0.5f)
+                }
+                HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Pompa Hz",
+                        value = "", // TODO: Soda Pompa Hz değeri gelecek.
+                        unit = "Hz"
                     )
                     ResultItem(
                         modifier = Modifier.weight(1f),
-                        label = "Saatlik Miktar",
-                        value = String.format(Locale.US, "%.1f", sodaCalculationResult?.hourlyAmount ?: 0.0),
-                        unit = "kg/sa"
+                        label = "Pompa Açıklık",
+                        value = "", // TODO: Soda Pompa Açıklığı gelecek. 
+                        unit = "%"
                     )
+
                 }
 
                 // Tarih ve Saat
@@ -354,40 +382,6 @@ fun HomeContent(
 }
 
 
-@Composable
-private fun ResultItem(
-    modifier: Modifier = Modifier,
-    label: String,
-    value: String,
-    unit: String
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = Color.White.copy(alpha = 0.8f)
-        )
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = unit,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.8f),
-                modifier = Modifier.paddingFromBaseline(bottom = 4.dp)
-            )
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
