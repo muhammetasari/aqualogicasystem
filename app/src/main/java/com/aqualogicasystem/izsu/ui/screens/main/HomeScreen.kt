@@ -192,8 +192,6 @@ fun HomeContent(
                     )
                 }
 
-
-
                 // Tarih ve Saat
                 Text(
                     text = if (ironCalculationResult != null) {
@@ -286,13 +284,18 @@ fun HomeContent(
                         value = "", // TODO: Soda Pompa Hz değeri gelecek.
                         unit = "Hz"
                     )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
                     ResultItem(
                         modifier = Modifier.weight(1f),
                         label = "Pompa Açıklık",
                         value = "", // TODO: Soda Pompa Açıklığı gelecek. 
                         unit = "%"
                     )
-
                 }
 
                 // Tarih ve Saat
