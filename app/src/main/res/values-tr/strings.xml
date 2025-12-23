@@ -213,4 +213,5 @@
     <string name="current_settings">Mevcut Kimyasal Ayarlar</string>
     <string name="current_ppm">İstenen PPM</string>
     <string name="current_factor">Faktör (g/L)</string>
+    <string name="go_to_settings">Kimyasal Dozaj Ayarları</string>
 </resources>

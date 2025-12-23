@@ -111,12 +111,10 @@ class IronCalculatorViewModel(
                 }
 
                 val fillTime = currentState.calculatedTargetSeconds
-                val hourlyAmount = IronCalculatorLogic.calculateHourlyAmount(fillTime)
                 val flowRate = (currentState.waterFlow.toDoubleOrNull() ?: 0.0)
 
                 val result = CalculationResult(
                     fillTime = fillTime,
-                    hourlyAmount = hourlyAmount,
                     flowRate = flowRate,
                     timestamp = System.currentTimeMillis()
                 )

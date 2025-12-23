@@ -72,22 +72,6 @@ object IronCalculatorLogic {
         return (chemicalFactorGPerL * 1000) / (waterFlowM3PerSec * targetPpm)
     }
 
-    /**
-     * Saatlik kimyasal tüketim miktarını hesaplar.
-     *
-     * Formül: Saatlik Miktar (kg/saat) = 3600 / Dolum Süresi
-     *
-     * @param fillTimeSeconds 1 litre dolum süresi (saniye)
-     * @return Hesaplanan saatlik miktar (kg/saat). Geçersiz süre durumunda 0.0 döner.
-     */
-    fun calculateHourlyAmount(fillTimeSeconds: Double): Double {
-        // Gerçekçi olmayan kısa süreler için 0 döndür
-        if (fillTimeSeconds < MIN_FILL_TIME) {
-            return 0.0
-        }
-
-        return 3600.0 / fillTimeSeconds
-    }
 
     /**
      * Giriş parametrelerinin geçerliliğini kontrol eder.

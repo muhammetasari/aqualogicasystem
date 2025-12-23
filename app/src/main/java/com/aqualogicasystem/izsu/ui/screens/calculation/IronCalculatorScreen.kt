@@ -12,7 +12,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aqualogicasystem.izsu.logic.IronCalculatorLogic
+import com.aqualogicasystem.izsu.data.model.CalculationResult
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
@@ -26,6 +26,8 @@ import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IronCalculatorScreen(
+    ironCalculationResult: CalculationResult? = null,
+
     navController: NavController,
     viewModel: IronCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
@@ -34,6 +36,7 @@ fun IronCalculatorScreen(
     )
 ) {
     val state by viewModel.uiState.collectAsState()
+
 
     // Kayıt başarılı olduğunda anasayfaya dön
     LaunchedEffect(state.saveSuccess) {
@@ -71,10 +74,10 @@ fun IronCalculatorScreen(
                 leftLabel = "Kalibrasyon Süresi",
                 leftValue = state.calculatedTargetSeconds,
                 leftUnit = "sn",
-                rightLabel = "Toplam Miktar",
-                rightValue = IronCalculatorLogic.calculateHourlyAmount(state.calculatedTargetSeconds),
-                rightUnit = "kg/saat",
-                valueFormat = "%.1f"
+                rightLabel = "Mevcut Debi",
+                rightValue = state.waterFlow.toDoubleOrNull() ?: ironCalculationResult?.flowRate ?: 0.0,
+                rightUnit = "lt/sn",
+                rightValueFormat = "%.0f"
             )
 
             HorizontalDivider()

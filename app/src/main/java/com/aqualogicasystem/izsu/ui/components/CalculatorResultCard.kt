@@ -23,7 +23,9 @@ import java.util.Locale
  * @param rightLabel Sağ metrik etiketi
  * @param rightValue Sağ metrik değeri
  * @param rightUnit Sağ metrik birimi (opsiyonel)
- * @param valueFormat Değer formatlama pattern'i (varsayılan: "%.2f")
+ * @param valueFormat Değer formatlama pattern'i (varsayılan: "%.2f") - hem sol hem sağ için kullanılacak varsayılan format
+ * @param leftValueFormat Sol değer için özel format (opsiyonel, belirtilmezse valueFormat kullanılır)
+ * @param rightValueFormat Sağ değer için özel format (opsiyonel, belirtilmezse valueFormat kullanılır)
  */
 @Composable
 fun CalculatorResultCard(
@@ -35,8 +37,13 @@ fun CalculatorResultCard(
     rightLabel: String,
     rightValue: Double,
     rightUnit: String? = null,
-    valueFormat: String = "%.2f"
+    valueFormat: String = "%.2f",
+    leftValueFormat: String? = null,
+    rightValueFormat: String? = null
 ) {
+    val leftFormatToUse = leftValueFormat ?: valueFormat
+    val rightFormatToUse = rightValueFormat ?: valueFormat
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -72,7 +79,7 @@ fun CalculatorResultCard(
                     )
                     Text(
                         text = buildString {
-                            append(String.format(Locale.US, valueFormat, leftValue))
+                            append(String.format(Locale.US, leftFormatToUse, leftValue))
                             if (leftUnit != null) {
                                 append(" ")
                                 append(leftUnit)
@@ -92,7 +99,7 @@ fun CalculatorResultCard(
                     )
                     Text(
                         text = buildString {
-                            append(String.format(Locale.US, valueFormat, rightValue))
+                            append(String.format(Locale.US, rightFormatToUse, rightValue))
                             if (rightUnit != null) {
                                 append(" ")
                                 append(rightUnit)
@@ -122,7 +129,7 @@ fun CalculatorResultCardPreview() {
                 leftLabel = "Hedef PPM",
                 leftValue = 2.5,
                 rightLabel = "Toplam Dozaj",
-                rightValue = 15.75,
+                rightValue = 15.0,
                 rightUnit = "kg/saat"
             )
 
@@ -139,4 +146,3 @@ fun CalculatorResultCardPreview() {
         }
     }
 }
-

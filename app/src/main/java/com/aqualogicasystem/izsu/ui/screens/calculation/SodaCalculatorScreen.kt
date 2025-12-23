@@ -4,19 +4,15 @@ import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Science
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aqualogicasystem.izsu.R
+import com.aqualogicasystem.izsu.data.model.CalculationResult
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
@@ -30,6 +26,8 @@ import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SodaCalculatorScreen(
+    sodaCalculationResult: CalculationResult? = null,
+
     navController: NavController,
     viewModel: SodaCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
@@ -76,10 +74,10 @@ fun SodaCalculatorScreen(
                 leftLabel = "Kalibrasyon Süresi",
                 leftValue = state.calculatedTargetSeconds,
                 leftUnit = "sn",
-                rightLabel = "Toplam Miktar",
-                rightValue = state.calculatedHourlyAmount,
-                rightUnit = "kg/saat",
-                valueFormat = "%.1f"
+                rightLabel = "Mevcut Debi",
+                rightValue = sodaCalculationResult?.flowRate ?: state.waterFlow.toDoubleOrNull() ?: 0.0,
+                rightUnit = "lt/sn",
+                rightValueFormat = "%.0f"
             )
 
 
@@ -106,4 +104,3 @@ fun SodaCalculatorScreen(
         }
     }
 }
-
