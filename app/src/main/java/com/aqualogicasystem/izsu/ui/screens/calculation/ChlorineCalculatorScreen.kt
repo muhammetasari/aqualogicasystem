@@ -345,19 +345,65 @@ fun FinalChlorinationSection(
     }
 }
 
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Ön Klorlama")
 @Composable
-fun ChlorineCalculatorScreenPreview() {
+fun PreChlorinationScreenPreview() {
     IzsuAppTheme {
-        ChlorineCalculatorScreen(
-            navController = rememberNavController(),
-            viewModel = viewModel(
-                factory = CalculatorViewModelFactory(
-                    application = LocalContext.current.applicationContext as Application,
-                    repository = FakeUserPreferencesRepository()
-                )
+        val navController = rememberNavController()
+        val fakeRepository = remember { FakeUserPreferencesRepository() }
+        val fakeApplication = remember { Application() }
+        val viewModel: ChlorineCalculatorViewModel = viewModel(
+            factory = CalculatorViewModelFactory(
+                application = fakeApplication,
+                repository = fakeRepository
             )
+        )
+        ChlorineCalculatorScreen(
+            navController = navController,
+            initialTab = 0,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Kontak Tankı")
+@Composable
+fun ContactTankScreenPreview() {
+    IzsuAppTheme {
+        val navController = rememberNavController()
+        val fakeRepository = remember { FakeUserPreferencesRepository() }
+        val fakeApplication = remember { Application() }
+        val viewModel: ChlorineCalculatorViewModel = viewModel(
+            factory = CalculatorViewModelFactory(
+                application = fakeApplication,
+                repository = fakeRepository
+            )
+        )
+        ChlorineCalculatorScreen(
+            navController = navController,
+            initialTab = 1,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Son Klorlama")
+@Composable
+fun FinalChlorinationScreenPreview() {
+    IzsuAppTheme {
+        val navController = rememberNavController()
+        val fakeRepository = remember { FakeUserPreferencesRepository() }
+        val fakeApplication = remember { Application() }
+        val viewModel: ChlorineCalculatorViewModel = viewModel(
+            factory = CalculatorViewModelFactory(
+                application = fakeApplication,
+                repository = fakeRepository
+            )
+        )
+        ChlorineCalculatorScreen(
+            navController = navController,
+            initialTab = 2,
+            viewModel = viewModel
         )
     }
 }

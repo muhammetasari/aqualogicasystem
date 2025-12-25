@@ -22,6 +22,10 @@ import com.aqualogicasystem.izsu.ui.components.ChemicalSettingsInfoCard
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
 import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorViewModel
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.aqualogicasystem.izsu.data.repository.fake.FakeUserPreferencesRepository
+import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +78,7 @@ fun IronCalculatorScreen(
                 leftLabel = "Kalibrasyon Süresi",
                 leftValue = state.calculatedTargetSeconds,
                 leftUnit = "sn",
+                leftValueFormat = "%.0f",
                 rightLabel = "Mevcut Debi",
                 rightValue = state.waterFlow.toDoubleOrNull() ?: ironCalculationResult?.flowRate ?: 0.0,
                 rightUnit = "lt/sn",
@@ -98,8 +103,29 @@ fun IronCalculatorScreen(
             CalculatorSaveButton(
                 onClick = { viewModel.onEvent(IronCalculatorEvent.SaveCalculation) },
                 enabled = state.calculatedTargetSeconds > 0.0,
-                isLoading = state.isSaving
+                isLoading = state.isSaving,
+                text = "Hesapla ve Kaydet"
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun IronCalculatorScreenPreview() {
+    IzsuAppTheme {
+        val navController = rememberNavController()
+        val fakeRepository = remember { FakeUserPreferencesRepository() }
+        val fakeApplication = remember { Application() }
+        val viewModel: IronCalculatorViewModel = viewModel(
+            factory = CalculatorViewModelFactory(
+                application = fakeApplication,
+                repository = fakeRepository
+            )
+        )
+        IronCalculatorScreen(
+            navController = navController,
+            viewModel = viewModel
+        )
     }
 }

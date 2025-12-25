@@ -26,7 +26,7 @@ fun CalculatorSaveButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    text: String = "Kaydet"
+    text: String = "Hesaplamayı Kaydet"
 ) {
     Button(
         onClick = onClick,
