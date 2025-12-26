@@ -72,6 +72,11 @@ object IronCalculatorLogic {
         return (chemicalFactorGPerL * 1000) / (waterFlowM3PerSec * targetPpm)
     }
 
+    fun calculateHourlyAmount(fillTimeSeconds: Double): Double {
+        if (fillTimeSeconds <= 0) return 0.0
+        return 3600.0 / fillTimeSeconds
+    }
+
 
     /**
      * Giriş parametrelerinin geçerliliğini kontrol eder.

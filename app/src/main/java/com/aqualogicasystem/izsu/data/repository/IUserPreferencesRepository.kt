@@ -46,6 +46,16 @@ interface IUserPreferencesRepository {
     val sodaLastFlowFlow: Flow<String?>
 
     /**
+     * Demir kalibrasyon verilerini (time, hz, aperture) Triple olarak döndüren Flow.
+     */
+    val ironCalibrationFlow: Flow<Triple<String, String, String>>
+
+    /**
+     * Soda kalibrasyon verilerini (time, hz, aperture) Triple olarak döndüren Flow.
+     */
+    val sodaCalibrationFlow: Flow<Triple<String, String, String>>
+
+    /**
      * Saves the selected theme configuration.
      *
      * @param themeConfig The theme configuration to save
@@ -155,4 +165,14 @@ interface IUserPreferencesRepository {
      * @return Pair of (targetPpm, chemicalFactor) or null if not set
      */
     suspend fun getSodaChemicalSettings(): Pair<Double, Double>?
+
+    /**
+     * Demir kalibrasyon verilerini kaydeder.
+     */
+    suspend fun saveIronCalibration(time: String, hz: String, aperture: String)
+
+    /**
+     * Soda kalibrasyon verilerini kaydeder.
+     */
+    suspend fun saveSodaCalibration(time: String, hz: String, aperture: String)
 }

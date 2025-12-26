@@ -409,6 +409,50 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         return preferences.first()
     }
 
+    /**
+     * Flow that emits Iron-3 calibration settings (Time, Hz, Aperture).
+     */
+    override val ironCalibrationFlow: Flow<Triple<String, String, String>> = context.dataStore.data
+        .map { preferences ->
+            val time = preferences[stringPreferencesKey("iron_calibration_time")] ?: ""
+            val hz = preferences[stringPreferencesKey("iron_calibration_hz")] ?: ""
+            val aperture = preferences[stringPreferencesKey("iron_calibration_aperture")] ?: ""
+            Triple(time, hz, aperture)
+        }
+
+    /**
+     * Saves Iron-3 calibration settings.
+     */
+    override suspend fun saveIronCalibration(time: String, hz: String, aperture: String) {
+        context.dataStore.edit { preferences ->
+            preferences[stringPreferencesKey("iron_calibration_time")] = time
+            preferences[stringPreferencesKey("iron_calibration_hz")] = hz
+            preferences[stringPreferencesKey("iron_calibration_aperture")] = aperture
+        }
+    }
+
+    /**
+     * Flow that emits Soda calibration settings (Time, Hz, Aperture).
+     */
+    override val sodaCalibrationFlow: Flow<Triple<String, String, String>> = context.dataStore.data
+        .map { preferences ->
+            val time = preferences[stringPreferencesKey("soda_calibration_time")] ?: ""
+            val hz = preferences[stringPreferencesKey("soda_calibration_hz")] ?: ""
+            val aperture = preferences[stringPreferencesKey("soda_calibration_aperture")] ?: ""
+            Triple(time, hz, aperture)
+        }
+
+    /**
+     * Saves Soda calibration settings.
+     */
+    override suspend fun saveSodaCalibration(time: String, hz: String, aperture: String) {
+        context.dataStore.edit { preferences ->
+            preferences[stringPreferencesKey("soda_calibration_time")] = time
+            preferences[stringPreferencesKey("soda_calibration_hz")] = hz
+            preferences[stringPreferencesKey("soda_calibration_aperture")] = aperture
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: UserPreferencesRepository? = null
@@ -429,4 +473,3 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
         }
     }
 }
-

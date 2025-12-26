@@ -19,19 +19,16 @@ import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
 import com.aqualogicasystem.izsu.ui.components.CalculatorSaveButton
 import com.aqualogicasystem.izsu.ui.components.ChemicalSettingsInfoCard
+import com.aqualogicasystem.izsu.ui.components.MultiPumpResultDisplay
+import com.aqualogicasystem.izsu.ui.components.PumpControlPanel
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
 import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorEvent
 import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorViewModel
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.aqualogicasystem.izsu.data.repository.fake.FakeUserPreferencesRepository
-import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IronCalculatorScreen(
     ironCalculationResult: CalculationResult? = null,
-
     navController: NavController,
     viewModel: IronCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
@@ -41,8 +38,6 @@ fun IronCalculatorScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-
-    // Kayıt başarılı olduğunda anasayfaya dön
     LaunchedEffect(state.saveSuccess) {
         if (state.saveSuccess) {
             viewModel.resetSaveSuccess()
@@ -52,7 +47,7 @@ fun IronCalculatorScreen(
 
     StandardLayout(
         navController = navController,
-        title = "Demir-3 Dozaj Hesaplayıcı",
+        title = "Demir Dozaj & Pompa",
         showTopBar = true,
         showBackButton = true,
         showBottomBar = true
@@ -65,34 +60,12 @@ fun IronCalculatorScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Mevcut Kimyasal Ayarları Bilgi Kartı
             ChemicalSettingsInfoCard(
                 targetPpm = state.targetPpm,
                 chemicalFactor = state.chemicalFactor,
-                onClick = {
-                    navController.navigate(Screen.ChemicalSettings.route)
-                }
+                onClick = { navController.navigate(Screen.ChemicalSettings.route) }
             )
 
-            CalculatorResultCard(
-                leftLabel = "Kalibrasyon Süresi",
-                leftValue = state.calculatedTargetSeconds,
-                leftUnit = "sn",
-                leftValueFormat = "%.0f",
-                rightLabel = "Mevcut Debi",
-                rightValue = state.waterFlow.toDoubleOrNull() ?: ironCalculationResult?.flowRate ?: 0.0,
-                rightUnit = "lt/sn",
-                rightValueFormat = "%.0f"
-            )
-
-            HorizontalDivider()
-            Text(
-                text = "Tesis Su Giriş Debisi (lt/sn) ",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            // Su Debisi Girişi
             CalculatorInputField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateFlow(it)) },
@@ -100,32 +73,67 @@ fun IronCalculatorScreen(
                 keyboardType = KeyboardType.Number
             )
 
+            // ARA SONUÇ
+            CalculatorResultCard(
+                leftLabel = "Hedef Süre",
+                leftValue = state.calculatedTargetSeconds,
+                leftUnit = "sn",
+                rightLabel = "Tüketim",
+                rightValue = state.calculatedHourlyAmount,
+                rightUnit = "kg/s",
+                rightValueFormat = "%.1f"
+            )
+
+            HorizontalDivider()
+
+            Text("Kalibrasyon Değerleri", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationTime,
+                        onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateCalibrationTime(it)) },
+                        label = "Süre",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationHz,
+                        onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateCalibrationHz(it)) },
+                        label = "Hz",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationAperture,
+                        onValueChange = { viewModel.onEvent(IronCalculatorEvent.UpdateCalibrationAperture(it)) },
+                        label = "Açıklık %",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+            }
+
+            PumpControlPanel(
+                pumpList = state.pumps,
+                onPumpToggle = { id, isActive ->
+                    viewModel.onEvent(IronCalculatorEvent.TogglePump(id, isActive))
+                }
+            )
+
+            state.pumpResult?.let { result ->
+                MultiPumpResultDisplay(result = result)
+            }
+
             CalculatorSaveButton(
                 onClick = { viewModel.onEvent(IronCalculatorEvent.SaveCalculation) },
                 enabled = state.calculatedTargetSeconds > 0.0,
                 isLoading = state.isSaving,
-                text = "Hesapla ve Kaydet"
+                text = "Kaydet"
             )
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun IronCalculatorScreenPreview() {
-    IzsuAppTheme {
-        val navController = rememberNavController()
-        val fakeRepository = remember { FakeUserPreferencesRepository() }
-        val fakeApplication = remember { Application() }
-        val viewModel: IronCalculatorViewModel = viewModel(
-            factory = CalculatorViewModelFactory(
-                application = fakeApplication,
-                repository = fakeRepository
-            )
-        )
-        IronCalculatorScreen(
-            navController = navController,
-            viewModel = viewModel
-        )
+            Spacer(modifier = Modifier.height(32.dp))
+        }
     }
 }

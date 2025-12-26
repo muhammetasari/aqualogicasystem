@@ -4,49 +4,47 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.aqualogicasystem.izsu.data.model.CalculationResult
+import com.aqualogicasystem.izsu.data.model.MultiPumpResult
+import com.aqualogicasystem.izsu.data.model.Pump
+import com.aqualogicasystem.izsu.data.model.PumpGroupConfig
 import com.aqualogicasystem.izsu.data.repository.IUserPreferencesRepository
 import com.aqualogicasystem.izsu.data.repository.UserPreferencesRepository
 import com.aqualogicasystem.izsu.logic.IronCalculatorLogic
+import com.aqualogicasystem.izsu.logic.MultiPumpManager
+import com.aqualogicasystem.izsu.logic.PumpCalculationInput
+import com.aqualogicasystem.izsu.logic.PumpCalculatorLogic
+import com.aqualogicasystem.izsu.logic.PumpConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * Demir Giderme Hesaplayıcısı için UI State sınıfı.
- *
- * @property waterFlow Su debisi (m³/sn) - Kullanıcı girişi
- * @property targetPpm İstenen dozaj (ppm) - Varsayılan 21.0
- * @property chemicalFactor Kimyasal faktörü - Varsayılan 549.0
- * @property calculatedTargetSeconds Hesaplanan dolum süresi (saniye)
- * @property isSaving Kaydetme işlemi devam ediyor mu?
- * @property saveSuccess Kaydetme işlemi başarılı oldu mu?
- */
 data class IronCalculatorUiState(
+    // Kimyasal Girdileri
     val waterFlow: String = "",
     val targetPpm: String = IronCalculatorLogic.DEFAULT_TARGET_PPM.toString(),
     val chemicalFactor: String = IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR.toString(),
+
+    // Sonuçlar
     val calculatedTargetSeconds: Double = 0.0,
+    val calculatedHourlyAmount: Double = 0.0,
+
+    // Kalibrasyon
+    val calibrationTime: String = "",
+    val calibrationHz: String = "",
+    val calibrationAperture: String = "",
+
+    // Pompa
+    val pumps: List<Pump> = emptyList(),
+    val pumpResult: MultiPumpResult? = null,
+
+    // Durum
     val isSaving: Boolean = false,
-    val saveSuccess: Boolean = false
+    val saveSuccess: Boolean = false,
+    val errorMessage: String? = null
 )
 
-/**
- * Demir Giderme Hesaplayıcısı ViewModel'i.
- *
- * Su arıtma tesislerinde demir giderme işlemi için kimyasal dozaj hesaplaması yapar.
- * MVVM mimarisini takip eder ve reaktif state yönetimi sağlar.
- *
- * Hesaplama Formülü:
- * ```
- * Dolum Süresi (sn) = (Kimyasal Faktörü * 1000) / (Su Debisi * Hedef PPM)
- * Saatlik Miktar (kg/saat) = 3600 / Dolum Süresi
- * ```
- *
- * @property application Application context - Repository başlatma için gerekli
- * @property repository Hesaplama sonuçlarını kaydetmek için UserPreferences repository'si
- */
 class IronCalculatorViewModel(
     application: Application,
     private val repository: IUserPreferencesRepository = UserPreferencesRepository.getInstance(application)
@@ -55,152 +53,176 @@ class IronCalculatorViewModel(
     private val _uiState = MutableStateFlow(IronCalculatorUiState())
     val uiState: StateFlow<IronCalculatorUiState> = _uiState.asStateFlow()
 
+    // --- DEMİR İÇİN 3 POMPA AYARI ---
+    private val pumpConfig = PumpGroupConfig(
+        groupName = "Demir",
+        totalPumpCount = 3,       // Demir için 3 Pompa
+        splitThreshold = 0.70     // %70 Eşik
+    )
+    private val pumpLogic = PumpCalculatorLogic(PumpConfig(absoluteMaxHz = 50.0))
+    private val multiPumpManager = MultiPumpManager(pumpConfig, pumpLogic)
+
     init {
-        // Load saved chemical settings from repository
+        // 1. Pompaları Başlat
+        _uiState.update { it.copy(pumps = multiPumpManager.pumps) }
+
+        // 2. Kimyasal Ayarları
         viewModelScope.launch {
             repository.ironChemicalSettingsFlow.collect { (ppm, factor) ->
-                _uiState.update { currentState ->
-                    calculateResults(
-                        currentState.copy(
-                            targetPpm = ppm.toString(),
-                            chemicalFactor = factor.toString()
-                        )
-                    )
+                _uiState.update {
+                    it.copy(targetPpm = ppm.toString(), chemicalFactor = factor.toString())
                 }
+                recalculateAll(_uiState.value)
             }
         }
+
+        // 3. Son Debi
         viewModelScope.launch {
             repository.ironLastFlowFlow.collect { lastFlow ->
                 if (lastFlow != null) {
-                    _uiState.update { currentState ->
-                        calculateResults(currentState.copy(waterFlow = lastFlow))
+                    _uiState.update { it.copy(waterFlow = lastFlow) }
+                    recalculateAll(_uiState.value)
+                }
+            }
+        }
+
+        // 4. Son Kalibrasyon Verileri (YENİ)
+        viewModelScope.launch {
+            repository.ironCalibrationFlow.collect { (time, hz, aperture) ->
+                if (time.isNotEmpty() || hz.isNotEmpty() || aperture.isNotEmpty()) {
+                    _uiState.update {
+                        it.copy(
+                            calibrationTime = time,
+                            calibrationHz = hz,
+                            calibrationAperture = aperture
+                        )
                     }
+                    recalculateAll(_uiState.value)
                 }
             }
         }
     }
 
-    /**
-     * Kullanıcı etkileşimlerini işler ve state'i günceller.
-     *
-     * @param event Kullanıcıdan gelen event (UpdateFlow, UpdatePpm, UpdateFactor, SaveCalculation)
-     */
     fun onEvent(event: IronCalculatorEvent) {
         when (event) {
             is IronCalculatorEvent.UpdateFlow -> updateState { it.copy(waterFlow = event.value) }
-            is IronCalculatorEvent.UpdatePpm -> updateState { it.copy(targetPpm = event.value) }
-            is IronCalculatorEvent.UpdateFactor -> updateState { it.copy(chemicalFactor = event.value) }
+
+            // Kalibrasyon
+            is IronCalculatorEvent.UpdateCalibrationTime -> updateState { it.copy(calibrationTime = event.value) }
+            is IronCalculatorEvent.UpdateCalibrationHz -> updateState { it.copy(calibrationHz = event.value) }
+            is IronCalculatorEvent.UpdateCalibrationAperture -> updateState { it.copy(calibrationAperture = event.value) }
+
+            // Pompa
+            is IronCalculatorEvent.TogglePump -> togglePump(event.pumpId, event.isActive)
+
+            // Kayıt
             is IronCalculatorEvent.SaveCalculation -> saveCalculation()
         }
     }
 
-    /**
-     * Hesaplama sonuçlarını repository'ye kaydeder.
-     *
-     * Coroutine içinde çalışır ve isSaving/saveSuccess state'lerini günceller.
-     * Hata durumunda sessizce yakalanır ve saveSuccess false olarak ayarlanır.
-     */
+    private fun togglePump(id: String, active: Boolean) {
+        multiPumpManager.togglePump(id, active)
+        updateState { it.copy(pumps = multiPumpManager.pumps.map { p -> p.copy() }) }
+    }
+
+    private fun updateState(update: (IronCalculatorUiState) -> IronCalculatorUiState) {
+        _uiState.update { currentState ->
+            val newState = update(currentState)
+            recalculateAll(newState)
+        }
+    }
+
+    private fun recalculateAll(state: IronCalculatorUiState): IronCalculatorUiState {
+        // --- KİMYASAL ---
+        val flow = state.waterFlow.toDoubleOrNull() ?: 0.0
+        val ppm = state.targetPpm.toDoubleOrNull() ?: IronCalculatorLogic.DEFAULT_TARGET_PPM
+        val factor = state.chemicalFactor.toDoubleOrNull() ?: IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
+
+        val targetSeconds = if (flow > 0) {
+            IronCalculatorLogic.calculateFillTime(flow, ppm, factor)
+        } else 0.0
+
+        val hourly = IronCalculatorLogic.calculateHourlyAmount(targetSeconds)
+
+        // --- POMPA ---
+        var pumpRes: MultiPumpResult? = null
+        val cTime = state.calibrationTime.toDoubleOrNull()
+        val cHz = state.calibrationHz.toDoubleOrNull()
+        val cAp = state.calibrationAperture.toDoubleOrNull()
+
+        if (targetSeconds > 0 && cTime != null && cHz != null && cAp != null && cTime > 0) {
+            val derivedFlow = (100.0 / targetSeconds) * 60
+
+            val input = PumpCalculationInput(
+                old_time_sec = cTime,
+                old_hz = cHz,
+                old_aperture = cAp,
+                target_time_sec = 0.0,
+                tube_volume_ml = 100.0
+            )
+
+            pumpRes = multiPumpManager.calculateLoad(
+                targetTotalFlowMlMin = derivedFlow,
+                baseInput = input
+            )
+        }
+
+        return state.copy(
+            calculatedTargetSeconds = targetSeconds,
+            calculatedHourlyAmount = hourly,
+            pumpResult = pumpRes
+        )
+    }
+
     private fun saveCalculation() {
         viewModelScope.launch {
             val currentState = _uiState.value
             _uiState.update { it.copy(isSaving = true, saveSuccess = false) }
 
             try {
+                // Debi Kaydet
                 if (currentState.waterFlow.isNotEmpty()) {
                     repository.saveIronLastFlow(currentState.waterFlow)
                 }
 
-                val fillTime = currentState.calculatedTargetSeconds
-                val flowRate = (currentState.waterFlow.toDoubleOrNull() ?: 0.0)
-
-                val result = CalculationResult(
-                    fillTime = fillTime,
-                    flowRate = flowRate,
-                    timestamp = System.currentTimeMillis()
+                // Kalibrasyon Kaydet (YENİ)
+                repository.saveIronCalibration(
+                    time = currentState.calibrationTime,
+                    hz = currentState.calibrationHz,
+                    aperture = currentState.calibrationAperture
                 )
 
+                // Sonuç Kaydet
+                val result = CalculationResult(
+                    fillTime = currentState.calculatedTargetSeconds,
+                    hourlyAmount = currentState.calculatedHourlyAmount,
+                    flowRate = currentState.waterFlow.toDoubleOrNull() ?: 0.0,
+                    timestamp = System.currentTimeMillis()
+                )
                 repository.saveIronCalculationResult(result)
+
                 _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(isSaving = false, saveSuccess = false) }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isSaving = false, saveSuccess = false, errorMessage = e.message)
+                }
             }
         }
     }
 
-    /**
-     * Kaydetme başarı durumunu sıfırlar.
-     *
-     * Kullanıcıya gösterilen başarı mesajını kapatmak için kullanılır.
-     */
     fun resetSaveSuccess() {
         _uiState.update { it.copy(saveSuccess = false) }
     }
-
-    /**
-     * State'i günceller ve otomatik olarak yeniden hesaplama tetikler.
-     *
-     * @param update State üzerinde yapılacak değişiklik lambda'sı
-     */
-    private fun updateState(update: (IronCalculatorUiState) -> IronCalculatorUiState) {
-        _uiState.update { currentState ->
-            val newState = update(currentState)
-            calculateResults(newState)
-        }
-    }
-
-    /**
-     * Demir giderme dozaj hesaplamasını yapar.
-     *
-     * UI state'indeki değerleri alır ve IronCalculatorLogic kullanarak hesaplama yapar.
-     * Hesaplama mantığı tamamen logic katmanında bulunur.
-     *
-     * @param state Mevcut UI state
-     * @return Hesaplanmış değerlerle güncellenmiş state
-     */
-    private fun calculateResults(state: IronCalculatorUiState): IronCalculatorUiState {
-        val flow = state.waterFlow.toDoubleOrNull() ?: 0.0
-        val ppm = state.targetPpm.toDoubleOrNull() ?: IronCalculatorLogic.DEFAULT_TARGET_PPM
-        val factor = state.chemicalFactor.toDoubleOrNull() ?: IronCalculatorLogic.DEFAULT_CHEMICAL_FACTOR
-
-        // Hesaplama tamamen logic katmanında yapılır
-        val targetSeconds = IronCalculatorLogic.calculateFillTime(
-            waterFlowM3PerSec = flow,
-            targetPpm = ppm,
-            chemicalFactorGPerL = factor
-        )
-
-        return state.copy(
-            calculatedTargetSeconds = targetSeconds
-        )
-    }
 }
 
-/**
- * Demir Giderme Hesaplayıcısı için kullanıcı etkileşim event'leri.
- *
- * Sealed class yapısı ile type-safe event yönetimi sağlar.
- */
 sealed class IronCalculatorEvent {
-    /**
-     * Su debisi değeri güncellendiğinde tetiklenir.
-     * @property value Yeni debi değeri (String - kullanıcı girişi)
-     */
     data class UpdateFlow(val value: String) : IronCalculatorEvent()
 
-    /**
-     * Hedef PPM değeri güncellendiğinde tetiklenir.
-     * @property value Yeni PPM değeri (String - kullanıcı girişi)
-     */
-    data class UpdatePpm(val value: String) : IronCalculatorEvent()
+    data class UpdateCalibrationTime(val value: String) : IronCalculatorEvent()
+    data class UpdateCalibrationHz(val value: String) : IronCalculatorEvent()
+    data class UpdateCalibrationAperture(val value: String) : IronCalculatorEvent()
 
-    /**
-     * Kimyasal faktörü güncellendiğinde tetiklenir.
-     * @property value Yeni faktör değeri (String - kullanıcı girişi)
-     */
-    data class UpdateFactor(val value: String) : IronCalculatorEvent()
+    data class TogglePump(val pumpId: String, val isActive: Boolean) : IronCalculatorEvent()
 
-    /**
-     * Hesaplama sonuçlarını kaydetme isteği.
-     */
     data object SaveCalculation : IronCalculatorEvent()
 }

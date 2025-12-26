@@ -22,6 +22,8 @@ import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
 import com.aqualogicasystem.izsu.ui.components.CalculatorResultCard
 import com.aqualogicasystem.izsu.ui.components.CalculatorSaveButton
 import com.aqualogicasystem.izsu.ui.components.ChemicalSettingsInfoCard
+import com.aqualogicasystem.izsu.ui.components.MultiPumpResultDisplay
+import com.aqualogicasystem.izsu.ui.components.PumpControlPanel
 import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 import com.aqualogicasystem.izsu.ui.viewmodel.CalculatorViewModelFactory
 import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorEvent
@@ -31,7 +33,6 @@ import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorViewModel
 @Composable
 fun SodaCalculatorScreen(
     sodaCalculationResult: CalculationResult? = null,
-
     navController: NavController,
     viewModel: SodaCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
@@ -41,7 +42,6 @@ fun SodaCalculatorScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    // Kayıt başarılı olduğunda anasayfaya dön
     LaunchedEffect(state.saveSuccess) {
         if (state.saveSuccess) {
             viewModel.resetSaveSuccess()
@@ -49,9 +49,10 @@ fun SodaCalculatorScreen(
         }
     }
 
+    // StandardLayout içindeki parametreler düzeltildi
     StandardLayout(
         navController = navController,
-        title = "Soda Dozaj Hesaplayıcı",
+        title = "Soda Dozaj & Pompa",
         showTopBar = true,
         showBackButton = true,
         showBottomBar = true
@@ -64,35 +65,13 @@ fun SodaCalculatorScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            // Mevcut Kimyasal Ayarları Bilgi Kartı
+            // 1. BÖLÜM: SU VE KİMYASAL GİRİŞİ
             ChemicalSettingsInfoCard(
                 targetPpm = state.targetPpm,
                 chemicalFactor = state.chemicalFactor,
-                onClick = {
-                    navController.navigate(Screen.ChemicalSettings.route)
-                }
+                onClick = { navController.navigate(Screen.ChemicalSettings.route) }
             )
 
-            CalculatorResultCard(
-                leftLabel = "Kalibrasyon Süresi",
-                leftValue = state.calculatedTargetSeconds,
-                leftUnit = "sn",
-                rightLabel = "Mevcut Debi",
-                rightValue = sodaCalculationResult?.flowRate ?: state.waterFlow.toDoubleOrNull() ?: 0.0,
-                rightUnit = "lt/sn",
-                rightValueFormat = "%.0f"
-            )
-
-
-            HorizontalDivider()
-            Text(
-                text = "Filtre Çıkış Debisi (lt/sn)",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            // Filtre Çıkış Değeri Girişi
             CalculatorInputField(
                 value = state.waterFlow,
                 onValueChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateFlow(it)) },
@@ -100,11 +79,76 @@ fun SodaCalculatorScreen(
                 keyboardType = KeyboardType.Number
             )
 
+            // ARA SONUÇ: HEDEF SÜRE
+            // Kullanıcı su debisini girdikçe burası güncellenecek
+            CalculatorResultCard(
+                leftLabel = "Hedef Süre (100ml)",
+                leftValue = state.calculatedTargetSeconds,
+                leftUnit = "sn",
+                rightLabel = "Saatlik Tüketim",
+                rightValue = state.calculatedHourlyAmount,
+                rightUnit = "kg/s",
+                rightValueFormat = "%.1f"
+            )
+
+            HorizontalDivider()
+
+            // 2. BÖLÜM: KALİBRASYON VERİLERİ (YENİ)
+            Text(
+                text = "Kalibrasyon Değerleri (Referans)",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Yan yana 3 küçük kutucuk
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationTime,
+                        onValueChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateCalibrationTime(it)) },
+                        label = "Süre (sn)",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationHz,
+                        onValueChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateCalibrationHz(it)) },
+                        label = "Hz",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    CalculatorInputField(
+                        value = state.calibrationAperture,
+                        onValueChange = { viewModel.onEvent(SodaCalculatorEvent.UpdateCalibrationAperture(it)) },
+                        label = "Açıklık %",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+            }
+
+            // 3. BÖLÜM: POMPA SEÇİMİ VE SONUÇ
+            PumpControlPanel(
+                pumpList = state.pumps,
+                onPumpToggle = { id, isActive ->
+                    viewModel.onEvent(SodaCalculatorEvent.TogglePump(id, isActive))
+                }
+            )
+
+            // Hesaplama Sonucu (Otomatik hesaplandığı için butona gerek yok ama Kaydet butonu kalabilir)
+            state.pumpResult?.let { result ->
+                MultiPumpResultDisplay(result = result)
+            }
+
             CalculatorSaveButton(
                 onClick = { viewModel.onEvent(SodaCalculatorEvent.SaveCalculation) },
                 enabled = state.calculatedTargetSeconds > 0.0,
-                isLoading = state.isSaving
+                isLoading = state.isSaving,
+                text = "İşlemi Kaydet"
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

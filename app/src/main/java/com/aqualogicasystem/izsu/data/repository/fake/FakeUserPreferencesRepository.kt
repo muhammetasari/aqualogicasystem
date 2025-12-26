@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
+
+
     private val _themeConfigFlow = MutableStateFlow(AppThemeConfig.FOLLOW_SYSTEM)
     private val _ironCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
     private val _sodaCalculationResultFlow = MutableStateFlow<CalculationResult?>(null)
@@ -23,6 +25,8 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
     private val _sodaChemicalSettingsFlow = MutableStateFlow(Pair(7.5, 750.0))
     private val _ironLastFlowFlow = MutableStateFlow<String?>(null)
     private val _sodaLastFlowFlow = MutableStateFlow<String?>(null)
+    private val _ironCalibrationFlow = MutableStateFlow(Triple("", "", ""))
+    private val _sodaCalibrationFlow = MutableStateFlow(Triple("", "", ""))
 
     override val themeConfigFlow: Flow<AppThemeConfig>
         get() = _themeConfigFlow
@@ -47,6 +51,12 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override val sodaChemicalSettingsFlow: Flow<Pair<Double, Double>>
         get() = _sodaChemicalSettingsFlow
+
+    override val ironCalibrationFlow: Flow<Triple<String, String, String>>
+        get() = _ironCalibrationFlow
+
+    override val sodaCalibrationFlow: Flow<Triple<String, String, String>>
+        get() = _sodaCalibrationFlow
 
     override suspend fun saveThemeConfig(themeConfig: AppThemeConfig) {
         _themeConfigFlow.value = themeConfig
@@ -102,5 +112,13 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
 
     override suspend fun getSodaChemicalSettings(): Pair<Double, Double>? {
         return _sodaChemicalSettingsFlow.value
+    }
+
+    override suspend fun saveIronCalibration(time: String, hz: String, aperture: String) {
+        _ironCalibrationFlow.value = Triple(time, hz, aperture)
+    }
+
+    override suspend fun saveSodaCalibration(time: String, hz: String, aperture: String) {
+        _sodaCalibrationFlow.value = Triple(time, hz, aperture)
     }
 }
