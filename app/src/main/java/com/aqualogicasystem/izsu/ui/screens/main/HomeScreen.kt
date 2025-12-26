@@ -190,6 +190,19 @@ fun HomeContent(
                         value = "", // TODO:Demir 3 Pompa Açıklık gelecek.
                         unit = "%",
                     )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Aktif Pompa Sayısı",
+                        value = "", // TODO:Demir 3 Aktif Pompa Sayısı gelecek.
+                        unit = "%",
+                    )
+
                 }
 
                 // Tarih ve Saat
@@ -295,6 +308,18 @@ fun HomeContent(
                         label = "Pompa Açıklık",
                         value = "", // TODO: Soda Pompa Açıklığı gelecek. 
                         unit = "%"
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 4.dp),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    ResultItem(
+                        modifier = Modifier.weight(1f),
+                        label = "Aktif Pompa Sayısı",
+                        value = "", // TODO:Soda Aktif Pompa Sayısı gelecek.
+                        unit = "%",
                     )
                 }
 

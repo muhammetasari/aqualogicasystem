@@ -72,10 +72,9 @@ class SodaCalculatorViewModel(
         // 2. Kayıtlı Kimyasal Ayarlarını Yükle (PPM, Faktör)
         viewModelScope.launch {
             repository.sodaChemicalSettingsFlow.collect { (ppm, factor) ->
-                _uiState.update {
+                updateState {
                     it.copy(targetPpm = ppm.toString(), chemicalFactor = factor.toString())
                 }
-                recalculateAll(_uiState.value)
             }
         }
 
@@ -83,8 +82,7 @@ class SodaCalculatorViewModel(
         viewModelScope.launch {
             repository.sodaLastFlowFlow.collect { lastFlow ->
                 if (lastFlow != null) {
-                    _uiState.update { it.copy(waterFlow = lastFlow) }
-                    recalculateAll(_uiState.value)
+                    updateState { it.copy(waterFlow = lastFlow) }
                 }
             }
         }
@@ -93,14 +91,13 @@ class SodaCalculatorViewModel(
         viewModelScope.launch {
             repository.sodaCalibrationFlow.collect { (time, hz, aperture) ->
                 if (time.isNotEmpty() || hz.isNotEmpty() || aperture.isNotEmpty()) {
-                    _uiState.update {
+                    updateState {
                         it.copy(
                             calibrationTime = time,
                             calibrationHz = hz,
                             calibrationAperture = aperture
                         )
                     }
-                    recalculateAll(_uiState.value)
                 }
             }
         }

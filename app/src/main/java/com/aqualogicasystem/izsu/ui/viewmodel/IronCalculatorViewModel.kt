@@ -69,10 +69,9 @@ class IronCalculatorViewModel(
         // 2. Kimyasal Ayarları
         viewModelScope.launch {
             repository.ironChemicalSettingsFlow.collect { (ppm, factor) ->
-                _uiState.update {
+                updateState {
                     it.copy(targetPpm = ppm.toString(), chemicalFactor = factor.toString())
                 }
-                recalculateAll(_uiState.value)
             }
         }
 
@@ -80,8 +79,7 @@ class IronCalculatorViewModel(
         viewModelScope.launch {
             repository.ironLastFlowFlow.collect { lastFlow ->
                 if (lastFlow != null) {
-                    _uiState.update { it.copy(waterFlow = lastFlow) }
-                    recalculateAll(_uiState.value)
+                    updateState { it.copy(waterFlow = lastFlow) }
                 }
             }
         }
@@ -90,14 +88,13 @@ class IronCalculatorViewModel(
         viewModelScope.launch {
             repository.ironCalibrationFlow.collect { (time, hz, aperture) ->
                 if (time.isNotEmpty() || hz.isNotEmpty() || aperture.isNotEmpty()) {
-                    _uiState.update {
+                    updateState {
                         it.copy(
                             calibrationTime = time,
                             calibrationHz = hz,
                             calibrationAperture = aperture
                         )
                     }
-                    recalculateAll(_uiState.value)
                 }
             }
         }
