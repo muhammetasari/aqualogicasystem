@@ -34,7 +34,7 @@ object IronCalculatorLogic {
      * Minimum su debisi limiti (m³/sn).
      * Bu değerin altında hesaplama yapılmaz.
      */
-    private const val MIN_FLOW_RATE = 600.0
+    private const val MIN_FLOW_RATE = 300.0
 
     /**
      * Minimum PPM limiti.
@@ -76,7 +76,7 @@ object IronCalculatorLogic {
      * Giriş parametrelerinin geçerliliğini kontrol eder.
      *
      * Kontrol Kriterleri:
-     * - Su debisi minimum limiti aşmalı (> 600 m³/sn)
+     * - Su debisi minimum limiti aşmalı (> 300 m³/sn)
      * - Hedef PPM minimum limiti aşmalı (> 1.0)
      * - Kimyasal faktörü pozitif olmalı (> 0)
      *
@@ -95,4 +95,3 @@ object IronCalculatorLogic {
                 chemicalFactorGPerL > 0.0
     }
 }
-

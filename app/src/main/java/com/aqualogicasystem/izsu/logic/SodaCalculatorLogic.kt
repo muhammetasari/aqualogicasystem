@@ -34,7 +34,7 @@ object SodaCalculatorLogic {
      * Minimum su debisi limiti (lt/sn).
      * Bu değerin altında hesaplama yapılmaz.
      */
-    private const val MIN_FLOW_RATE = 600.0
+    private const val MIN_FLOW_RATE = 300.0
 
     /**
      * Minimum PPM limiti.
@@ -93,7 +93,7 @@ object SodaCalculatorLogic {
      * Giriş parametrelerinin geçerliliğini kontrol eder.
      *
      * Kontrol Kriterleri:
-     * - Su debisi minimum limiti aşmalı (> 600 lt/sn)
+     * - Su debisi minimum limiti aşmalı (> 300 lt/sn)
      * - Hedef PPM minimum limiti aşmalı (> 1.0)
      * - Kimyasal faktörü pozitif olmalı (> 0)
      *
@@ -112,4 +112,3 @@ object SodaCalculatorLogic {
                 chemicalFactorGPerL > 0.0
     }
 }
-
