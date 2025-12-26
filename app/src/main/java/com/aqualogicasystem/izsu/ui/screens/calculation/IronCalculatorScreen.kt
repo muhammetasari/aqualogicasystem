@@ -121,7 +121,10 @@ fun IronCalculatorScreen(
             )
 
             state.pumpResult?.let { result ->
-                MultiPumpResultDisplay(result = result)
+                MultiPumpResultDisplay(
+                    result = result,
+                    targetHourlyAmount = state.calculatedHourlyAmount
+                )
             }
 
             CalculatorSaveButton(

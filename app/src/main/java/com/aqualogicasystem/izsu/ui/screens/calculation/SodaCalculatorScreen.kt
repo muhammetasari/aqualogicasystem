@@ -47,7 +47,6 @@ fun SodaCalculatorScreen(
         }
     }
 
-    // StandardLayout içindeki parametreler düzeltildi
     StandardLayout(
         navController = navController,
         title = "Soda Dozaj & Pompa",
@@ -78,7 +77,6 @@ fun SodaCalculatorScreen(
             )
 
             // ARA SONUÇ: HEDEF SÜRE
-            // Kullanıcı su debisini girdikçe burası güncellenecek
             CalculatorResultCard(
                 leftLabel = "Hedef Süre (100ml)",
                 leftValue = state.calculatedTargetSeconds,
@@ -99,7 +97,6 @@ fun SodaCalculatorScreen(
             )
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Yan yana 3 küçük kutucuk
                 Box(modifier = Modifier.weight(1f)) {
                     CalculatorInputField(
                         value = state.calibrationTime,
@@ -134,9 +131,12 @@ fun SodaCalculatorScreen(
                 }
             )
 
-            // Hesaplama Sonucu (Otomatik hesaplandığı için butona gerek yok ama Kaydet butonu kalabilir)
+            // Hesaplama Sonucu
             state.pumpResult?.let { result ->
-                MultiPumpResultDisplay(result = result)
+                MultiPumpResultDisplay(
+                    result = result,
+                    targetHourlyAmount = state.calculatedHourlyAmount
+                )
             }
 
             CalculatorSaveButton(

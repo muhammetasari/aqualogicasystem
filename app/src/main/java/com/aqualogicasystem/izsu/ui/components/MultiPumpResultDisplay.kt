@@ -10,11 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aqualogicasystem.izsu.data.model.MultiPumpResult
+import com.aqualogicasystem.izsu.ui.theme.IzsuAppTheme
 
 @Composable
-fun MultiPumpResultDisplay(result: MultiPumpResult) {
+fun MultiPumpResultDisplay(
+    result: MultiPumpResult,
+    targetHourlyAmount: Double
+) {
     val isWarning = result.warningMessage != null
 
     // Uyarı varsa kart kırmızımsı, yoksa normal renk olsun
@@ -37,7 +42,14 @@ fun MultiPumpResultDisplay(result: MultiPumpResult) {
             ) {
                 Column {
                     Text("Toplam Hedef", style = MaterialTheme.typography.labelMedium)
-                    Text("${result.totalFlowRate.toInt()} ml/dk", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+
+                    val totalFlowLps = targetHourlyAmount
+
+                    Text(
+                        text = "%.1f l/s".format(totalFlowLps),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text("Aktif Pompa", style = MaterialTheme.typography.labelMedium)
@@ -45,7 +57,7 @@ fun MultiPumpResultDisplay(result: MultiPumpResult) {
                 }
             }
 
-            Divider(modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
             // --- ANA SONUÇ (HZ ve AÇIKLIK) ---
             Row(
@@ -99,7 +111,7 @@ fun MultiPumpResultDisplay(result: MultiPumpResult) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = result.warningMessage ?: "",
+                            text = result.warningMessage,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
@@ -108,5 +120,24 @@ fun MultiPumpResultDisplay(result: MultiPumpResult) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MultiPumpResultDisplayPreview() {
+    IzsuAppTheme {
+        MultiPumpResultDisplay(
+            result = MultiPumpResult(
+                activePumpCount = 3,
+                hzPerPump = 45f,
+                aperturePerPump = 80f,
+                estimatedFlowPerPump = 1200.0,
+                totalFlowRate = 3600.0,
+                loadPercentage = 75.0,
+                warningMessage = "Debi hedefi pompa kapasitesini aşıyor!"
+            ),
+            targetHourlyAmount = 10.5
+        )
     }
 }
