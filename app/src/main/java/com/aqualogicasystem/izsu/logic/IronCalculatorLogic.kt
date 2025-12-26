@@ -43,12 +43,6 @@ object IronCalculatorLogic {
     private const val MIN_PPM = 1.0
 
     /**
-     * Minimum dolum süresi limiti (saniye).
-     * Gerçekçi olmayan kısa süreleri filtrelemek için kullanılır.
-     */
-    private const val MIN_FILL_TIME = 5.0
-
-    /**
      * Demir giderme kimyasalının 1 litre dolum süresini hesaplar.
      *
      * Formül: Dolum Süresi (sn) = (Kimyasal Faktörü * 1000) / (Su Debisi * Hedef PPM)

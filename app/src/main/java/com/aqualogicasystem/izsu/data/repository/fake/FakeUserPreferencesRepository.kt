@@ -106,11 +106,11 @@ class FakeUserPreferencesRepository : IUserPreferencesRepository {
         _sodaChemicalSettingsFlow.value = Pair(targetPpm, chemicalFactor)
     }
 
-    override suspend fun getIronChemicalSettings(): Pair<Double, Double>? {
+    override suspend fun getIronChemicalSettings(): Pair<Double, Double> {
         return _ironChemicalSettingsFlow.value
     }
 
-    override suspend fun getSodaChemicalSettings(): Pair<Double, Double>? {
+    override suspend fun getSodaChemicalSettings(): Pair<Double, Double> {
         return _sodaChemicalSettingsFlow.value
     }
 

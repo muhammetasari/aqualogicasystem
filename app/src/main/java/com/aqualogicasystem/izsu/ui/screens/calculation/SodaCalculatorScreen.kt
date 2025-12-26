@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.aqualogicasystem.izsu.data.model.CalculationResult
 import com.aqualogicasystem.izsu.data.repository.fake.FakeUserPreferencesRepository
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
@@ -32,7 +31,6 @@ import com.aqualogicasystem.izsu.ui.viewmodel.SodaCalculatorViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SodaCalculatorScreen(
-    sodaCalculationResult: CalculationResult? = null,
     navController: NavController,
     viewModel: SodaCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(

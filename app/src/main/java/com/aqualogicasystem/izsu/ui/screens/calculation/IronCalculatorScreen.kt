@@ -12,7 +12,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aqualogicasystem.izsu.data.model.CalculationResult
 import com.aqualogicasystem.izsu.navigation.Screen
 import com.aqualogicasystem.izsu.ui.common.StandardLayout
 import com.aqualogicasystem.izsu.ui.components.CalculatorInputField
@@ -28,7 +27,6 @@ import com.aqualogicasystem.izsu.ui.viewmodel.IronCalculatorViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IronCalculatorScreen(
-    ironCalculationResult: CalculationResult? = null,
     navController: NavController,
     viewModel: IronCalculatorViewModel = viewModel(
         factory = CalculatorViewModelFactory(
