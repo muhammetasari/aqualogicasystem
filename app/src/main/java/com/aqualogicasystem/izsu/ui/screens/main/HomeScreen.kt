@@ -164,7 +164,9 @@ fun HomeContent(
                         unit = "sn"
                     )
                 }
-                    HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
+                HorizontalDivider(color = Color.White.copy(alpha = 0.5f))
+
+                // DEMİR POMPA VERİLERİ
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -174,7 +176,7 @@ fun HomeContent(
                     ResultItem(
                         modifier = Modifier.weight(1f),
                         label = "Pompa Hz",
-                        value = "", // TODO:Demir 3 Pompa Hz gelecek.
+                        value = String.format(Locale.US, "%.1f", ironCalculationResult?.pumpHz ?: 0.0),
                         unit = "Hz",
                     )
                     VerticalDivider(
@@ -187,7 +189,7 @@ fun HomeContent(
                     ResultItem(
                         modifier = Modifier.weight(1f),
                         label = "Pompa Açıklık",
-                        value = "", // TODO:Demir 3 Pompa Açıklık gelecek.
+                        value = String.format(Locale.US, "%.1f", ironCalculationResult?.pumpAperture ?: 0.0),
                         unit = "%",
                     )
                     VerticalDivider(
@@ -198,11 +200,10 @@ fun HomeContent(
                     )
                     ResultItem(
                         modifier = Modifier.weight(1f),
-                        label = "Aktif Pompa Sayısı",
-                        value = "", // TODO:Demir 3 Aktif Pompa Sayısı gelecek.
-                        unit = "%",
+                        label = "Aktif Pompa",
+                        value = "${ironCalculationResult?.activePumpCount ?: 0}",
+                        unit = "Adet",
                     )
-
                 }
 
                 // Tarih ve Saat
@@ -294,7 +295,7 @@ fun HomeContent(
                     ResultItem(
                         modifier = Modifier.weight(1f),
                         label = "Pompa Hz",
-                        value = "", // TODO: Soda Pompa Hz değeri gelecek.
+                        value = String.format(Locale.US, "%.1f", sodaCalculationResult?.pumpHz ?: 0.0),
                         unit = "Hz"
                     )
                     VerticalDivider(
@@ -306,7 +307,7 @@ fun HomeContent(
                     ResultItem(
                         modifier = Modifier.weight(1f),
                         label = "Pompa Açıklık",
-                        value = "", // TODO: Soda Pompa Açıklığı gelecek. 
+                        value = String.format(Locale.US, "%.1f", sodaCalculationResult?.pumpAperture ?: 0.0),
                         unit = "%"
                     )
                     VerticalDivider(
@@ -317,9 +318,9 @@ fun HomeContent(
                     )
                     ResultItem(
                         modifier = Modifier.weight(1f),
-                        label = "Aktif Pompa Sayısı",
-                        value = "", // TODO:Soda Aktif Pompa Sayısı gelecek.
-                        unit = "%",
+                        label = "Aktif Pompa",
+                        value = "${sodaCalculationResult?.activePumpCount ?: 0}",
+                        unit = "Adet",
                     )
                 }
 

@@ -10,12 +10,18 @@ import kotlinx.coroutines.flow.Flow
  * @property fillTime 1 Litre Dolum Süresi (saniye)
  * @property hourlyAmount Saatlik Miktar (kg/saat)
  * @property timestamp Kayıt zamanı (Unix timestamp)
+ * @property pumpHz Pompa Frekansı (Hz)
+ * @property pumpAperture Pompa Açıklığı (%)
+ * @property activePumpCount Aktif Pompa Sayısı
  */
 data class CalculationResult(
     val fillTime: Double = 0.0,
     val hourlyAmount: Double = 0.0,
-    val flowRate: Double, // Litre/saniye cinsinden su debisi
-    val timestamp: Long = System.currentTimeMillis()
+    val flowRate: Double,
+    val timestamp: Long = System.currentTimeMillis(),
+    val pumpHz: Double = 0.0,
+    val pumpAperture: Double = 0.0,
+    val activePumpCount: Int = 0
 )
 
 

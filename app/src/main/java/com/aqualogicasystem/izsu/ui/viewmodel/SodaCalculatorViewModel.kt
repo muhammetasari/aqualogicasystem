@@ -33,14 +33,14 @@ data class SodaCalculatorUiState(
     val calculatedTargetSeconds: Double = 0.0,
     val calculatedHourlyAmount: Double = 0.0,
 
-    // Kalibrasyon Girdileri (Kullanıcıdan alınır + Hafızadan yüklenir)
+    // Kalibrasyon Girdileri
     val calibrationTime: String = "",
     val calibrationHz: String = "",
     val calibrationAperture: String = "",
 
     // Pompa Durumu
-    val pumps: List<Pump> = emptyList(),      // Pompa listesi ve aktiflik durumları
-    val pumpResult: MultiPumpResult? = null,  // Pompa hesaplama sonucu (Hz, Açıklık, Uyarılar)
+    val pumps: List<Pump> = emptyList(),
+    val pumpResult: MultiPumpResult? = null,
 
     // İşlem Durumları
     val isSaving: Boolean = false,
@@ -87,7 +87,7 @@ class SodaCalculatorViewModel(
             }
         }
 
-        // 4. Son Kalibrasyon Verilerini Yükle (YENİ)
+        // 4. Son Kalibrasyon Verilerini Yükle
         viewModelScope.launch {
             repository.sodaCalibrationFlow.collect { (time, hz, aperture) ->
                 if (time.isNotEmpty() || hz.isNotEmpty() || aperture.isNotEmpty()) {
@@ -202,19 +202,22 @@ class SodaCalculatorViewModel(
                     repository.saveSodaLastFlow(currentState.waterFlow)
                 }
 
-                // 2. Kalibrasyon Verilerini Kaydet (YENİ)
+                // 2. Kalibrasyon Verilerini Kaydet
                 repository.saveSodaCalibration(
                     time = currentState.calibrationTime,
                     hz = currentState.calibrationHz,
                     aperture = currentState.calibrationAperture
                 )
 
-                // 3. Sonuçları Kayıt Altına Al
+                // 3. Sonuçları Kayıt Altına Al (Pompa verileri eklendi)
                 val result = CalculationResult(
                     fillTime = currentState.calculatedTargetSeconds,
                     hourlyAmount = currentState.calculatedHourlyAmount,
                     flowRate = currentState.waterFlow.toDoubleOrNull() ?: 0.0,
-                    timestamp = System.currentTimeMillis()
+                    timestamp = System.currentTimeMillis(),
+                    pumpHz = currentState.pumpResult?.hzPerPump?.toDouble() ?: 0.0,
+                    pumpAperture = currentState.pumpResult?.aperturePerPump?.toDouble() ?: 0.0,
+                    activePumpCount = currentState.pumpResult?.activePumpCount ?: 0
                 )
                 repository.saveSodaCalculationResult(result)
 

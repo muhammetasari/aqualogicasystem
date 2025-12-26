@@ -84,7 +84,7 @@ class IronCalculatorViewModel(
             }
         }
 
-        // 4. Son Kalibrasyon Verileri (YENİ)
+        // 4. Son Kalibrasyon Verileri
         viewModelScope.launch {
             repository.ironCalibrationFlow.collect { (time, hz, aperture) ->
                 if (time.isNotEmpty() || hz.isNotEmpty() || aperture.isNotEmpty()) {
@@ -182,19 +182,22 @@ class IronCalculatorViewModel(
                     repository.saveIronLastFlow(currentState.waterFlow)
                 }
 
-                // Kalibrasyon Kaydet (YENİ)
+                // Kalibrasyon Kaydet
                 repository.saveIronCalibration(
                     time = currentState.calibrationTime,
                     hz = currentState.calibrationHz,
                     aperture = currentState.calibrationAperture
                 )
 
-                // Sonuç Kaydet
+                // Sonuç Kaydet (Pompa verileri eklendi)
                 val result = CalculationResult(
                     fillTime = currentState.calculatedTargetSeconds,
                     hourlyAmount = currentState.calculatedHourlyAmount,
                     flowRate = currentState.waterFlow.toDoubleOrNull() ?: 0.0,
-                    timestamp = System.currentTimeMillis()
+                    timestamp = System.currentTimeMillis(),
+                    pumpHz = currentState.pumpResult?.hzPerPump?.toDouble() ?: 0.0,
+                    pumpAperture = currentState.pumpResult?.aperturePerPump?.toDouble() ?: 0.0,
+                    activePumpCount = currentState.pumpResult?.activePumpCount ?: 0
                 )
                 repository.saveIronCalculationResult(result)
 

@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -37,17 +38,27 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
     private object PreferencesKeys {
         val THEME_CONFIG = stringPreferencesKey("theme_config")
 
+        // DEMİR
         val IRON_CALC_FILL_TIME = doublePreferencesKey("iron_calc_fill_time")
         val IRON_CALC_HOURLY_AMOUNT = doublePreferencesKey("iron_calc_hourly_amount")
         val IRON_CALC_FLOW_RATE = doublePreferencesKey("iron_calc_flow_rate")
         val IRON_CALC_TIMESTAMP = longPreferencesKey("iron_calc_timestamp")
         val IRON_LAST_FLOW = stringPreferencesKey("iron_last_flow")
+        // Demir Pompa Verileri
+        val IRON_CALC_PUMP_HZ = doublePreferencesKey("iron_calc_pump_hz")
+        val IRON_CALC_PUMP_APERTURE = doublePreferencesKey("iron_calc_pump_aperture")
+        val IRON_CALC_ACTIVE_PUMP_COUNT = intPreferencesKey("iron_calc_active_pump_count")
 
+        // SODA
         val SODA_CALC_FILL_TIME = doublePreferencesKey("soda_calc_fill_time")
         val SODA_CALC_HOURLY_AMOUNT = doublePreferencesKey("soda_calc_hourly_amount")
         val SODA_CALC_FLOW_RATE = doublePreferencesKey("soda_calc_flow_rate")
         val SODA_CALC_TIMESTAMP = longPreferencesKey("soda_calc_timestamp")
         val SODA_LAST_FLOW = stringPreferencesKey("soda_last_flow")
+        // Soda Pompa Verileri
+        val SODA_CALC_PUMP_HZ = doublePreferencesKey("soda_calc_pump_hz")
+        val SODA_CALC_PUMP_APERTURE = doublePreferencesKey("soda_calc_pump_aperture")
+        val SODA_CALC_ACTIVE_PUMP_COUNT = intPreferencesKey("soda_calc_active_pump_count")
 
         val CHLORINE_PRE_DOSAGE = doublePreferencesKey("chlorine_pre_dosage")
         val CHLORINE_CONTACT_DOSAGE = doublePreferencesKey("chlorine_contact_dosage")
@@ -83,12 +94,20 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val hourlyAmount = preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
             val flowRate = preferences[PreferencesKeys.IRON_CALC_FLOW_RATE]
             val timestamp = preferences[PreferencesKeys.IRON_CALC_TIMESTAMP]
+
+            val pumpHz = preferences[PreferencesKeys.IRON_CALC_PUMP_HZ] ?: 0.0
+            val pumpAperture = preferences[PreferencesKeys.IRON_CALC_PUMP_APERTURE] ?: 0.0
+            val activeCount = preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMP_COUNT] ?: 0
+
             if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     flowRate = flowRate,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    pumpHz = pumpHz,
+                    pumpAperture = pumpAperture,
+                    activePumpCount = activeCount
                 )
             } else {
                 null
@@ -117,12 +136,20 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val hourlyAmount = preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
             val flowRate = preferences[PreferencesKeys.SODA_CALC_FLOW_RATE]
             val timestamp = preferences[PreferencesKeys.SODA_CALC_TIMESTAMP]
+
+            val pumpHz = preferences[PreferencesKeys.SODA_CALC_PUMP_HZ] ?: 0.0
+            val pumpAperture = preferences[PreferencesKeys.SODA_CALC_PUMP_APERTURE] ?: 0.0
+            val activeCount = preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMP_COUNT] ?: 0
+
             if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     flowRate = flowRate,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    pumpHz = pumpHz,
+                    pumpAperture = pumpAperture,
+                    activePumpCount = activeCount
                 )
             } else {
                 null
@@ -215,6 +242,10 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT] = result.hourlyAmount
             preferences[PreferencesKeys.IRON_CALC_FLOW_RATE] = result.flowRate
             preferences[PreferencesKeys.IRON_CALC_TIMESTAMP] = result.timestamp
+
+            preferences[PreferencesKeys.IRON_CALC_PUMP_HZ] = result.pumpHz
+            preferences[PreferencesKeys.IRON_CALC_PUMP_APERTURE] = result.pumpAperture
+            preferences[PreferencesKeys.IRON_CALC_ACTIVE_PUMP_COUNT] = result.activePumpCount
         }
     }
 
@@ -229,6 +260,10 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             preferences[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT] = result.hourlyAmount
             preferences[PreferencesKeys.SODA_CALC_FLOW_RATE] = result.flowRate
             preferences[PreferencesKeys.SODA_CALC_TIMESTAMP] = result.timestamp
+
+            preferences[PreferencesKeys.SODA_CALC_PUMP_HZ] = result.pumpHz
+            preferences[PreferencesKeys.SODA_CALC_PUMP_APERTURE] = result.pumpAperture
+            preferences[PreferencesKeys.SODA_CALC_ACTIVE_PUMP_COUNT] = result.activePumpCount
         }
     }
 
@@ -244,12 +279,19 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val hourlyAmount = prefs[PreferencesKeys.IRON_CALC_HOURLY_AMOUNT]
             val flowRate = prefs[PreferencesKeys.IRON_CALC_FLOW_RATE]
             val timestamp = prefs[PreferencesKeys.IRON_CALC_TIMESTAMP]
+            val pumpHz = prefs[PreferencesKeys.IRON_CALC_PUMP_HZ] ?: 0.0
+            val pumpAperture = prefs[PreferencesKeys.IRON_CALC_PUMP_APERTURE] ?: 0.0
+            val activeCount = prefs[PreferencesKeys.IRON_CALC_ACTIVE_PUMP_COUNT] ?: 0
+
             if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     flowRate = flowRate,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    pumpHz = pumpHz,
+                    pumpAperture = pumpAperture,
+                    activePumpCount = activeCount
                 )
             } else {
                 null
@@ -270,12 +312,19 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             val hourlyAmount = prefs[PreferencesKeys.SODA_CALC_HOURLY_AMOUNT]
             val flowRate = prefs[PreferencesKeys.SODA_CALC_FLOW_RATE]
             val timestamp = prefs[PreferencesKeys.SODA_CALC_TIMESTAMP]
+            val pumpHz = prefs[PreferencesKeys.SODA_CALC_PUMP_HZ] ?: 0.0
+            val pumpAperture = prefs[PreferencesKeys.SODA_CALC_PUMP_APERTURE] ?: 0.0
+            val activeCount = prefs[PreferencesKeys.SODA_CALC_ACTIVE_PUMP_COUNT] ?: 0
+
             if (fillTime != null && hourlyAmount != null && timestamp != null && flowRate != null) {
                 CalculationResult(
                     fillTime = fillTime,
                     hourlyAmount = hourlyAmount,
                     flowRate = flowRate,
-                    timestamp = timestamp
+                    timestamp = timestamp,
+                    pumpHz = pumpHz,
+                    pumpAperture = pumpAperture,
+                    activePumpCount = activeCount
                 )
             } else {
                 null
@@ -337,9 +386,9 @@ class UserPreferencesRepository(private val context: Context) : IUserPreferences
             }
         }.first()
     }
-    /**
-     * Flow that emits Iron-3 chemical settings (PPM and Factor).
-     */
+
+    // ... Diğer metodlar aynı şekilde kalacak (ironChemicalSettingsFlow, vb.) ...
+
     override val ironChemicalSettingsFlow: Flow<Pair<Double, Double>> = context.dataStore.data
         .map { preferences ->
             val ppm = preferences[PreferencesKeys.IRON_TARGET_PPM] ?: 21.0

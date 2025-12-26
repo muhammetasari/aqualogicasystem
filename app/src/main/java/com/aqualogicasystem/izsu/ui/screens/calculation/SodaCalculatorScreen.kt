@@ -143,7 +143,7 @@ fun SodaCalculatorScreen(
                 onClick = { viewModel.onEvent(SodaCalculatorEvent.SaveCalculation) },
                 enabled = state.calculatedTargetSeconds > 0.0,
                 isLoading = state.isSaving,
-                text = "İşlemi Kaydet"
+                text = "Kaydet"
             )
 
             Spacer(modifier = Modifier.height(32.dp))
